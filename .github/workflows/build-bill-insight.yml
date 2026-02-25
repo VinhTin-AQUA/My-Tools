@@ -154,3 +154,4 @@ jobs:
                 generate_release_notes: true
                 files: |
                   ./${{ env.PROJECT_DIR }}/src-tauri/gen/android/app/build/outputs/apk/universal/release/${{ env.FILE_NAME }}
+
