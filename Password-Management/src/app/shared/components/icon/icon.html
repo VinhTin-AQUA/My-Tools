@@ -1,0 +1,13 @@
+<svg
+    [class]="class"
+    [ngStyle]="{
+        width: size,
+        height: size,
+        color: color,
+        fill: fill,
+        stroke: stroke
+    }"
+    aria-hidden="true"
+>
+    <use [attr.href]="spritePath + '#' + name"></use>
+</svg>

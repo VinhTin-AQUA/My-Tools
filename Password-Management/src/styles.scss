@@ -1,0 +1,47 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+html {
+    scrollbar-gutter: stable; /* Không dịch chuyển nội dung khi xuất hiện scrollbar */
+}
+/* 
+html,
+body {
+	margin: 0;
+	padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(
+			safe-area-inset-left
+		);
+	background-color: #fff;
+	height: 100%;
+} */
+
+
+/* Scrollbar gọn, nhẹ và không chiếm vùng hiển thị */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0c0c0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #7a7a7a;
+}
+
+.input {
+}

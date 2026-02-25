@@ -1,0 +1,17 @@
+<div>
+    <label class="text-primary block text-sm font-medium mb-1">
+        {{ label | translate }}
+    </label>
+    <textarea
+        rows="5"
+        [value]="value"
+        (focus)="handleFocus($event)"
+        (input)="handleInput($event)"
+        (change)="handleChange($event)"
+        class="text-primary border-primary w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-blue-400 outline-none resize-none transition"
+        [placeholder]="placeholder | translate"
+        (blur)="onTouchedFn()"
+        [readonly]="readonly"
+        [disabled]="disabled"
+    ></textarea>
+</div>

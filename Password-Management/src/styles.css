@@ -1,0 +1,348 @@
+@import 'tailwindcss';
+
+@layer utilities {
+    /* ============ background ============ */
+    .bg-primary {
+        background-color: var(--color-surface);
+    }
+
+    .bg-primary-hover,
+    .hover\:bg-primary-hover:hover {
+        background-color: var(--color-surface-hover);
+    }
+
+    .bg-primary-active,
+    .active\:bg-primary-active:active {
+        background-color: var(--color-surface-active);
+    }
+
+    /* ============ text ============ */
+    .text-primary {
+        color: var(--color-text);
+    }
+
+    .text-primary-hover,
+    .hover\:text-primary-hover:hover {
+        color: var(--color-text-hover);
+    }
+
+    .text-primary-active,
+    .active\:text-primary-active:active {
+        color: var(--color-text-active);
+    }
+
+    /* ============ border ============ */
+    .border-primary {
+        border-color: var(--color-border);
+    }
+
+    .border-primary-hover,
+    .hover\:border-primary-hover:hover {
+        border-color: var(--color-border-hover);
+    }
+
+    .border-primary-active,
+    .active\:border-primary-active:active {
+        border-color: var(--color-border-active);
+    }
+
+    /* ============ button ============ */
+    .button-primary {
+        background-color: var(--bg-button-primary);
+        color: var(--text-button-primary);
+    }
+
+    .button-primary-hover,
+    .hover\:button-primary-hover:hover {
+        background-color: var(--bg-button-primary-hover);
+        color: var(--text-button-primary-hover);
+    }
+
+    .button-primary-active,
+    .active\:button-primary-active:active {
+        background-color: var(--bg-button-primary-active);
+        color: var(--text-button-primary-active);
+    }
+
+    .button-danger {
+        background-color: var(--color-red-100);
+        color: var(--color-red-500);
+    }
+
+    .button-danger-hover,
+    .hover\:button-danger-hover:hover {
+        background-color: var(--color-red-400);
+        color: var(--color-white);
+    }
+
+    .button-danger-active,
+    .active\:button-danger-active:active {
+        background-color: var(--color-red-600);
+        color: var(--color-white);
+    }
+
+    /* ============ toast ============ */
+    .toast-primary {
+        background-color: var(--bg-toast-primary);
+        color: var(--text-toast-primary);
+    }
+
+    .toast-primary-hover,
+    .hover\:toast-primary-hover:hover {
+        background-color: var(--bg-toast-primary-hover);
+        color: var(--text-toast-primary-hover);
+    }
+
+    .toast-primary-active,
+    .active\:toast-primary-active:active {
+        background-color: var(--bg-toast-primary-active);
+        color: var(--text-toast-primary-active);
+    }
+
+    /* ============ select ============ */
+    .select-primary {
+        background-color: var(--bg-select-primary);
+        color: var(--text-select-primary);
+    }
+
+    .select-primary-hover,
+    .hover\:select-primary-hover:hover {
+        background-color: var(--bg-select-primary-hover);
+        color: var(--text-select-primary-hover);
+    }
+
+    .select-primary-active,
+    .active\:select-primary-active:active {
+        background-color: var(--bg-select-primary-active);
+        color: var(--text-select-primary-active);
+    }
+}
+
+@layer base {
+    /* ========================= LIGHT THEME ========================= */
+    [data-theme='light'] {
+        /* background */
+        --color-surface: #ffffff;
+        --color-surface-hover: #f5f5f5;
+        --color-surface-active: #d0e4ff;
+
+        /* text */
+        --color-text: #1a1a1a;
+        --color-text-hover: #004aad;
+        --color-text-active: #000000;
+
+        /* border */
+        --color-border: #e5e5e5;
+        --color-border-hover: #1a73e8;
+        --color-border-active: #1a73e8;
+
+        /* button primary */
+        --bg-button-primary: #1a73e8;
+        --bg-button-primary-hover: #1668d4;
+        --bg-button-primary-active: #125bb9;
+        --text-button-primary: #ffffff;
+        --text-button-primary-hover: #ffffff;
+        --text-button-primary-active: #ffffff;
+
+        /* select */
+        --bg-select-primary: #e8f0fe;
+        --bg-select-primary-hover: #d2e3fc;
+        --bg-select-primary-active: #aecbfa;
+        --text-select-primary: #1a1a1a;
+        --text-select-primary-hover: #0f0f0f;
+        --text-select-primary-active: #000000;
+    }
+
+    /* ========================= DARK THEME ========================= */
+    [data-theme='dark'] {
+        /* background */
+        --color-surface: #121212;
+        --color-surface-hover: #1e1e1e;
+        --color-surface-active: #2a4fff;
+
+        /* text */
+        --color-text: #e5e5e5;
+        --color-text-hover: #5ce1a8;
+        --color-text-active: #ffffff;
+
+        /* border */
+        --color-border: #3a3a3a;
+        --color-border-hover: #6ea8ff;
+        --color-border-active: #6ea8ff;
+
+        /* button primary */
+        --bg-button-primary: #2a4fff;
+        --bg-button-primary-hover: #2343db;
+        --bg-button-primary-active: #1d37b8;
+        --text-button-primary: #ffffff;
+        --text-button-primary-hover: #ffffff;
+        --text-button-primary-active: #ffffff;
+
+        /* select */
+        --bg-select-primary: #1e1e1e;
+        --bg-select-primary-hover: #2b2b2b;
+        --bg-select-primary-active: #3a3a3a;
+
+        --text-select-primary: #e5e5e5;
+        --text-select-primary-hover: #ffffff;
+        --text-select-primary-active: #ffffff;
+    }
+
+    /* ========================= MONOKAI THEME ========================= */
+    [data-theme='monokai'] {
+        /* background */
+        --color-surface: #272822;
+        --color-surface-hover: #3a3b32;
+        --color-surface-active: #66d9ef;
+
+        /* text */
+        --color-text: #f8f8f2;
+        --color-text-hover: #a6e22e;
+        --color-text-active: #ffffff;
+
+        /* border */
+        --color-border: #3e3d32;
+        --color-border-hover: #fd971f;
+        --color-border-active: #f92672;
+
+        /* button primary */
+        --bg-button-primary: #f92672;
+        --bg-button-primary-hover: #e01764;
+        --bg-button-primary-active: #c51257;
+        --text-button-primary: #ffffff;
+        --text-button-primary-hover: #ffffff;
+        --text-button-primary-active: #ffffff;
+
+        /* select */
+        --bg-select-primary: #3a3b32;
+        --bg-select-primary-hover: #4a4b41;
+        --bg-select-primary-active: #5a5b50;
+
+        --text-select-primary: #f8f8f2;
+        --text-select-primary-hover: #ffffff;
+        --text-select-primary-active: #ffffff;
+    }
+
+    /* ========================= DRACULA THEME ========================= */
+    [data-theme='dracula'] {
+        /* background */
+        --color-surface: #282a36;
+        --color-surface-hover: #3b3d4a;
+        --color-surface-active: #50fa7b;
+
+        /* text */
+        --color-text: #f8f8f2;
+        --color-text-hover: #8be9fd;
+        --color-text-active: #ffffff;
+
+        /* border */
+        --color-border: #44475a;
+        --color-border-hover: #bd93f9;
+        --color-border-active: #ff79c6;
+
+        /* button primary */
+        --bg-button-primary: #bd93f9;
+        --bg-button-primary-hover: #a579e8;
+        --bg-button-primary-active: #8f63d4;
+        --text-button-primary: #282a36;
+        --text-button-primary-hover: #282a36;
+        --text-button-primary-active: #282a36;
+
+        /* select */
+        --bg-select-primary: #3b3d4a;
+        --bg-select-primary-hover: #4a4c5c;
+        --bg-select-primary-active: #5c5e72;
+
+        --text-select-primary: #f8f8f2;
+        --text-select-primary-hover: #ffffff;
+        --text-select-primary-active: #ffffff;
+    }
+
+    /* ========================= GITHUB LIGHT DEFAULT ========================= */
+    [data-theme='github-light'] {
+        /* background */
+        --color-surface: #ffffff;
+        --color-surface-hover: #f6f8fa;
+        --color-surface-active: #e1e4e8;
+
+        /* text */
+        --color-text: #24292f;
+        --color-text-hover: #0366d6;
+        --color-text-active: #000000;
+
+        /* border */
+        --color-border: #d0d7de;
+        --color-border-hover: #0366d6;
+        --color-border-active: #0366d6;
+
+        /* button primary */
+        --bg-button-primary: #2da44e;
+        --bg-button-primary-hover: #2c974b;
+        --bg-button-primary-active: #238636;
+        --text-button-primary: #ffffff;
+        --text-button-primary-hover: #ffffff;
+        --text-button-primary-active: #ffffff;
+
+        /* select */
+        --bg-select-primary: #f6f8fa;
+        --bg-select-primary-hover: #e1e4e8;
+        --bg-select-primary-active: #d0d7de;
+
+        --text-select-primary: #24292f;
+        --text-select-primary-hover: #0366d6;
+        --text-select-primary-active: #000000;
+
+        /* toast */
+        --bg-toast-primary: #2da44e;
+        --bg-toast-primary-hover: #2c974b;
+        --bg-toast-primary-active: #238636;
+
+        --text-toast-primary: #ffffff;
+        --text-toast-primary-hover: #ffffff;
+        --text-toast-primary-active: #ffffff;
+    }
+
+    /* ========================= GITHUB DARK DEFAULT ========================= */
+    [data-theme='github-dark'] {
+        /* background */
+        --color-surface: #0d1117;
+        --color-surface-hover: #161b22;
+        --color-surface-active: #21262d;
+
+        /* text */
+        --color-text: #c9d1d9;
+        --color-text-hover: #58a6ff;
+        --color-text-active: #ffffff;
+
+        /* border */
+        --color-border: #30363d;
+        --color-border-hover: #58a6ff;
+        --color-border-active: #58a6ff;
+
+        /* button primary */
+        --bg-button-primary: #238636;
+        --bg-button-primary-hover: #2ea043;
+        --bg-button-primary-active: #2c974b;
+        --text-button-primary: #ffffff;
+        --text-button-primary-hover: #ffffff;
+        --text-button-primary-active: #ffffff;
+
+        /* select */
+        --bg-select-primary: #161b22;
+        --bg-select-primary-hover: #21262d;
+        --bg-select-primary-active: #30363d;
+
+        --text-select-primary: #c9d1d9;
+        --text-select-primary-hover: #58a6ff;
+        --text-select-primary-active: #ffffff;
+
+        /* toast */
+        --bg-toast-primary: #238636;
+        --bg-toast-primary-hover: #2ea043;
+        --bg-toast-primary-active: #2c974b;
+
+        --text-toast-primary: #ffffff;
+        --text-toast-primary-hover: #ffffff;
+        --text-toast-primary-active: #ffffff;
+    }
+}

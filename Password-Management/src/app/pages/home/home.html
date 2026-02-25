@@ -1,0 +1,119 @@
+<div class="p-2 px-4 space-y-4">
+    @if (accountStore.accounts().length === 0) {
+    <div class="text-primary text-center text-2xl">
+        <span>No account</span>
+    </div>
+    }
+
+    <!-- Accounts List -->
+    @for (acc of accountStore.accounts(); track $index) {
+    <div
+        (click)="onUpdate(acc)"
+        (clickOutside)="closeContextMenu()"
+        class="p-2 flex items-center justify-between rounded-2xl shadow-sm hover:shadow-md transition transform duration-200"
+    >
+        <!-- Left -->
+        <div class="flex flex-col">
+            <span class="text-primary font-semibold text-base">{{ acc.account_name }}</span>
+            <span class="text-primary text-sm truncate">{{ acc.user_name }}</span>
+        </div>
+
+        <!-- Right - context trigger -->
+        <div class="relative z-50">
+            <button
+                class="text-primary p-2 rounded-full hover:bg-primary-hover active:bg-primary-active transition"
+                (click)="toggleMenu($index, $event)"
+            >
+                <!-- three-dots icon -->
+                <app-icon name="dots-vertical" class=""></app-icon>
+            </button>
+
+            <!-- Context Menu -->
+            @if(openMenu === $index) {
+            <div
+                class="overflow-hidden border-primary absolute right-0 mt-2 w-40 shadow-xl rounded-xl border z-20 scale-95 opacity-0 animate-scale-fade"
+            >
+                <button
+                    class="button-primary hover:button-primary-hover active:button-primary-active w-full text-left px-4 py-2 text-sm transition"
+                    (click)="onCopy(acc, $event)"
+                >
+                    📋 Copy Pass
+                </button>
+                <button
+                    class="button-danger hover:button-danger-hover active:button-danger-active w-full text-left px-4 py-2 text-sm transition"
+                    (click)="onDelete(acc, $event)"
+                >
+                    🗑️ Delete
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    @for (item of accountPaddings; track $index) {
+        <div class="w-full h-5"></div>
+    }
+
+    <!-- SPEED DIAL -->
+    <div
+        (clickOutside)="closeSpeedDial()"
+        class="fixed bottom-20 right-6 flex flex-col items-center z-40"
+    >
+        <!-- Speed Dial Items -->
+        @if (speedDialOpen) {
+        <div class="flex flex-col items-center mb-4 space-y-3 transition-all duration-300">
+            <!-- PRINT -->
+            <button
+                class="button-primary hover:button-primary-hover active:button-primary-active flex items-center justify-center w-9 h-9 rounded-full shadow-md border active:scale-95 transition transform relative group"
+            >
+                <app-icon name="print"></app-icon>
+                <span
+                    class="absolute right-14 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >Print</span
+                >
+            </button>
+
+            <!-- DOWNLOAD -->
+            <button
+                class="button-primary hover:button-primary-hover active:button-primary-active flex items-center justify-center w-9 h-9 rounded-full shadow-md border active:scale-95 transition transform relative group"
+            >
+                <app-icon name="download"></app-icon>
+                <span
+                    class="absolute right-14 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >Download</span
+                >
+            </button>
+
+            <!-- ADD -->
+            <button
+                routerLink="/main/add-account"
+                class="button-primary hover:button-primary-hover active:button-primary-active border-primary flex items-center justify-center w-9 h-9 rounded-full shadow-md border active:scale-95 transition transform relative group"
+            >
+                <app-icon name="plus"></app-icon>
+                <span
+                    class="absolute right-14 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                    >Copy</span
+                >
+            </button>
+        </div>
+        }
+
+        <!-- FAB BUTTON -->
+        <button
+            class="button-primary hover:button-primary-hover active:button-primary-active text-primary border-primary flex items-center justify-center w-10 h-10 rounded-full shadow-md border active:scale-95 transition transform"
+            (click)="toggleSpeedDial()"
+        >
+            <app-icon name="plus"></app-icon>
+        </button>
+    </div>
+</div>
+
+@if(isShowQuestionDialog){
+<app-question-cancel-dialog
+    (close)="onShowQuestionDialogClose($event)"
+    [isSuccess]="false"
+    [message]="'delete'"
+    [title]="'delete'"
+></app-question-cancel-dialog>
+}

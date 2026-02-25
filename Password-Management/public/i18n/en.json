@@ -1,0 +1,43 @@
+{
+    "app": {
+        "title": "Passwords"
+    },
+    "menuSidebar": {
+        "home": "Home",
+        "invoices": "Invoices",
+        "addInvoice": "AddInvoice",
+        "configDetails": "ConfigDetails",
+        "settings": "Settings"
+    },
+    "accountName": "Account Name",
+    "userName": "User name",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "note": "Note",
+    "addNewAccount": "Add new account",
+    "saveAccount": "Save account",
+    "editNewAccount": "Edit new account",
+    "updateAccount": "Update account",
+    "ok": "Ok",
+    "cancel": "Cancel",
+    "login": "Login",
+    "config": "Config",
+    "spreadSheetUrl": "Spread Sheet Url",
+    "spreadSheetId": "Spread Sheet Id",
+    "credentialPath": "Credential Path",
+    "saveConfig": "Save Config",
+    "addAccountForm": {
+        "accountNameIsEmpty": "Account name is empty",
+        "userNameIsEmpty": "User name is empty",
+        "passwordIsEmpty": "Password is empty",
+        "passwordIsNotMatch": "Password is not match"
+    },
+    "addPasscodeForm": {
+        "addPasscode": "Add Passcode",
+        "passcode": "Passcode",
+        "confirmPasscode": "Confirm Passcode",
+        "passcodeIsNotMatch": "Pass code is not match",
+        "passcodeIsNotValid": "Passcode is not valid"
+    },
+    "delete": "Delete"
+}

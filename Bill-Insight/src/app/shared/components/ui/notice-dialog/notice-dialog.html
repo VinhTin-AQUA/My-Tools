@@ -1,0 +1,48 @@
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
+>
+    <div
+        class="w-full max-w-sm sm:max-w-md md:max-w-lg rounded-xl border shadow-xl p-5 transition-all duration-300"
+        [ngClass]="{
+            'bg-green-100 border-green-400 text-green-800':
+                dialogService.noticeDialogState().isSuccess === true,
+            'bg-red-100 border-red-400 text-red-800':
+                dialogService.noticeDialogState().isSuccess === false
+        }"
+    >
+        <div class="flex justify-between items-start">
+            <div class="flex-1">
+                <div class="font-semibold text-lg sm:text-xl mb-1">
+                    {{ dialogService.noticeDialogState().title }}
+                </div>
+                <div class="text-sm sm:text-base leading-snug">
+                    {{ dialogService.noticeDialogState().message }}
+                </div>
+            </div>
+
+            <button
+                class="ml-3 text-2xl font-bold leading-none text-gray-500 hover:text-black focus:outline-none"
+                (click)="closeDialog()"
+                aria-label="Close"
+            >
+                &times;
+            </button>
+        </div>
+
+        <!-- Nút hành động (tùy chọn) -->
+        <div class="mt-4 flex justify-end">
+            <button
+                class="px-4 py-2 rounded-lg font-medium text-white"
+                [ngClass]="{
+                    'bg-green-600 hover:bg-green-700':
+                        dialogService.noticeDialogState().isSuccess === true,
+                    'bg-red-600 hover:bg-red-700':
+                        dialogService.noticeDialogState().isSuccess === false
+                }"
+                (click)="closeDialog()"
+            >
+                OK
+            </button>
+        </div>
+    </div>
+</div>

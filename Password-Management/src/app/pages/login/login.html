@@ -1,0 +1,43 @@
+<div
+    class="text-primary bg-primary min-h-screen flex flex-col justify-center items-center px-6 font-sans"
+>
+    <!-- Card -->
+    <div class="bg-primary w-full max-w-sm p-6 rounded-2xl shadow-lg space-y-6 animate-scale-fade">
+        <!-- Logo -->
+        <div class="flex flex-col items-center space-y-2">
+            <img src="/encrypted.png" class="w-16 h-16 rounded-xl shadow-sm" alt="App Logo" />
+            <h1 class="text-xl font-semibold">Passwords</h1>
+        </div>
+
+        <!-- Password Input -->
+        <div>
+            <app-password-input
+                label="password"
+                [(ngModel)]="password"
+                placeholder="*****************"
+            ></app-password-input>
+
+            @if (errorMessage) {
+            <span class="text-red-500">{{ errorMessage | translate }}</span>
+            }
+        </div>
+
+        <!-- Login Button -->
+        <button
+            (click)="onLogin()"
+            class="button-primary hover:button-primary-hover active:button-primary-active w-full py-3 rounded-xl font-medium shadow-sm hover:shadow-md active:scale-95 transition"
+        >
+            {{ 'login' | translate }}
+        </button>
+
+        <!-- Fingerprint -->
+        <div class="flex justify-center pt-2">
+            <button
+                (click)="onFingerprint()"
+                class="bg-primary hover:bg-primary-hover p-4 rounded-full shadow-md active:scale-95 transition transform"
+            >
+                <app-icon name="fingerprint"></app-icon>
+            </button>
+        </div>
+    </div>
+</div>

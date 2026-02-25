@@ -1,0 +1,48 @@
+<div class="text-primary p-4 font-sans space-y-4">
+    <!-- Logo -->
+    <div class="flex flex-col items-center space-y-2">
+        <img src="/encrypted.png" class="w-16 h-16 rounded-xl shadow-sm" alt="App Logo" />
+        <h1 class="text-xl font-semibold">{{ 'addPasscodeForm.addPasscode' | translate }}</h1>
+    </div>
+
+    <form [formGroup]="form">
+        <div class="bg-primary p-4 rounded-2xl shadow-sm space-y-4">
+            <!-- passcode -->
+            <div>
+                <app-password-input
+                    label="addPasscodeForm.passcode"
+                    formControlName="passcode"
+                    placeholder="*****************"
+                ></app-password-input>
+
+                @if (submitted && form.get('passcode')?.invalid) {
+                <span class="text-red-500">{{ 'addAccountForm.passwordIsEmpty' | translate }}</span>
+                }
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <app-password-input
+                    label="addPasscodeForm.confirmPasscode"
+                    formControlName="confirmPasscode"
+                    placeholder="*****************"
+                ></app-password-input>
+
+                @if (submitted && form.get('passcode')?.value !==
+                form.get('confirmPasscode')?.value) {
+                <span class="text-red-500">{{
+                    'addAccountForm.passcodeIsNotMatch' | translate
+                }}</span>
+                }
+            </div>
+
+            <!-- Submit button -->
+            <button
+                class="button-primary hover:button-primary-hover active:button-primary-active w-full py-3 rounded-xl shadow-md active:scale-[0.97] transition transform font-medium"
+                (click)="save()"
+            >
+                {{ 'addPasscodeForm.addPasscode' | translate }}
+            </button>
+        </div>
+    </form>
+</div>

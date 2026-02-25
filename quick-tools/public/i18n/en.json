@@ -1,0 +1,17 @@
+{
+    "app": {
+        "title": "My Tools"
+    },
+    "menuSidebar": {
+        "home": "Home",
+        "settings": "Settings"
+    },
+    "ok": "Ok",
+    "cancel": "Cancel",
+    "home": {
+        "publicIp": "Public IP",
+        "location": "Location",
+        "ips": "IPS",
+        "city": "City"
+    }
+}

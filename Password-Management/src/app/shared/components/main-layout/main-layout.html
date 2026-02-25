@@ -1,0 +1,86 @@
+<div class="layout">
+    <!-- Header -->
+    <header
+        class="bg-primary text-primary border-base fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-2 backdrop-blur-md border-b shadow-sm transition-colors duration-300"
+    >
+        <div class="flex items-center gap-3">
+            <!-- Menu button -->
+            <button
+                (click)="toggleDrawer()"
+                class="text-primary hover:bg-primary-hover py-2 rounded-lg transition-colors duration-200"
+            >
+                <app-icon name="menu-hamburger"></app-icon>
+            </button>
+
+            <h1 class="text-xl font-semibold tracking-wide">{{ 'app.title' | translate }}</h1>
+        </div>
+
+        <!-- Optional user/profile area -->
+        <!-- Uncomment if needed
+        <div class="flex items-center gap-4">
+            <button
+                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-300"
+                title="Notifications"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 01-3.46 0" />
+                </svg>
+            </button>
+
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-green-500 to-green-700 text-white flex items-center justify-center font-semibold">
+                B
+            </div>
+        </div>
+        -->
+    </header>
+
+    <!-- Drawer overlay -->
+    @if (isDrawerOpen) {
+    <div
+        class="bg-primary opacity-40 fixed inset-0 z-40 transition-opacity duration-300"
+        (click)="toggleDrawer()"
+    ></div>
+    }
+
+    <!-- Drawer sidebar -->
+    <nav
+        class="bg-primary border-primary fixed top-0 left-0 z-50 h-screen w-64 border-r shadow-lg transform transition-transform duration-300 ease-in-out rounded-r-2xl"
+        [class.translate-x-0]="isDrawerOpen"
+        [class.-translate-x-full]="!isDrawerOpen"
+    >
+        <div class="border-primary flex justify-between items-center px-4 py-4 border-b">
+            <h5 class="text-primary text-sm font-semibold uppercase tracking-wider">Menu</h5>
+            <button
+                (click)="toggleDrawer()"
+                class="text-primary hover:bg-primary-hover p-2 rounded transition-colors duration-200"
+            >
+                <app-icon name="xmark"></app-icon>
+            </button>
+        </div>
+
+        <!-- Menu -->
+        <ul class="mt-4 space-y-2 px-2">
+            @for (item of navItems; track $index) {
+            <li>
+                <a
+                    [routerLink]="item.url"
+                    routerLinkActive="bg-primary-active text-primary-active font-medium"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    class="text-primary hover:bg-primary-hover flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200"
+                >
+                    <span>{{ item.name | translate }}</span>
+                </a>
+            </li>
+            }
+        </ul>
+
+        <!-- Footer / version -->
+        <div class="text-primary absolute bottom-4 left-4 text-xs">v1.0.0</div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="pt-20 pb-4 min-h-screen transition-colors duration-300">
+        <router-outlet></router-outlet>
+    </main>
+</div>

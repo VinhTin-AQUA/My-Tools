@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+.card {
+
+}
+
+.primary-btn {
+    @apply bg-white text-slate-900 font-semibold hover:opacity-90 active:scale-[0.98] transition;
+}

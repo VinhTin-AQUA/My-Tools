@@ -1,0 +1,13 @@
+<div class="space-y-2">
+    <label class="text-primary text-sm"> {{ label | translate }}</label>
+    <input
+        type="file"
+        accept=".json"
+        class="border-primary bg-primary text-primary w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition"
+        placeholder=""
+        (input)="handleInput($event)"
+        (change)="handleChange($event)"
+        [placeholder]="placeholder"
+        [accept]="accept"
+    />
+</div>

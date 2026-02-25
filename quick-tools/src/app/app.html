@@ -1,0 +1,11 @@
+@if(!success()) {
+<app-splash-screen></app-splash-screen>
+} @else {
+<router-outlet></router-outlet>
+} @if(dialogService.isShowLoadingDialog()) {
+<app-loader></app-loader>
+} @if(dialogService.isShowQuestionCancelDialog()) {
+<app-question-cancel-dialog></app-question-cancel-dialog>
+} @if(dialogService.isShowToastMessage()) {
+<app-toast></app-toast>
+}

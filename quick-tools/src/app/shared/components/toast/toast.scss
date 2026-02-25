@@ -1,0 +1,21 @@
+@keyframes slide-in {
+    0% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.4s ease-out forwards;
+}
+
+.toast {
+    margin-top: calc(1rem + env(safe-area-inset-top));
+    /* margin-bottom: calc(1rem + env(safe-area-inset-bottom));
+    margin-left: calc(1rem + env(safe-area-inset-left));
+    margin-right: calc(1rem + env(safe-area-inset-right)); */
+}

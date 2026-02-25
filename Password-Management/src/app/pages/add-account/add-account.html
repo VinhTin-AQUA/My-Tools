@@ -1,0 +1,81 @@
+<div class="text-primary p-4 font-sans space-y-4">
+    <h2 class="text-primary text-xl font-semibold mb-4">
+        {{ 'addNewAccount' | translate }}
+    </h2>
+
+    <form [formGroup]="form">
+        <div class="bg-primary p-4 rounded-2xl shadow-sm space-y-4">
+            <!-- accountNameIsEmpty -->
+            <div>
+                <app-text-input
+                    formControlName="accountName"
+                    placeholder="accountName"
+                    label="accountName"
+                ></app-text-input>
+
+                @if (submitted && form.get('accountName')?.invalid) {
+                <span class="text-red-500">{{
+                    'addAccountForm.accountNameIsEmpty' | translate
+                }}</span>
+                }
+            </div>
+
+            <!-- Username -->
+            <div>
+                <app-text-input
+                    formControlName="userName"
+                    placeholder="userName"
+                    label="userName"
+                ></app-text-input>
+
+                @if (submitted && form.get('username')?.invalid) {
+                <span class="text-red-500">{{ 'addAccountForm.userNameIsEmpty' | translate }}</span>
+                }
+            </div>
+
+            <!-- Password -->
+            <div>
+                <app-password-input
+                    formControlName="password"
+                    placeholder="*****************"
+                    label="password"
+                ></app-password-input>
+
+                @if (submitted && form.get('password')?.invalid) {
+                <span class="text-red-500">{{ 'addAccountForm.passwordIsEmpty' | translate }}</span>
+                }
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <app-password-input
+                    formControlName="confirmPassword"
+                    placeholder="*****************"
+                    label="confirmPassword"
+                ></app-password-input>
+
+                @if (submitted && form.get('password')?.value !==
+                form.get('confirmPassword')?.value) {
+                <span class="text-red-500">{{
+                    'addAccountForm.passwordIsNotMatch' | translate
+                }}</span>
+                }
+            </div>
+
+            <!-- Note -->
+            <app-text-area-input
+                label="note"
+                formControlName="note"
+                placeholder="note"
+            ></app-text-area-input>
+
+            <!-- Submit button -->
+            <button
+                class="button-primary hover:button-primary-hover active:button-primary-active w-full py-3 rounded-xl shadow-md active:scale-[0.97] transition transform font-medium"
+                (click)="save()"
+            >
+                {{ 'saveAccount' | translate }}
+            </button>
+        </div>
+    </form>
+</div>

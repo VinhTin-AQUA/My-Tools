@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.app" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+
+        <!-- <item name="android:windowSplashScreenBackground">@color/red</item> -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="android:windowSplashScreenAnimationDuration">1000</item>
+        <!-- <item name="android:windowSplashScreenIconBackgroundColor">@color/yellow</item> -->
+        <item name="android:windowBackground">@color/webview_background</item>
+        
+    </style>
+</resources>

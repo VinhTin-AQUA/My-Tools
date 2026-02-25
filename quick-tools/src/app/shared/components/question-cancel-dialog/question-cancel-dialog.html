@@ -1,0 +1,52 @@
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity origin-top animate-in fade-in-0 zoom-in-95 duration-200 "
+>
+    <div
+        class="bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out w-full max-w-md mx-4 scale-100 opacity-100"
+    >
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">
+                    {{ questionCancelDialogStore.title() }}
+                </h3>
+                <button
+                    (click)="onCancel()"
+                    class="text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-lg hover:bg-gray-100"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <p class="text-gray-600 leading-relaxed">{{ questionCancelDialogStore.message() }}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="p-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+            <div class="flex space-x-3 justify-end">
+                <button
+                    (click)="onCancel()"
+                    class="px-6 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                >
+                    {{ 'cancel' | translate }}
+                </button>
+                <button
+                    (click)="onConfirm()"
+                    class="px-6 py-2.5 text-white bg-linear-to-r from-blue-500 to-blue-600 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+                >
+                    {{ 'ok' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

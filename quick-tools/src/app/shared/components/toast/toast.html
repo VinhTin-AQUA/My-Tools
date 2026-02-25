@@ -1,0 +1,25 @@
+<div
+	class="toast fixed top-4 right-4 z-50 w-[90%] max-w-sm animate-slide-in md:w-80 shadow-lg rounded-xl p-4 flex gap-3 text-white"
+	[ngClass]="{
+        'bg-green-600': toastMessageStore.isSuccess(),
+        'bg-red-600': !toastMessageStore.isSuccess()
+    }"
+>
+	<!-- Icon -->
+	<div class="text-2xl">
+		@if(toastMessageStore.isSuccess()) {
+		<ng-container>✔️</ng-container>
+		} @else {
+		<ng-container>❌</ng-container>
+		}
+	</div>
+
+	<!-- Nội dung -->
+	<div class="flex-1">
+		<h3 class="font-semibold text-base">{{ toastMessageStore.title() }}</h3>
+		<p class="text-sm opacity-90">{{ toastMessageStore.message() }}</p>
+	</div>
+
+	<!-- nút x -->
+	<button (click)="hide()" class="text-white text-xl hover:opacity-70">×</button>
+</div>

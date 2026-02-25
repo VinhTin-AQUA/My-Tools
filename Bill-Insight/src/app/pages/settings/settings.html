@@ -1,0 +1,47 @@
+<div class="bg-gray-50 flex flex-col gap-4 max-w-md mx-auto">
+    <!-- Ngôn ngữ -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col gap-2">
+        <div class="form-group">
+            <label class="form-label">{{ 'language' | translate }}</label>
+            <div class="grid grid-cols-2 gap-3">
+                @for (lang of languages; track $index) {
+                <div
+                    (click)="changeLanguage(lang.code)"
+                    class="flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition active:bg-green-200"
+                    [ngClass]="
+                        selectedLanguage === lang.code
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:bg-gray-50'
+                    "
+                >
+                    <span class="text-xl">{{ lang.flag }}</span>
+                    <span class="text-sm font-medium text-gray-700">{{ lang.name }}</span>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme -->
+    <div class="bg-white p-4 rounded-2xl shadow-sm flex flex-col gap-2">
+        <div class="form-group">
+            <label class="form-label">{{ 'theme' | translate }}</label>
+            <div class="grid grid-cols-2 gap-3">
+                @for (theme of themes; track $index) {
+                <div
+                    (click)="changeTheme(theme.value)"
+                    class="flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition active:bg-green-200"
+                    [ngClass]="
+                        selectedTheme === theme.value
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-200 hover:bg-gray-50'
+                    "
+                >
+                    <span class="text-xl">{{ theme.icon }}</span>
+                    <span class="text-sm font-medium text-gray-700">{{ theme.label }}</span>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

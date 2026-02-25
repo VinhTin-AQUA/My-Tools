@@ -1,0 +1,65 @@
+<div
+    class="bg-primary text-primary min-h-screen flex flex-col justify-center items-center px-6 font-sans"
+>
+    <!-- Card -->
+    <form [formGroup]="configForm">
+        <div
+            class="bg-primary w-full max-w-md p-6 rounded-2xl shadow-lg space-y-6 animate-scale-fade"
+        >
+            <!-- Title -->
+            <h1 class="text-2xl font-semibold text-center">{{ 'config' | translate }}</h1>
+
+            <!-- Input 1 -->
+            <div class="space-y-2">
+                <app-text-input
+                    label="spreadSheetUrl"
+                    placeholder="https://example.excel.com"
+                    formControlName="spreadSheetUrl"
+                    (onInput)="onSpreadSheetUrlChange($event)"
+                ></app-text-input>
+
+                @if(submitted && configForm.get('spreadSheetUrl')?.invalid) {
+                <div class="text-red-600 text-sm mt-1">URL không được để trống</div>
+                }@else if (submitted && !configForm.get('spreadSheetId')?.value) {
+                <div class="text-red-600 text-sm mt-1">Invalid URL</div>
+                }
+            </div>
+
+            <!-- Input 2 -->
+            <div class="space-y-2">
+                <app-text-input
+                    [readonly]="true"
+                    label="spreadSheetId"
+                    placeholder="..."
+                    formControlName="spreadSheetId"
+                ></app-text-input>
+
+                @if (submitted && configForm.get('spreadSheetId')?.invalid) {
+                <div class="text-red-600 text-sm mt-1">ID không được để trống</div>
+                }
+            </div>
+
+            <!-- Input 3 -->
+            <div class="space-y-2">
+                <app-file-input
+                    placeholder=""
+                    title="credentialPath"
+                    (onChange)="onSelectFile($event)"
+                    accept=".json"
+                ></app-file-input>
+
+                @if(submitted && !selectedFile) {
+                <div class="text-red-600 text-sm mt-1">File credential không được để trống</div>
+                }
+            </div>
+
+            <!-- Save Button -->
+            <button
+                (click)="saveConfig()"
+                class="button-primary hover:button-primary-hover active:button-primary-active w-full py-3 rounded-xl font-medium shadow-sm hover:shadow-md active:scale-95 transition"
+            >
+                {{ 'saveConfig' | translate }}
+            </button>
+        </div>
+    </form>
+</div>

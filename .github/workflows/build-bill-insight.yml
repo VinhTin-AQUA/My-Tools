@@ -1,0 +1,156 @@
+# https://github.com/tauri-apps/tauri-action/issues/525
+
+name: 'publish'
+
+on:
+    push:
+        branches: ['main']
+        paths:
+            - 'Bill-Insight/**'
+            - '.github/workflows/build-bill-insight.yml'
+
+    pull_request:
+        branches: ['main']
+        paths:
+            - 'Bill-Insight/**'
+            - '.github/workflows/build-bill-insight.yml'
+
+defaults:
+    run:
+        working-directory: Bill-Insight # only apply for run command
+
+env:
+    PROJECT_DIR: Bill-Insight
+    VERSION: Bill-Insight_v1.0.0
+    TAG_NAME: Bill-Insight_v1.0.0
+    RELEASE_NAME: Bill-Insight_v1.0.0
+    FILE_NAME: Bill-Insight_v1.0.0.apk
+
+jobs:
+    publish-android:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Setup GitHub CLI
+              run: |
+                  type -p curl >/dev/null || sudo apt install curl -y
+                  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+                  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+                  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+                    sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+                  sudo apt update
+                  sudo apt install gh -y
+
+            - name: Setup Java
+              uses: actions/setup-java@v4
+              with:
+                  distribution: 'zulu'
+                  java-version: '21'
+
+            - name: Setup Android SDK
+              uses: android-actions/setup-android@v3
+              with:
+                  api-level: 35
+                  build-tools: '35.0.0'
+                  ndk-version: '27.0.11902837'
+
+            - name: Install NDK
+              run: sdkmanager "ndk;27.0.11902837"
+
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+            - name: Tauri dependencies
+              run: |
+                  sudo apt-get update &&
+                  sudo apt-get install -y \
+                  libwebkit2gtk-4.1-dev \
+                  libayatana-appindicator3-dev \
+                  webkit2gtk-driver \
+                  xvfb
+
+            - name: Install dependencies
+              run: npm install
+
+            # - name: Build app bundle
+            #   run: npm run tauri android build -- --target aarch64
+            #   env:
+            #       NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/27.0.11902837
+
+            - name: Build app bundle
+              env:
+                  KEYSTORE_PATH: newtun-release-key.keystore
+                  STORE_PASSWORD: abcdef@123
+                  KEY_ALIAS: newtunkey
+                  KEY_PASSWORD: abcdef@123
+              run: |
+                  npm run tauri android build -- --target aarch64
+
+            # - name: Extract android signing key from env
+            #   run: |
+            #       echo "${{ secrets.ANDROID_RELEASE_KEYSTORE }}" > src-tauri/gen/android/release.jks.base64
+            #       base64 -d src-tauri/gen/android/release.jks.base64 > src-tauri/gen/android/release.decrypted.jks
+
+            # - name: Sign APK
+            #   run: |
+            #       ${{ env.ANDROID_HOME }}/build-tools/34.0.0/apksigner sign --ks src-tauri/gen/android/release.decrypted.jks \
+            #         --ks-key-alias ${{ secrets.ANDROID_RELEASE_KEY }} \
+            #         --ks-pass pass:${{ secrets.ANDROID_RELEASE_PASSWORD }} \
+            #         --key-pass pass:${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }} \
+            #         --out src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-signed.apk \
+            #         src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release-unsigned.apk
+
+            - name: Get Node project version
+              id: package-version
+              uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Rename APK file
+              run: |
+                  mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/${FILE_NAME}
+
+            - name: Remove old tag if exists
+              run: |
+                if git ls-remote --tags origin | grep -q "refs/tags/${TAG_NAME}"; then
+                  echo "Deleting old tag..."
+                  git push origin :refs/tags/"${TAG_NAME}"
+                else
+                  echo "No old tag found."
+                fi
+
+            - name: Create Tag
+              run: |
+                git config user.name "github-actions"
+                git config user.email "github-actions@github.com"
+                git tag "${TAG_NAME}"
+                git push origin "${TAG_NAME}"
+
+            - name: Remove old release if exists
+              run: |
+                if gh release view "${RELEASE_NAME}" &>/dev/null; then
+                  echo "Deleting old release..."
+                  gh release delete "${RELEASE_NAME}" -y
+                else
+                  echo "No old release found."
+                fi
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Publish
+              uses: softprops/action-gh-release@v1
+              with:
+                draft: false
+                name: ${{ env.RELEASE_NAME }}
+                tag_name: ${{ env.TAG_NAME }}
+                generate_release_notes: true
+                files: |
+                  ./${{ env.PROJECT_DIR }}/src-tauri/gen/android/app/build/outputs/apk/universal/release/${{ env.FILE_NAME }}

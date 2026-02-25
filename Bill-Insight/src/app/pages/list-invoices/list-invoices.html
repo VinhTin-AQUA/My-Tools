@@ -1,0 +1,88 @@
+<div class="bg-gray-50 min-h-screen space-y-6">
+    @for (group of productGroups(); track $index) {
+    <div
+        class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200"
+    >
+        <!-- Header nhóm -->
+        <div
+            class="flex items-center justify-between px-5 py-4 border-b border-gray-100 cursor-pointer select-none"
+            (click)="toggleGroup(group)"
+        >
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <h2 class="text-base font-semibold text-gray-800">
+                    {{ group.date }}
+                </h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500 font-medium">
+                    {{ group.items.length }} {{ 'product' | translate }}
+                </span>
+
+                <!-- Mũi tên xoay khi mở -->
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-5 h-5 text-gray-600 transition-transform duration-300"
+                    [class.rotate-180]="group.expanded"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Danh sách sản phẩm (có hiệu ứng mở/đóng mượt mà) -->
+        <div
+            class="transition-all duration-500 ease-in-out overflow-hidden"
+            [style.maxHeight]="group.expanded ? '400px' : '0px'"
+        >
+            <div
+                class="overflow-y-auto px-5 py-3 divide-y divide-gray-100"
+                style="max-height: 400px"
+            >
+                @for (product of group.items; track $index) {
+                <div
+                    class="py-3 flex justify-between items-start hover:bg-gray-50 rounded-xl transition-colors px-2"
+                >
+                    <div>
+                        <p class="font-medium text-gray-800">{{ product.name }}</p>
+                        <div class="text-sm text-gray-600 mt-1 space-y-0.5">
+                            <p>
+                                💵 {{ 'cash' | translate }}:
+                                <span class="font-medium text-gray-800">
+                                    {{ product.cash_price | number }}₫
+                                </span>
+                            </p>
+                            <p>
+                                🏦 {{ 'bank' | translate }}:
+                                <span class="font-medium text-gray-800">
+                                    {{ product.bank_price | number }}₫
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- Tổng kết -->
+        <div
+            class="flex justify-between items-center px-5 py-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-b-2xl text-sm text-gray-700"
+        >
+            <div>
+                <p class="font-semibold text-green-700">{{ 'totalCash' | translate }}</p>
+                <p class="text-gray-800">{{ getTotalCash(group.items) | number }}₫</p>
+            </div>
+            <div>
+                <p class="font-semibold text-blue-700">{{ 'totalBank' | translate }}</p>
+                <p class="text-gray-800">{{ getTotalBank(group.items) | number }}₫</p>
+            </div>
+        </div>
+    </div>
+    }
+</div>

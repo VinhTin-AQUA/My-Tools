@@ -1,0 +1,107 @@
+<div class="layout font-sans text-slate-200 bg-slate-900 min-h-screen">
+    <!-- HEADER -->
+    <header
+        class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-6 bg-slate-900/80 backdrop-blur border-b border-slate-800"
+    >
+        <div class="flex items-center gap-3">
+            <!-- Menu button -->
+            <button (click)="toggleDrawer()" class="p-2 rounded-lg hover:bg-slate-800 transition">
+                <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 rounded-lg bg-white text-slate-900 flex items-center justify-center font-semibold"
+                >
+                    ⚡
+                </div>
+                <h1 class="text-lg font-semibold tracking-tight">
+                    {{ 'app.title' | translate }}
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- OVERLAY -->
+    @if (isDrawerOpen) {
+    <div class="fixed inset-0 bg-black/30 z-40" (click)="toggleDrawer()"></div>
+    }
+
+    <!-- DRAWER -->
+    <nav
+        class="fixed top-0 left-0 z-50 h-screen w-72 bg-slate-900 border-r border-slate-800 transform transition-transform duration-300"
+        [class.translate-x-0]="isDrawerOpen"
+        [class.-translate-x-full]="!isDrawerOpen"
+    >
+        <div class="flex justify-between items-center">
+            <!-- APP INFO -->
+            <div class="px-4 py-4 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-lg bg-white text-slate-900 flex items-center justify-center"
+                    >
+                        ⚡
+                    </div>
+                    <div>
+                        <h2 class="font-semibold">Utility Tools</h2>
+                        <p class="text-sm text-slate-400">Your toolkit</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CLOSE BUTTON -->
+            <button
+                class="block p-2 rounded-lg hover:bg-slate-800 transition"
+                (click)="toggleDrawer()"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- MENU -->
+        <div class="p-4">
+            <h5 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 px-2">
+                Navigation
+            </h5>
+
+            <ul class="space-y-1">
+                @for (item of navItems; track $index) {
+                <li>
+                    <a
+                        [routerLink]="item.url"
+                        routerLinkActive="bg-slate-800 text-white font-medium"
+                        [routerLinkActiveOptions]="{ exact: true }"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800 transition"
+                    >
+                        <span class="text-sm">
+                            {{ item.name | translate }}
+                        </span>
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-16 px-4 md:px-6 bg-slate-900 min-h-screen">
+        <router-outlet></router-outlet>
+    </main>
+</div>

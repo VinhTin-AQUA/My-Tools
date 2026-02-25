@@ -1,0 +1,8 @@
+<router-outlet></router-outlet>
+
+
+@if(dialogService.isShowLoadingDialog()) {
+<app-loading-dialog></app-loading-dialog>
+} @if(dialogService.noticeDialogState().isShow) {
+<app-notice-dialog></app-notice-dialog>
+}

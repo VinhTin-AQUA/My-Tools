@@ -1,0 +1,31 @@
+<div
+    class="max-w-md mx-auto p-6 bg-linear-to-br from-white to-blue-50 rounded-3xl shadow-lg border border-gray-100 transition-colors duration-300"
+>
+    <!-- Language Selector -->
+    <div class="relative mb-4">
+        <label class="block font-bold mb-3 text-gray-800 text-sm">Language</label>
+
+        <!-- language -->
+        <app-select-box [options]="languages"></app-select-box>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="relative mb-6">
+        <label class="block font-bold mb-3 text-gray-800 text-sm">Theme</label>
+
+        <!-- Dropdown -->
+        <app-select-box [options]="themes"></app-select-box>
+    </div>
+
+    <!-- Export Button -->
+    <div class="">
+        <label class="block font-bold mb-3 text-gray-800 text-sm">Export Data</label>
+
+        <button
+            class="gap-2 text-center w-full bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 active:scale-95 text-white font-bold px-5 py-4 rounded-2xl shadow-lg hover:shadow-xl duration-200 transition-all"
+            (click)="exportToExcel()"
+        >
+            <span class="">Export Excel</span>
+        </button>
+    </div>
+</div>

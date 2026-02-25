@@ -1,0 +1,53 @@
+.active {
+    background-color: white;
+    color: #052e16;
+}
+
+/* -----------------------------
+Safe area utilities cho toàn layout
+-------------------------------- */
+.layout {
+    /* padding mặc định cho header và main */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+
+    /* fallback cho iOS cũ */
+    padding-top: constant(safe-area-inset-top);
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-left: constant(safe-area-inset-left);
+    padding-right: constant(safe-area-inset-right);
+
+    box-sizing: border-box;
+    min-height: 100vh;
+}
+
+/* Header cố định */
+.layout header {
+    padding-top: calc(2rem + env(safe-area-inset-top));
+    padding-bottom: 2rem;
+    padding-left: calc(1rem + env(safe-area-inset-left));
+    padding-right: calc(1rem + env(safe-area-inset-right));
+}
+
+/* Main content */
+.layout main {
+    padding-top: calc(4rem + env(safe-area-inset-top)); /* 4rem là header height */
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    padding-left: calc(1rem + env(safe-area-inset-left));
+    padding-right: calc(1rem + env(safe-area-inset-right));
+}
+
+/* Drawer hoặc sidebar */
+.layout nav {
+    padding-top: calc(0rem + env(safe-area-inset-top));
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+    padding-left: calc(1rem + env(safe-area-inset-left));
+    padding-right: calc(1rem + env(safe-area-inset-right));
+}
+
+/* Footer nếu có */
+.layout footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+}

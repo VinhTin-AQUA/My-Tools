@@ -1,0 +1,275 @@
+<div
+    [ngClass]="{
+        'backdrop-blur-sm bg-white/70': isAddSheetModalOpen,
+        'bg-white': !isAddSheetModalOpen
+    }"
+    class="p-3 rounded-2xl shadow-md space-y-8 border border-gray-100 transition-all duration-300"
+>
+    <!-- Thông tin cấu hình -->
+    <div class="pb-6 border-b border-gray-200">
+        <div class="flex items-center gap-2 mb-5">
+            <i class="fa-solid fa-file-excel text-blue-500 text-xl"></i>
+            <h2 class="text-xl font-semibold text-gray-800">{{ 'spreadSheetInfo' | translate }}</h2>
+        </div>
+
+        <form [formGroup]="configForm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Spreadsheet URL -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Spreadsheet URL</label
+                    >
+                    <input
+                        formControlName="spreadSheetUrl"
+                        type="text"
+                        (input)="onSpreadSheetUrlChange($event)"
+                        placeholder="Dán đường dẫn Google Sheets"
+                        class="input-modern"
+                    />
+                    @if(submitted && configForm.get('spreadSheetUrl')?.invalid) {
+                    <div class="text-red-600 text-sm mt-1">URL không được để trống</div>
+                    } @else if (submitted && !configForm.get('spreadSheetId')?.value) {
+                    <div class="text-red-600 text-sm mt-1">Invalid URL</div>
+                    }
+                </div>
+
+                <!-- Spreadsheet ID -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Spreadsheet ID</label
+                    >
+                    <input
+                        readonly
+                        type="text"
+                        formControlName="spreadSheetId"
+                        class="input-modern"
+                    />
+                    @if (submitted && configForm.get('spreadSheetId')?.invalid) {
+                    <div class="text-red-600 text-sm mt-1">ID không được để trống</div>
+                    }
+                </div>
+
+                <!-- Credential File -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1"
+                        >Credential Path</label
+                    >
+                    <input
+                        type="file"
+                        (change)="onSelectFile($event)"
+                        placeholder="Đường dẫn tệp xác thực"
+                        class="input-modern"
+                    />
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <button (click)="saveConfig()" class="btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    {{ 'saveConfig' | translate }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Danh sách Sheet -->
+    <div>
+        <div class="flex justify-between items-center mb-5">
+            <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                <i class="fa-solid fa-table text-green-500"></i>
+                {{ 'listSheets' | translate }}
+            </h2>
+            <button (click)="openModal(true)" class="btn-primary">
+                <i class="fa-solid fa-plus"></i>
+                {{ 'addSheet' | translate }}
+            </button>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 font-medium">#</th>
+                        <th class="px-4 py-2 font-medium">{{ 'sheetName' | translate }}</th>
+                        <th class="px-4 py-2 font-medium text-center">
+                            {{ 'workingSheet' | translate }}
+                        </th>
+                        <th class="px-4 py-2 font-medium text-center">
+                            {{ 'action' | translate }}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @for (sheet of sheets(); track $index) {
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-4 py-2">{{ $index + 1 }}</td>
+                        <td class="px-4 py-2">{{ sheet.title }}</td>
+                        <td class="px-4 py-2 text-center">
+                            <input
+                                type="radio"
+                                name="workingSheet"
+                                [checked]="
+                                    spreadsheetConfigStore.workingSheet().id === sheet.sheet_id
+                                "
+                                (change)="onChangeWorkingSheet(sheet)"
+                                class="text-green-900 focus:ring-green-900"
+                            />
+                        </td>
+
+                        <td class="px-4 py-2 text-center">
+                            <button
+                                (click)="onOpenUpdateSheetNameModal(sheet)"
+                                class="text-green-600 cursor-pointer focus:text-green-800 duration-300"
+                            >
+                                <svg
+                                    class="w-6 h-6"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 640 640"
+                                >
+                                    <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                                    <path
+                                        fill="currentColor"
+                                        d="M472.8 64C445.4 64 419.2 74.9 399.8 94.2L382.1 112L369 98.9C340.9 70.8 295.3 70.8 267.2 98.9L167 199C157.6 208.4 157.6 223.6 167 232.9C176.4 242.2 191.6 242.3 200.9 232.9L301.1 132.9C310.5 123.5 325.7 123.5 335 132.9L348.1 145.9L248 246.1L393.9 392L545.8 240.2C565.2 220.8 576 194.6 576 167.2C576 110.2 529.8 64 472.8 64zM166.4 327.7C116.5 377.6 83.1 441.7 70.9 511.2L64.4 547.8C63 555.6 65.5 563.4 71 569C76.5 574.6 84.4 577 92.1 575.7L128.8 569.2C198.3 556.9 262.4 523.6 312.3 473.7L360 425.9L214.1 280L166.4 327.7z"
+                                    />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-5">
+            <button (click)="saveWorkingSheet()" class="btn-primary">
+                <i class="fa-solid fa-check"></i>
+                {{ 'saveWorkingSheet' | translate }}
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (isAddSheetModalOpen) {
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50"
+>
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200"
+            >
+                <h3 class="text-xl font-semibold text-gray-900">
+                    {{ 'inputSheetName' | translate }}
+                </h3>
+                <button
+                    (click)="openModal(false)"
+                    type="button"
+                    class="btn-danger"
+                    data-modal-hide="authentication-modal"
+                >
+                    <svg
+                        class="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                    >
+                        <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                    </svg>
+                    <!-- <span class="sr-only">Close modal</span> -->
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="p-5">
+                <div class="mb-3">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">{{
+                        'sheetName' | translate
+                    }}</label>
+                    <input
+                        [(ngModel)]="newSheetName"
+                        type="text"
+                        class="input-modern"
+                        placeholder=""
+                        required
+                    />
+                </div>
+
+                <button (click)="addSheet()" type="submit" class="btn-primary">
+                    {{ 'addSheet' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+} @if (isUpdateSheetNameOpen()) {
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/50"
+>
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200"
+            >
+                <h3 class="text-xl font-semibold text-gray-900">{{ 'addSheet' | translate }}</h3>
+                <button
+                    (click)="onOpenUpdateSheetNameModal(null)"
+                    type="button"
+                    class="btn-danger"
+                    data-modal-hide="authentication-modal"
+                >
+                    <svg
+                        class="w-3 h-3"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 14"
+                    >
+                        <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                        />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="p-5">
+                <div class="mb-3">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900">{{
+                        'sheetName' | translate
+                    }}</label>
+                    @if(updateSheet) {
+                    <input
+                        [(ngModel)]="updateSheet.title"
+                        type="text"
+                        class="input-modern"
+                        placeholder=""
+                        required
+                    />
+                    } @else {
+                    <span class="text-red-600">Lỗi Binding</span>
+                    }
+                </div>
+
+                <button (click)="updateSheetName()" type="submit" class="btn-primary">
+                    {{ 'updateSheet' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+}

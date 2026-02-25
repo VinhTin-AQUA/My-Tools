@@ -1,0 +1,118 @@
+/* You can add global styles to this file, and also import other style files */
+
+@use 'tailwindcss';
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+// .input {
+//     @apply rounded-lg px-3 py-2 text-sm outline-none duration-150;
+
+//     border: 1px solid #15803d;
+
+//     &:focus {
+//         box-shadow: 0 0 0.9px 0.9px #15803d;
+//     }
+// }
+
+.input-modern {
+  @apply w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white text-sm transition;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center cursor-pointer px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition active:bg-green-400;
+}
+
+.btn-success {
+  @apply inline-flex items-center justify-center cursor-pointer px-3 py-2 text-sm font-semibold text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition active:bg-green-400;
+}
+
+.btn-danger {
+  @apply inline-flex items-center justify-center cursor-pointer px-3 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition active:bg-red-400;
+}
+
+.info-card {
+  @apply  bg-gray-50 px-3 py-2 rounded-lg border border-gray-100 text-sm text-gray-700;
+}
+
+.summary-card {
+  @apply bg-gray-50 border border-gray-200 rounded-xl p-4 shadow-sm text-sm text-gray-700;
+}
+
+/* Base Card – dùng cho khối chính */
+.card-base {
+  @apply bg-white rounded-2xl shadow-md border border-gray-100 p-8 transition hover:shadow-lg backdrop-blur-sm;
+}
+
+/* Form cấu trúc chung */
+.form-group {
+  @apply mb-5;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.form-error {
+  @apply text-red-600 text-xs mt-1;
+}
+
+/* File input custom (tái sử dụng được) */
+.file-input {
+  @apply flex items-center gap-2 w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer text-sm text-gray-700 transition;
+}
+
+/* Dark mode (nếu bạn dùng theme dark) */
+// .dark .card-base {
+//   @apply bg-gray-900 border-gray-800 text-gray-100;
+// }
+
+// .dark .input-modern {
+//   @apply bg-gray-800 border-gray-700 text-gray-100 focus:ring-green-500;
+// }
+
+// .dark .form-label {
+//   @apply text-gray-300;
+// }
+
+// .dark .file-input {
+//   @apply bg-gray-800 border-gray-700 hover:bg-gray-700 text-gray-100;
+// }
+
+input[type="radio"] {
+  accent-color: #15803d; /* hoặc màu bạn muốn */
+}
+
+
+/* ⚡ Giữ nguyên kích thước bố cục khi xuất hiện scrollbar */
+html {
+  scrollbar-gutter: stable; /* Không dịch chuyển nội dung khi xuất hiện scrollbar */
+}
+
+/* Scrollbar gọn, nhẹ và không chiếm vùng hiển thị */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7a7a7a;
+}
+

@@ -1,0 +1,63 @@
+@if(initial()) {
+
+<div class="flex items-center justify-center min-h-screen">
+    <form
+        [formGroup]="configForm"
+        class="w-full max-w-sm bg-white p-6 rounded-lg shadow-md flex flex-col items-center"
+    >
+        <!-- Logo -->
+        <img src="/images/sheets.png" alt="App Logo" class="w-16 h-16 mb-4" />
+
+        <!-- Title -->
+        <h1 class="text-2xl font-semibold text-center mb-6 text-gray-800">Config</h1>
+
+        <!-- SpreadSheet URL -->
+        <div class="w-full mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900"> SpreadSheet URL </label>
+            <input
+                formControlName="spreadSheetUrl"
+                (input)="onSpreadSheetUrlChange($event)"
+                type="text"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+            />
+            @if(submitted && configForm.get('spreadSheetUrl')?.invalid) {
+            <div class="text-red-600 text-sm mt-1">URL không được để trống</div>
+            }@else if (submitted && !configForm.get('spreadSheetId')?.value) {
+            <div class="text-red-600 text-sm mt-1">Invalid URL</div>
+            }
+        </div>
+
+        <!-- SpreadSheet ID -->
+        <div class="w-full mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900"> SpreadSheet ID </label>
+            <input
+                formControlName="spreadSheetId"
+                type="text"
+                readonly
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+            />
+            @if (submitted && configForm.get('spreadSheetId')?.invalid) {
+            <div class="text-red-600 text-sm mt-1">ID không được để trống</div>
+            }
+        </div>
+
+        <!-- Credential File -->
+        <div class="w-full mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900"> Credential </label>
+            <input
+                (change)="onSelectFile($event)"
+                accept=".json"
+                type="file"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+            />
+            @if(submitted && !selectedFile) {
+            <div class="text-red-600 text-sm mt-1">File credential không được để trống</div>
+            }
+        </div>
+
+        <!-- Submit -->
+        <button (click)="saveConfig()" type="submit" class="btn-primary w-full">Save</button>
+    </form>
+</div>
+
+}

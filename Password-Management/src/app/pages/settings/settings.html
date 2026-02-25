@@ -1,0 +1,33 @@
+<div class="bg-primary max-w-md mx-auto p-6 rounded-2xl shadow-lg transition-colors duration-300">
+    <!-- Language Selector -->
+    <div class="relative mb-3">
+        <label class="text-primary block font-semibold mb-2">Language</label>
+
+        <!-- language -->
+        <app-select-box [options]="languages"></app-select-box>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="relative mb-3">
+        <label class="text-primary block font-semibold mb-2">Theme</label>
+
+        <!-- Dropdown -->
+        <app-select-box
+            (selectionChange)="selectTheme($event)"
+            [selectedValue]="appStore.theme()"
+            [options]="themes"
+        ></app-select-box>
+    </div>
+
+    <!-- Export Button -->
+    <div class="">
+        <label class="text-primary block font-semibold mb-2">Export Data</label>
+
+        <button
+            class="button-primary hover:button-primary-hover active:button-primary-active text-primary gap-2 text-center w-full font-semibold px-5 py-3 rounded-xl shadow-md duration-150 transition"
+            (click)="exportToExcel()"
+        >
+            <span class="">Export Excel</span>
+        </button>
+    </div>
+</div>

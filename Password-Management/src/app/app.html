@@ -1,0 +1,9 @@
+<div [attr.data-theme]="appStore.theme()" class="bg-primary">
+    <router-outlet></router-outlet>
+</div>
+
+@if(dialogService.isShowLoadingDialog()) {
+<app-loader></app-loader>
+} @if(dialogService.isShowToastMessage()) {
+<app-toast></app-toast>
+}
