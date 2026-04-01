@@ -197,17 +197,11 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Download android artifact
+            - name: Download all artifact
               uses: actions/download-artifact@v4
               with:
-                name: android-build
-                path: artifacts/android-build
+                path: artifacts
 
-            - name: Download linux artifact
-              uses: actions/download-artifact@v4
-              with:
-                name: linux-build
-                path: artifacts/linux-build
 
             - name: List files
               run: ls -R artifacts
