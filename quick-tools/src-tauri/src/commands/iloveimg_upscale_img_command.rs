@@ -1,9 +1,9 @@
-use crate::states::AppState;
+use crate::{
+    models::iloveimg_upscale_img_model::{BinaryFile, UpscaleResult},
+    states::AppState,
+};
 use tauri::{command, State};
 use tokio::sync::Mutex;
-
-
-use i_love_img_upscale_img_lib::{BinaryFile, UpscaleResult};
 
 #[command]
 pub async fn iloveimg_upscale_img_command(

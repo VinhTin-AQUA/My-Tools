@@ -1,8 +1,5 @@
 [workspace]
 resolver = "3"
-members = ["i_love_img_upscale_img_lib", "ip_lib"]
-
-
 
 [package]
 name = "app"
@@ -33,5 +30,9 @@ tauri-plugin-android-fs = { version = "23", features = ["legacy_storage_permissi
 tauri-plugin-os = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
 
-i_love_img_upscale_img_lib = { path = "./i_love_img_upscale_img_lib" }
-ip_lib = { path = "./ip_lib" }
+reqwest = { version = "0.12", default-features = false, features = ["multipart", "json", "stream", "rustls-tls"] }
+base64 = "0.22.1"
+regex = "1.10"
+rand = "0.8"
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }

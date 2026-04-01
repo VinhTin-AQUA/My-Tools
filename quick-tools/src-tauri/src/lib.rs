@@ -1,12 +1,15 @@
-mod commands;
-mod states;
-
 use commands::*;
-use i_love_img_upscale_img_lib::IloveimgUpscaleImgService;
-use ip_lib::IpService;
 use states::AppState;
 use tauri::Manager;
 use tokio::sync::Mutex;
+
+use crate::services::iloveimg_upscale_img_service::IloveimgUpscaleImgService;
+use crate::services::ip_service::IpService;
+
+mod commands;
+mod states;
+mod models;
+mod services;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

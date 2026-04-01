@@ -1,5 +1,7 @@
-use crate::states::AppState;
-use ip_lib::{IpAddress, IpAddressInfo};
+use crate::{
+    models::ip_model::{IpAddress, IpAddressInfo},
+    states::AppState,
+};
 use tauri::{command, State};
 use tokio::sync::Mutex;
 

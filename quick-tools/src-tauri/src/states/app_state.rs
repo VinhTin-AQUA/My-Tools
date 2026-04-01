@@ -1,6 +1,8 @@
-use i_love_img_upscale_img_lib::IloveimgUpscaleImgService;
-use ip_lib::IpService;
 use tokio::sync::Mutex;
+
+use crate::services::{
+    iloveimg_upscale_img_service::IloveimgUpscaleImgService, ip_service::IpService,
+};
 
 pub struct AppState {
     pub iloveimg_upscale_img_service: Mutex<IloveimgUpscaleImgService>,

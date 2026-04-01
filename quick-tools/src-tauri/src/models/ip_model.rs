@@ -23,3 +23,9 @@ pub struct IpAddressInfo {
     pub r#as: String, // "AS7552 Viettel Group"
     pub query: String, // "115.73.219.185
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct IpAddress {
+    pub ip: String,
+}
+

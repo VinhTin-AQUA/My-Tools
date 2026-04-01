@@ -1,9 +1,10 @@
-use crate::models::{BinaryFile, UploadResponse, UpscaleResult};
 use base64::prelude::*;
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
 use tokio::time::{sleep, Duration};
+
+use crate::models::iloveimg_upscale_img_model::{BinaryFile, UploadResponse, UpscaleResult};
 
 pub struct IloveimgUpscaleImgService {}
 

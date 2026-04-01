@@ -1,4 +1,5 @@
-use crate::{IpAddressInfo, models::IpAddress};
+use crate::models::ip_model::{IpAddress, IpAddressInfo};
+
 
 pub struct IpService {}
 
