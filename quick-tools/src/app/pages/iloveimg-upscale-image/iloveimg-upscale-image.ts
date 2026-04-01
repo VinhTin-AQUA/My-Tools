@@ -16,18 +16,22 @@ import {
     styleUrl: './iloveimg-upscale-image.scss',
 })
 export class IloveimgUpscaleImage {
+    MAX_FILES = 5;
+    MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    MAX_TOTAL_SIZE = 15 * 1024 * 1024; // 15MB
+
     files: { id: string; file: File }[] = [];
     previewList = signal<UpscaleResult[]>([]);
     invalidImage = signal<UpscaleResult[]>([]);
     resultImages = signal<UpscaleResult[]>([]); // image list result from api
 
-    // popup xem chi tiết
+    // popup details
     showPopup = false;
     currentPreview: string | null = null;
 
     constructor(
         private tauriCommandService: TauriCommandService,
-        private dialogService: DialogService
+        private dialogService: DialogService,
     ) {}
 
     onFilesSelected(event: Event) {
@@ -53,7 +57,7 @@ export class IloveimgUpscaleImage {
                 // ❌ Không đạt điều kiện pixel
                 if (totalPixels >= MAX_PIXELS) {
                     console.warn(
-                        `Ảnh ${file.name} bị loại: ${width}x${height} = ${totalPixels} pixels`
+                        `Ảnh ${file.name} bị loại: ${width}x${height} = ${totalPixels} pixels`,
                     );
                     const canvas = document.createElement('canvas');
                     canvas.width = img.width;
@@ -137,13 +141,9 @@ export class IloveimgUpscaleImage {
     }
 
     async submit() {
-        if (this.files.length === 0) {
-            this.dialogService.showToastMessage(
-                true,
-                'No image choosen',
-                'Please choose at least 1 image',
-                false
-            );
+        const isValid = this.validateFiles();
+
+        if (!isValid) {
             return;
         }
 
@@ -165,7 +165,7 @@ export class IloveimgUpscaleImage {
         const r = await this.tauriCommandService.invokeCommand<UpscaleResult[]>(
             Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
             payload,
-            true
+            true,
         );
         if (r === null) {
             return;
@@ -188,5 +188,52 @@ export class IloveimgUpscaleImage {
     async downloadBase64Image(img: UpscaleResult) {
         img.downloaded = true;
         await FileSystemHelper.writeImgToPicturesFromBase64(img.filename, img.base64);
+    }
+
+    validateFiles() {
+        if (this.files.length === 0) {
+            this.dialogService.showToastMessage(
+                true,
+                'No image choosen',
+                'Please choose at least 1 image',
+                false,
+            );
+            return false;
+        }
+
+        if (this.files.length > this.MAX_FILES) {
+            this.dialogService.showToastMessage(
+                true,
+                `Max files is ${this.MAX_FILES} files`,
+                `You can only select a maximum of ${this.MAX_FILES} files.`,
+                false,
+            );
+            return false;
+        }
+
+        let totalSize = 0;
+        for (const item of this.files) {
+            totalSize += item.file.size;
+            if (item.file.size > this.MAX_SIZE) {
+                this.dialogService.showToastMessage(
+                    true,
+                    `Max size per file is ${this.MAX_SIZE} mb`,
+                    `The file "${item.file.name}" exceeds 10MB.`,
+                    false,
+                );
+                return false;
+            }
+        }
+
+        if (totalSize > this.MAX_TOTAL_SIZE) {
+            this.dialogService.showToastMessage(
+                true,
+                `Exceeded total capacity ${this.formatSize(totalSize)}`,
+                `The total size exceeds 15MB (currently ${this.formatSize(totalSize)})`,
+                false,
+            );
+            return false;
+        }
+        return true;
     }
 }

@@ -1,7 +1,9 @@
 use base64::prelude::*;
+use futures::{stream, StreamExt};
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
+use std::sync::Arc;
 use tokio::time::{sleep, Duration};
 
 use crate::models::iloveimg_upscale_img_model::{BinaryFile, UploadResponse, UpscaleResult};
@@ -25,57 +27,83 @@ impl IloveimgUpscaleImgService {
         &self,
         files: Vec<BinaryFile>,
     ) -> Result<Vec<UpscaleResult>, String> {
-        let server = Self::random_server();
-        let task_id = Self::get_task_id().await?;
-        let scale = "2";
-        // let paths = vec!["C:/Users/tinhv/Downloads/Yen_Bai_-_dogs_-_P1390010.jpg".to_string()];
-        let items = Self::upload_images(server.as_str(), task_id.as_str(), &files).await?;
+        let scale = "1";
+        let mut final_results: Vec<UpscaleResult> = vec![];
 
-        let url = format!("https://{}.iloveimg.com/v1/upscale", server);
-        let client = reqwest::Client::new();
-        let mut headers = HeaderMap::new();
-        headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
-        headers.insert(
-            AUTHORIZATION,
-            HeaderValue::from_str(&format!("Bearer {}", TOKEN)).unwrap(),
-        );
-        headers.insert(
-            ORIGIN,
-            HeaderValue::from_str("https://www.iloveimg.com").unwrap(),
-        );
+        // 👉 chia batch 3 file
+        for chunk in files.chunks(3) {
+            // 🔥 mỗi batch tạo mới server + task_id
+            let server = Self::random_server();
+            let task_id = Self::get_task_id().await?;
 
-        let mut results: Vec<UpscaleResult> = vec![];
-        for it in items {
-            let form = reqwest::multipart::Form::new()
-                .text("task", task_id.to_string())
-                .text("server_filename", it.server_filename.clone())
-                .text("scale", scale.to_string());
+            // upload batch
+            let items = Self::upload_images(server.as_str(), task_id.as_str(), chunk).await?;
 
-            let bytes = client
-                .post(&url)
-                .headers(headers.clone())
-                .multipart(form)
-                .send()
-                .await
-                .map_err(|e| e.to_string())?
-                .bytes()
-                .await
-                .map_err(|e| e.to_string())?;
+            let url = format!("https://{}.iloveimg.com/v1/upscale", server);
+            let client = reqwest::Client::new();
 
-            // chuyển sang base64
-            // let base64_str = base64::Engine::encode(&bytes);
-            let base64_str = BASE64_STANDARD.encode(&bytes);
+            let mut headers = HeaderMap::new();
+            headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
+            headers.insert(
+                AUTHORIZATION,
+                HeaderValue::from_str(&format!("Bearer {}", TOKEN)).unwrap(),
+            );
+            headers.insert(
+                ORIGIN,
+                HeaderValue::from_str("https://www.iloveimg.com").unwrap(),
+            );
 
-            results.push(UpscaleResult {
-                filename: it.server_filename.clone(),
-                base64: base64_str,
-                file_size: bytes.len(),
-            });
+            // ⚡ xử lý tối đa 3 file trong batch (thực ra chunk đã <=3 rồi)
+            let results: Vec<Result<UpscaleResult, String>> = stream::iter(items)
+                .map(|it| {
+                    let client = client.clone();
+                    let headers = headers.clone();
+                    let url = url.clone();
+                    let task_id = task_id.clone();
+                    let scale = scale.to_string();
 
-            sleep(Duration::from_millis(800)).await;
+                    async move {
+                        let form = reqwest::multipart::Form::new()
+                            .text("task", task_id)
+                            .text("server_filename", it.server_filename.clone())
+                            .text("scale", scale);
+
+                        let bytes = client
+                            .post(&url)
+                            .headers(headers)
+                            .multipart(form)
+                            .send()
+                            .await
+                            .map_err(|e| e.to_string())?
+                            .bytes()
+                            .await
+                            .map_err(|e| e.to_string())?;
+
+                        // let base64_str = BASE64_STANDARD.encode(&bytes);
+                        let file_size = bytes.len();
+                        let base64_str =
+                            tokio::task::spawn_blocking(move || BASE64_STANDARD.encode(&bytes))
+                                .await
+                                .unwrap();
+
+                        Ok(UpscaleResult {
+                            filename: it.server_filename,
+                            base64: base64_str,
+                            file_size: file_size,
+                        })
+                    }
+                })
+                .buffer_unordered(3)
+                .collect()
+                .await;
+
+            for res in results {
+                final_results.push(res?);
+            }
+            sleep(Duration::from_millis(1000)).await;
         }
 
-        Ok(results)
+        Ok(final_results)
     }
 
     fn random_server() -> String {
