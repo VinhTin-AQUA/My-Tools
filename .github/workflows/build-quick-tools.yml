@@ -160,9 +160,6 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Make build script executable
-              run: chmod +x ./build.sh
-
             - name: Run build script
               run: |
                   npm run tauri build --no-bundle
