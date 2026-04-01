@@ -24,7 +24,9 @@ env:
     VERSION: quick-tools_v1.0.0
     TAG_NAME: quick-tools_v1.0.0
     RELEASE_NAME: quick-tools_v1.0.0
-    FILE_NAME: quick-tools_v1.0.0.apk
+    ANDROID_FILE_NAME: quick-tools_v1.0.0.apk
+
+    LINUX_TARGET_DIR_TAR: 'linux_quick_tool_portable'
 
 jobs:
     publish-android:
@@ -106,36 +108,129 @@ jobs:
 
             - name: Rename APK file
               run: |
-                  mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/${FILE_NAME}
+                  mv ./src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk ./src-tauri/gen/android/app/build/outputs/apk/universal/release/${ANDROID_FILE_NAME}
+
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: android-build
+                  path: ./${{ env.PROJECT_DIR }}/src-tauri/gen/android/app/build/outputs/apk/universal/release/${{ env.ANDROID_FILE_NAME }}
+
+    publish-linux:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            # - name: Setup GitHub CLI
+            #   run: |
+            #       type -p curl >/dev/null || sudo apt install curl -y
+            #       curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            #       sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            #       echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+            #         sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            #       sudo apt update
+            #       sudo apt install gh -y
+
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+            - name: Install Tauri Linux dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y \
+                    libgtk-3-dev \
+                    libwebkit2gtk-4.1-dev \
+                    libayatana-appindicator3-dev \
+                    librsvg2-dev \
+                    patchelf \
+                    desktop-file-utils \
+                    libfuse2 \
+                    webkit2gtk-driver \
+                    xvfb
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Make build script executable
+              run: chmod +x ./build.sh
+
+            - name: Run build script
+              run: |
+                  npm run tauri build --no-bundle
+
+                  TARGET_DIR="${LINUX_TARGET_DIR_TAR}"
+                  mkdir "$TARGET_DIR"
+
+                  cp -r src-tauri/target/release/app "$TARGET_DIR/"
+                  cp -r src-tauri/target/release/.cargo-lock "$TARGET_DIR/"
+                  cp -r src-tauri/target/release/app.d "$TARGET_DIR/"
+                  cp -r src-tauri/icons/Square150x150Logo.png "$TARGET_DIR/"
+
+                  echo "Done! Folder: $TARGET_DIR"
+
+            # - name: Get Node project version
+            #   id: package-version
+            #   uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+            - name: Create tar.gz
+              run: |
+                  tar -czf ${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz ${{ env.LINUX_TARGET_DIR_TAR }}
+
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: linux-build
+                  path: ./${{ env.PROJECT_DIR }}/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
+
+    release:
+        runs-on: ubuntu-latest
+        needs: [publish-android, publish-linux]
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Download artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  path: artifacts
+
+            - name: List files
+              run: ls -R artifacts
 
             - name: Remove old tag if exists
               run: |
-                  if git ls-remote --tags origin | grep -q "refs/tags/${TAG_NAME}"; then
+                  if git ls-remote --tags origin | grep -q "refs/tags/${{ env.TAG_NAME }}"; then
                     echo "Deleting old tag..."
-                    git push origin :refs/tags/"${TAG_NAME}"
+                    git push origin :refs/tags/${{ env.TAG_NAME }}
                   else
                     echo "No old tag found."
                   fi
+
+            - name: Delete existing release
+              run: |
+                  gh release delete ${{ env.TAG_NAME }} --yes || echo "No release to delete"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Create Tag
               run: |
                   git config user.name "github-actions"
                   git config user.email "github-actions@github.com"
-                  git tag "${TAG_NAME}"
-                  git push origin "${TAG_NAME}"
+                  git tag ${{ env.TAG_NAME }}
+                  git push origin ${{ env.TAG_NAME }}
 
-            - name: Remove old release if exists
-              run: |
-                  if gh release view "${RELEASE_NAME}" &>/dev/null; then
-                    echo "Deleting old release..."
-                    gh release delete "${RELEASE_NAME}" -y
-                  else
-                    echo "No old release found."
-                  fi
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Publish
+            - name: Create Release
               uses: softprops/action-gh-release@v1
               with:
                   draft: false
@@ -143,5 +238,5 @@ jobs:
                   tag_name: ${{ env.TAG_NAME }}
                   generate_release_notes: true
                   files: |
-                      ./${{ env.PROJECT_DIR }}/src-tauri/gen/android/app/build/outputs/apk/universal/release/${{ env.FILE_NAME }}
-
+                      artifacts/linux-build/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
+                      artifacts/android-build/${{ env.ANDROID_FILE_NAME }}
