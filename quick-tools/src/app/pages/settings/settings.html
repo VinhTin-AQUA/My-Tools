@@ -3,10 +3,14 @@
 >
     <!-- Language Selector -->
     <div class="relative mb-4">
-        <label class="block font-bold mb-3 text-gray-800 text-sm">Language</label>
-
         <!-- language -->
-        <app-select-box [options]="languages"></app-select-box>
+        <app-select-box
+            label="Language"
+            [options]="languages"
+            optionLabel="label"
+            optionValue="value"
+            value="English"
+        ></app-select-box>
     </div>
 
     <!-- Theme Selector -->

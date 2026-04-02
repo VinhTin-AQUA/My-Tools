@@ -1,47 +1,50 @@
 <div class="p-4 md:p-6 max-w-md md:max-w-3xl mx-auto space-y-5">
     <!-- UPLOAD INPUT -->
-    @if(this.previewList().length === 0) {
-    <label
-        class="flex flex-col items-center justify-center gap-2 w-full py-8 border border-dashed border-slate-600 rounded-2xl text-slate-400 cursor-pointer hover:bg-slate-800 transition"
-    >
-        <span class="text-2xl">📷</span>
-        <span class="text-sm font-medium">Chọn ảnh</span>
-        <span class="text-xs">PNG, JPG, WEBP</span>
+    @if (this.previewList().length === 0) {
+        <label
+            class="flex flex-col items-center justify-center gap-2 w-full py-8 border border-dashed border-slate-600 rounded-2xl text-slate-400 cursor-pointer hover:bg-slate-800 transition"
+        >
+            <span class="text-2xl">📷</span>
+            <span class="text-sm font-medium">Chọn ảnh</span>
+            <span class="text-xs">PNG, JPG, WEBP</span>
 
-        <input type="file" accept="image/*" class="hidden" (change)="onFilesSelected($event)" />
-    </label>
+            <input type="file" accept="image/*" class="hidden" (change)="onFilesSelected($event)" />
+        </label>
     }
 
     <!-- PREVIEW LIST -->
     @if (previewList().length > 0) {
-    <div class="space-y-2">
-        @for (img of previewList(); track $index) {
-        <div
-            (click)="openPreviewUpload($index)"
-            class="flex items-center justify-between gap-3 p-3 bg-slate-800 border :border-slate-700 rounded-xl hover:bg-slate-700 transition cursor-pointer"
-        >
-            <div class="flex items-center gap-3 min-w-0">
-                <img [src]="img.base64" class="w-12 h-12 rounded-lg object-cover shrink-0" />
+        <div class="space-y-2">
+            @for (img of previewList(); track $index) {
+                <div
+                    (click)="openPreviewUpload($index)"
+                    class="flex items-center justify-between gap-3 p-3 bg-slate-800 border :border-slate-700 rounded-xl hover:bg-slate-700 transition cursor-pointer"
+                >
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img
+                            [src]="img.base64"
+                            class="w-12 h-12 rounded-lg object-cover shrink-0"
+                        />
 
-                <div class="min-w-0">
-                    <p class="text-sm font-medium truncate">
-                        {{ img.filename }}
-                    </p>
-                    <p class="text-xs text-slate-400">
-                        {{ formatSize(img.file_size) }}
-                    </p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium truncate">
+                                {{ img.filename }}
+                            </p>
+                            <p class="text-xs text-slate-400">
+                                {{ formatSize(img.file_size) }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <button
+                        class="p-2 rounded-lg text-red-500 hover:bg-red-900/20 transition"
+                        (click)="removeFile(img.id); $event.stopPropagation()"
+                    >
+                        <app-icon name="trash" class="w-5 h-5"></app-icon>
+                    </button>
                 </div>
-            </div>
-
-            <button
-                class="p-2 rounded-lg text-red-500 hover:bg-red-900/20 transition"
-                (click)="removeFile(img.id); $event.stopPropagation()"
-            >
-                <app-icon name="trash"></app-icon>
-            </button>
+            }
         </div>
-        }
-    </div>
     }
 
     <div class="mt-5">
@@ -67,63 +70,66 @@
 
     <!-- RESULT SECTION -->
     @if (resultImages().length > 0) {
-    <div class="space-y-2 pt-2">
-        <h3 class="text-sm font-semibold text-slate-400">Result</h3>
+        <div class="space-y-2 pt-2">
+            <h3 class="text-sm font-semibold text-slate-400">Result</h3>
 
-        @for (img of resultImages(); track $index) {
-        <div
-            class="flex items-center justify-between gap-3 p-3 bg-slate-800 border border-slate-700 rounded-xl"
-        >
-            <div
-                class="flex items-center gap-3 min-w-0 cursor-pointer"
-                (click)="openPreviewResult($index)"
-            >
-                <img [src]="img.dataURL" class="w-12 h-12 rounded-lg object-cover shrink-0" />
+            @for (img of resultImages(); track $index) {
+                <div
+                    class="flex items-center justify-between gap-3 p-3 bg-slate-800 border border-slate-700 rounded-xl"
+                >
+                    <div
+                        class="flex items-center gap-3 min-w-0 cursor-pointer"
+                        (click)="openPreviewResult($index)"
+                    >
+                        <img
+                            [src]="img.dataURL"
+                            class="w-12 h-12 rounded-lg object-cover shrink-0"
+                        />
 
-                <div class="min-w-0">
-                    <p class="text-sm font-medium truncate">width:</p>
-                    <p class="text-xs text-slate-400">
-                        {{ img.width }}
-                    </p>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium truncate">width:</p>
+                            <p class="text-xs text-slate-400">
+                                {{ img.width }}
+                            </p>
+                        </div>
+                    </div>
+
+                    @if (!img.downloaded) {
+                        <button
+                            class="p-2 rounded-lg text-slate-200 hover:bg-slate-700 transition"
+                            (click)="downloadBase64Image(img); $event.stopPropagation()"
+                        >
+                            <app-icon name="download" class="w-5 h-5"></app-icon>
+                        </button>
+                    } @else {
+                        <div class="p-2 rounded-lg bg-green-900/30 text-green-400">
+                            <app-icon name="tick" class="w-5 h-5"></app-icon>
+                        </div>
+                    }
                 </div>
-            </div>
-
-            @if (!img.downloaded) {
-            <button
-                class="p-2 rounded-lg text-slate-200 hover:bg-slate-700 transition"
-                (click)="downloadBase64Image(img); $event.stopPropagation()"
-            >
-                <app-icon name="download"></app-icon>
-            </button>
-            } @else {
-            <div class="p-2 rounded-lg bg-green-900/30 text-green-400">
-                <app-icon name="tick"></app-icon>
-            </div>
             }
         </div>
-        }
-    </div>
     }
 </div>
 
 <!-- PREVIEW POPUP -->
 @if (showPopup) {
-<div
-    class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
-    (click)="closePopup()"
->
     <div
-        class="bg-slate-900 rounded-2xl p-4 max-w-3xl w-full max-h-full"
-        (click)="$event.stopPropagation()"
+        class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+        (click)="closePopup()"
     >
-        <img [src]="currentPreview" class="max-h-[75vh] mx-auto rounded-xl object-contain" />
-
-        <button
-            class="w-full mt-4 py-2 rounded-lg bg-white text-slate-900 font-medium"
-            (click)="closePopup()"
+        <div
+            class="bg-slate-900 rounded-2xl p-4 max-w-3xl w-full max-h-full"
+            (click)="$event.stopPropagation()"
         >
-            Đóng
-        </button>
+            <img [src]="currentPreview" class="max-h-[75vh] mx-auto rounded-xl object-contain" />
+
+            <button
+                class="w-full mt-4 py-2 rounded-lg bg-white text-slate-900 font-medium"
+                (click)="closePopup()"
+            >
+                Đóng
+            </button>
+        </div>
     </div>
-</div>
 }

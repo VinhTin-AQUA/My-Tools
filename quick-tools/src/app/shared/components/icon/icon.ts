@@ -1,19 +1,26 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { IconName } from './types/icon-types';
+import { CommonModule, NgComponentOutlet } from '@angular/common';
+import { Component, Input, Type } from '@angular/core';
+import { DownloadIconComponent, ErrorIconComponent, TickIconComponent, TrashIconComponent } from './icon.components';
+
+export const ICON_REGISTRY: Record<string, Type<any>> = {
+    download: DownloadIconComponent,
+    tick: TickIconComponent,
+    trash: TrashIconComponent,
+    error: ErrorIconComponent,
+};
+
+export type IconNames = 'download' | 'tick' | 'trash' | 'error';
 
 @Component({
     selector: 'app-icon',
-    imports: [CommonModule],
+    imports: [CommonModule, NgComponentOutlet],
     templateUrl: './icon.html',
     styleUrl: './icon.scss',
 })
 export class Icon {
-    @Input() name!: IconName; // icon name
-    size: string = ''; // e.g. "24px" | "2rem" | "1.5em"
-    color: string = ''; // CSS color
-    @Input() fill?: string = 'currentColor'; // override fill
-    @Input() stroke?: string = 'currentColor'; // stroke color for outline icons
-    @Input() class?: string; // extra classes
-    spritePath: string = '/icons/sprite.svg';
+    @Input() iconName: IconNames = 'error';
+
+    iconComponent(): Type<any> | null {
+        return ICON_REGISTRY[this.iconName] || null;
+    }
 }

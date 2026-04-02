@@ -10,6 +10,7 @@ import { Commands } from './core/enums/commands.enum';
 import { SplashScreen } from './shared/components/splash-screen/splash-screen';
 import { IpAddress, IpAddressInfo } from './core/models/payload-commands/ip.payload';
 import { IpStore } from './shared/stores/ip.store';
+import { ThemeService } from './core/services/theme.service';
 
 @Component({
     selector: 'app-root',
@@ -25,14 +26,16 @@ export class App {
     constructor(
         public dialogService: DialogService,
         private languageService: LanguageService,
-        private tauriCommandService: TauriCommandService
+        private tauriCommandService: TauriCommandService,
+        private themeService: ThemeService,
     ) {}
 
     async ngOnInit() {
+        await this.themeService.init();
         const success = await this.tauriCommandService.invokeCommand<boolean>(
             Commands.INIT_COMPLETE,
             {},
-            false
+            false,
         );
 
         const ipAddress = await this.tauriCommandService.invokeCommand<IpAddress>(

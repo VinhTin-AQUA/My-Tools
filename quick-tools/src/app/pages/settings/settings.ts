@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SelectBox, SelectOption } from '../../shared/components/select-box/select-box';
+import { SelectBox } from '../../shared/components/select-box/select-box';
+import { OptionModel } from '../../core/models/option.model';
 
 @Component({
     selector: 'app-settings',
@@ -10,14 +11,14 @@ import { SelectBox, SelectOption } from '../../shared/components/select-box/sele
 })
 export class Settings {
     // Language list
-    languages: SelectOption[] = [
+    languages: OptionModel[] = [
         { label: 'English', value: 'en', icon: '🇯🇵' },
         { label: 'Vietnamese', value: 'vi', icon: '🇻🇳' },
         { label: 'Japanese', value: 'jp', icon: '🇺🇲' },
     ];
 
     // Theme list
-    themes: SelectOption[] = [
+    themes: OptionModel[] = [
         { label: 'Light', value: 'light', icon: '⬜' },
         { label: 'Dark', value: 'dark', icon: '⬛' },
         { label: 'Blue', value: 'blue', icon: '🟦' },

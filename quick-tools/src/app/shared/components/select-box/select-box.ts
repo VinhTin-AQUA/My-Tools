@@ -1,49 +1,65 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ClickOutsideDirective } from '../../directives/click-outside.directive';
-
-export interface SelectOption {
-    value: any;
-    label: string;
-    disabled?: boolean;
-    icon?: string;
-}
+import { Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormsModule } from '@angular/forms';
+import { FormField, FieldTree } from '@angular/forms/signals';
+import { OptionModel } from '../../../core/models/option.model';
 
 @Component({
     selector: 'app-select-box',
-    imports: [ClickOutsideDirective],
+    imports: [FormField, FormsModule],
     templateUrl: './select-box.html',
     styleUrl: './select-box.scss',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SelectBox),
+            multi: true,
+        },
+    ],
 })
-export class SelectBox {
-    @Input() options: SelectOption[] = [];
-    @Input() placeholder: string = 'Select an option';
-    @Input() selectedValue: any;
+export class SelectBox implements ControlValueAccessor {
+    @Input() formField?: FieldTree<string>;
+    @Input() name!: string;
+    @Input() label: string = '';
+    @Input() description: string = '';
+    @Input() value!: string;
     @Input() disabled: boolean = false;
-    @Output() selectionChange = new EventEmitter<any>();
 
-    isOpen = false;
+    @Input() options: OptionModel<string>[] = [];
+    @Input() optionLabel: string = 'label';
+    @Input() optionValue: string = 'value';
 
-    ngOnInit() {}
+    @Output() valueChange = new EventEmitter<string>();
 
-    get selectedOption(): SelectOption | undefined {
-        return this.options.find((option) => option.value === this.selectedValue);
+    // ControlValueAccessor methods
+    onChange = (value: any) => {};
+    onTouched = () => {};
+
+    writeValue(value: any): void {
+        this.value = value ?? '';
     }
 
-    toggleDropdown(): void {
-        if (!this.disabled) {
-            this.isOpen = !this.isOpen;
+    registerOnChange(fn: any): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: any): void {
+        this.onTouched = fn;
+    }
+
+    setDisabledState(isDisabled: boolean): void {
+        this.disabled = isDisabled;
+    }
+
+    handleChange(event: any) {
+        const selectedValue = event;
+        this.value = selectedValue;
+
+        if (this.formField) {
+            this.formField()!.controlValue.set(selectedValue);
         }
-    }
 
-    selectOption(option: SelectOption): void {
-        if (!option.disabled) {
-            this.selectedValue = option.value;
-            this.selectionChange.emit(option.value);
-            this.isOpen = false;
-        }
-    }
-
-    closeDropdown(): void {
-        this.isOpen = false;
+        this.onChange(selectedValue);
+        this.onTouched();
+        this.valueChange.emit(selectedValue);
     }
 }

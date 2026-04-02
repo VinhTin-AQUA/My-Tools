@@ -41,7 +41,7 @@
                 class="p-2 rounded-lg text-red-500 hover:bg-red-900/20 transition"
                 (click)="removeFile(img.id); $event.stopPropagation()"
             >
-                <app-icon name="trash"></app-icon>
+                <app-icon name="trash" class="w-5 h-5"></app-icon>
             </button>
         </div>
         }
@@ -104,11 +104,11 @@
                 class="p-2 rounded-lg text-slate-200 hover:bg-slate-700 transition"
                 (click)="downloadBase64Image(img); $event.stopPropagation()"
             >
-                <app-icon name="download"></app-icon>
+                <app-icon name="download" class="w-5 h-5"></app-icon>
             </button>
             } @else {
             <div class="p-2 rounded-lg bg-green-900/30 text-green-400">
-                <app-icon name="tick"></app-icon>
+                <app-icon name="tick" class="w-5 h-5 text-gray-500"></app-icon>
             </div>
             }
         </div>

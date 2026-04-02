@@ -1,58 +1,83 @@
-:host {
-    display: block;
-}
+@layer components {
+    .select-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-family: inherit;
+    }
 
-// Custom scrollbar
-.custom-scrollbar {
-    &::-webkit-scrollbar {
+    .select-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--foreground);
+    }
+
+    .select-hint {
+        font-size: 13px;
+        color: var(--brightBlack);
+    }
+
+    .select-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* Custom arrow */
+    .select-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 14px;
         width: 6px;
+        height: 6px;
+        border-right: 2px solid var(--brightBlack);
+        border-bottom: 2px solid var(--brightBlack);
+        transform: translateY(-50%) rotate(45deg);
+        pointer-events: none;
+        transition: 0.2s ease;
     }
 
-    &::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 3px;
+    .select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+
+        width: 100%;
+        padding: 10px 40px 10px 14px;
+
+        font-size: 14px;
+        border-radius: 10px;
+        border: 1px solid var(--brightBlack);
+        background-color: var(--background);
+        color: var(--foreground);
+
+        transition: all 0.2s ease;
+        cursor: pointer;
     }
 
-    &::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-
-        &:hover {
-            background: #94a3b8;
-        }
+    /* Hover */
+    .select:hover {
+        border-color: var(--blue);
     }
-}
 
-// Animation classes (compatible with Tailwind)
-.animate-in {
-    animation-duration: 200ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fade-in-0 {
-    animation-name: fadeIn;
-}
-
-.zoom-in-95 {
-    animation-name: zoomIn;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
+    /* Focus */
+    .select:focus {
+        outline: none;
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px var(--highlight);
     }
-    to {
-        opacity: 1;
-    }
-}
 
-@keyframes zoomIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
+    .select:focus + .select-wrapper::after,
+    .select:focus ~ ::after {
+        border-color: var(--blue);
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
+
+    /* Disabled */
+    .select:disabled {
+        background-color: var(--black);
+        color: var(--brightBlack);
+        cursor: not-allowed;
+        opacity: 0.6;
     }
 }
