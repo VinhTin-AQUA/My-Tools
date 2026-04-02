@@ -77,6 +77,14 @@
         </div>
     }
 
+    <app-select-box
+        label="Scale"
+        [options]="scaleOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(value)]="scale"
+    ></app-select-box>
+
     <!-- SUBMIT -->
     <button class="primary-btn w-full py-3 rounded-xl" (click)="submit()">Submit</button>
 

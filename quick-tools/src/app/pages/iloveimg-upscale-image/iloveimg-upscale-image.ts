@@ -8,10 +8,12 @@ import {
     BinaryFile,
     ILoveImgUpscalePayloadCommand,
 } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
+import { SelectBox } from '../../shared/components/select-box/select-box';
+import { OptionModel } from '../../core/models/option.model';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
-    imports: [Icon],
+    imports: [Icon, SelectBox],
     templateUrl: './iloveimg-upscale-image.html',
     styleUrl: './iloveimg-upscale-image.scss',
 })
@@ -24,6 +26,11 @@ export class IloveimgUpscaleImage {
     previewList = signal<UpscaleResult[]>([]);
     invalidImage = signal<UpscaleResult[]>([]);
     resultImages = signal<UpscaleResult[]>([]); // image list result from api
+    scale: string = '1';
+    scaleOptions: OptionModel[] = [
+        { label: '1', value: '1' },
+        { label: '2', value: '2' },
+    ];
 
     // popup details
     showPopup = false;
@@ -140,6 +147,7 @@ export class IloveimgUpscaleImage {
         return (size / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
+
     async submit() {
         const isValid = this.validateFiles();
 
@@ -161,6 +169,7 @@ export class IloveimgUpscaleImage {
 
         const payload: ILoveImgUpscalePayloadCommand = {
             files: binaryFiles,
+            scale: this.scale,
         };
         const r = await this.tauriCommandService.invokeCommand<UpscaleResult[]>(
             Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
@@ -174,15 +183,11 @@ export class IloveimgUpscaleImage {
         const previews: UpscaleResult[] = r.map((r) => ({
             id: crypto.randomUUID(),
             filename: r.filename,
-            base64: 'data:image/jpeg;base64,' + r.base64, // ✅ thêm prefix
+            base64: 'data:image/jpeg;base64,' + r.base64,
             file_size: r.file_size,
             downloaded: false,
         }));
-
         this.resultImages.set(previews);
-        for (const i of this.resultImages()) {
-            console.log(i);
-        }
     }
 
     async downloadBase64Image(img: UpscaleResult) {

@@ -5,4 +5,5 @@ export interface BinaryFile {
 
 export interface ILoveImgUpscalePayloadCommand {
     files: BinaryFile[];
+    scale: string,
 }

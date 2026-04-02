@@ -8,6 +8,7 @@ use tokio::sync::Mutex;
 #[command]
 pub async fn iloveimg_upscale_img_command(
     state: State<'_, Mutex<AppState>>,
+    scale: &str,
     files: Vec<BinaryFile>,
 ) -> Result<Vec<UpscaleResult>, String> {
     let mut state_guard = state.lock().await;
@@ -17,7 +18,7 @@ pub async fn iloveimg_upscale_img_command(
     let r = iloveimg_upscale_img_service
         .lock()
         .await
-        .upscale_images(files)
+        .upscale_images(scale, files)
         .await
         .map_err(|e| e.to_string());
 

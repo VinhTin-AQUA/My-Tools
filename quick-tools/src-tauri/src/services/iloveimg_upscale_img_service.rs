@@ -25,9 +25,10 @@ impl IloveimgUpscaleImgService {
 
     pub async fn upscale_images(
         &self,
+        scale: &str,
         files: Vec<BinaryFile>,
     ) -> Result<Vec<UpscaleResult>, String> {
-        let scale = "1";
+        // let scale = "1";
         let mut final_results: Vec<UpscaleResult> = vec![];
 
         // 👉 chia batch 3 file
