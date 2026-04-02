@@ -28,6 +28,8 @@ env:
 
     LINUX_TARGET_DIR_TAR: 'linux_quick_tool_portable'
 
+    WINDOWS_FILE_NAME: 'quick-tools_v1.0.0_portable'
+
 jobs:
     publish-android:
         runs-on: ubuntu-latest
@@ -188,9 +190,71 @@ jobs:
                   name: linux-build
                   path: ./${{ env.PROJECT_DIR }}/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
 
+    publish-windows:
+        runs-on: windows-latest
+
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            # - name: Setup GitHub CLI
+            #   run: |
+            #       choco install gh --version=2.83.2 -y
+            #   shell: powershell
+
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: x86_64-pc-windows-msvc
+
+            - name: Install Visual Studio Build Tools
+              uses: microsoft/setup-msbuild@v1
+
+            - name: Install Rust target
+              run: rustup target add x86_64-pc-windows-msvc
+
+            # - name: Install Tauri CLI
+            #   run: cargo install tauri-cli
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build app bundle
+              run: |
+                npm run tauri build -- --no-bundle --target x86_64-pc-windows-msvc
+                
+            - name: Rename exe file
+              shell: cmd
+              run: |
+                  set "dir=src-tauri\target\x86_64-pc-windows-msvc\release"
+                  ren "%dir%\app.exe" "%WINDOWS_FILE_NAME%.exe"
+
+            - name: Create .zip
+              shell: powershell
+              run: |
+                Remove-Item -Recurse -Force $env:WINDOWS_FILE_NAME -ErrorAction Ignore
+                New-Item -ItemType Directory -Path $env:WINDOWS_FILE_NAME
+
+                Copy-Item "src-tauri/target/x86_64-pc-windows-msvc/release/$env:WINDOWS_FILE_NAME.exe" -Destination $env:WINDOWS_FILE_NAME
+                Copy-Item "src-tauri/icons/Square150x150Logo.png" -Destination $env:WINDOWS_FILE_NAME
+
+                Compress-Archive -Path $env:WINDOWS_FILE_NAME -DestinationPath "$env:WINDOWS_FILE_NAME.zip" -Force
+
+            - name: Upload artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: windows-build
+                path: ./${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
+
     release:
         runs-on: ubuntu-latest
-        needs: [publish-android, publish-linux]
+        needs: [publish-android, publish-linux, publish-windows]
         permissions:
             contents: write
 
@@ -238,3 +302,4 @@ jobs:
                   files: |
                       ${{ env.PROJECT_DIR }}/artifacts/linux-build/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
                       ${{ env.PROJECT_DIR }}/artifacts/android-build/${{ env.ANDROID_FILE_NAME }}
+                      ${{ env.PROJECT_DIR }}/artifacts/windows-build/${{ env.WINDOWS_FILE_NAME }}.zip
