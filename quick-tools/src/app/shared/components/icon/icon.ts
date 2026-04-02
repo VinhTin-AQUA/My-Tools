@@ -18,9 +18,9 @@ export type IconNames = 'download' | 'tick' | 'trash' | 'error';
     styleUrl: './icon.scss',
 })
 export class Icon {
-    @Input() iconName: IconNames = 'error';
+    @Input() name: IconNames = 'error';
 
     iconComponent(): Type<any> | null {
-        return ICON_REGISTRY[this.iconName] || null;
+        return ICON_REGISTRY[this.name] || null;
     }
 }

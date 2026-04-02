@@ -5,7 +5,12 @@ import { Component } from '@angular/core';
     selector: 'lib-icon-download',
     standalone: true,
     template: `
-        <svg viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            viewBox="0 0 25 24"
+            fill="currentColor"
+            stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <path
                 d="M13.1739 4C13.1739 3.58579 12.8381 3.25 12.4239 3.25C12.0096 3.25 11.6739 3.58579 11.6739 4L11.6739 10.6254L7.79691 10.6254C7.49352 10.6254 7.22001 10.8082 7.10395 11.0885C6.98789 11.3688 7.05215 11.6914 7.26674 11.9059L11.8763 16.5126C12.0132 16.6587 12.2079 16.75 12.4239 16.75C12.6566 16.75 12.8646 16.644 13.0021 16.4776L17.5771 11.9059C17.7917 11.6915 17.8559 11.3688 17.7399 11.0885C17.6238 10.8082 17.3503 10.6254 17.0469 10.6254H13.1739L13.1739 4Z"
             />
@@ -23,7 +28,12 @@ export class DownloadIconComponent {}
     selector: 'lib-icon-tick',
     standalone: true,
     template: `
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <path
                 d="M19.5455 6.4965C19.9848 6.93584 19.9848 7.64815 19.5455 8.08749L10.1286 17.5043C9.6893 17.9437 8.97699 17.9437 8.53765 17.5043L4.45451 13.4212C4.01517 12.9819 4.01516 12.2695 4.4545 11.8302C4.89384 11.3909 5.60616 11.3909 6.0455 11.8302L9.33315 15.1179L17.9545 6.4965C18.3938 6.05716 19.1062 6.05716 19.5455 6.4965Z"
             />
@@ -37,7 +47,12 @@ export class TickIconComponent {}
     selector: 'lib-icon-trash',
     standalone: true,
     template: `
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+        >
             <path
                 d="M7.99902 4.25C7.99902 3.00736 9.00638 2 10.249 2H13.749C14.9917 2 15.999 3.00736 15.999 4.25V5H18.498C19.7407 5 20.748 6.00736 20.748 7.25C20.748 8.28958 20.043 9.16449 19.085 9.42267C18.8979 9.4731 18.7011 9.5 18.498 9.5H5.5C5.29694 9.5 5.10016 9.4731 4.91303 9.42267C3.95503 9.16449 3.25 8.28958 3.25 7.25C3.25 6.00736 4.25736 5 5.5 5H7.99902V4.25ZM14.499 5V4.25C14.499 3.83579 14.1632 3.5 13.749 3.5H10.249C9.83481 3.5 9.49902 3.83579 9.49902 4.25V5H14.499Z"
             />
@@ -56,10 +71,10 @@ export class TrashIconComponent {}
     template: `
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            fill="none"
+            fill="currentColor"
+            stroke="currentColor"
             viewBox="0 0 24 24"
             stroke-width="1.5"
-            stroke="currentColor"
         >
             <path
                 stroke-linecap="round"
