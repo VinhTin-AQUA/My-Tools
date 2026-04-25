@@ -28,4 +28,3 @@ pub struct IpAddressInfo {
 pub struct IpAddress {
     pub ip: String,
 }
-

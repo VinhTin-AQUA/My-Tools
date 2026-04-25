@@ -1,20 +1,14 @@
 <div class="p-4 md:p-6 max-w-md md:max-w-3xl mx-auto space-y-5">
     <!-- UPLOAD INPUT -->
-    <label
+    <button
+        type="button"
+        (click)="onFilesSelected()"
         class="flex flex-col items-center justify-center gap-2 w-full py-8 border border-dashed border-slate-600 rounded-2xl text-slate-400 cursor-pointer hover:bg-slate-800 transition"
     >
         <span class="text-2xl">📷</span>
         <span class="text-sm font-medium">Chọn ảnh</span>
         <span class="text-xs">PNG, JPG, WEBP</span>
-
-        <input
-            type="file"
-            multiple
-            accept="image/*"
-            class="hidden"
-            (change)="onFilesSelected($event)"
-        />
-    </label>
+    </button>
 
     <!-- PREVIEW LIST -->
     @if (previewList().length > 0) {

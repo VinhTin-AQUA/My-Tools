@@ -7,9 +7,9 @@ use crate::services::iloveimg_upscale_img_service::IloveimgUpscaleImgService;
 use crate::services::ip_service::IpService;
 
 mod commands;
-mod states;
 mod models;
 mod services;
+mod states;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -20,6 +20,7 @@ pub fn run() {
     });
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_android_fs::init())

@@ -1,6 +1,5 @@
 use crate::models::ip_model::{IpAddress, IpAddressInfo};
 
-
 pub struct IpService {}
 
 impl IpService {
@@ -20,8 +19,6 @@ impl IpService {
             .json()
             .await
             .map_err(|e| e.to_string())?;
-
-
 
         Ok(json_data)
     }
