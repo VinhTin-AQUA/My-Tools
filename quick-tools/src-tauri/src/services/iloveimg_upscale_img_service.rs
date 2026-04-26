@@ -3,7 +3,7 @@ use futures::{stream, StreamExt};
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
-use std::sync::Arc;
+use std::{path::PathBuf, sync::Arc};
 use tokio::time::{sleep, Duration};
 
 use crate::models::iloveimg_upscale_img_model::{BinaryFile, UploadResponse, UpscaleResult};
@@ -26,22 +26,40 @@ impl IloveimgUpscaleImgService {
     pub async fn upscale_images(
         &self,
         scale: &str,
-        files: Vec<BinaryFile>,
-    ) -> Result<Vec<UpscaleResult>, String> {
-        // let scale = "1";
-        let mut final_results: Vec<UpscaleResult> = vec![];
+        files: Vec<String>,
+    ) -> Result<Vec<PathBuf>, String> {
+        let download_dir = dirs::download_dir()
+            .ok_or("Cannot find Downloads folder")?
+            .join("upscale");
 
-        // 👉 chia batch 3 file
-        for chunk in files.chunks(3) {
-            // 🔥 mỗi batch tạo mới server + task_id
+        tokio::fs::create_dir_all(&download_dir)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        let client = reqwest::Client::new();
+        let mut outputs: Vec<PathBuf> = Vec::new();
+
+        for path in files {
+            println!("Processing: {}", path);
+
             let server = Self::random_server();
             let task_id = Self::get_task_id().await?;
+            let bytes = tokio::fs::read(&path).await.map_err(|e| e.to_string())?;
 
-            // upload batch
-            let items = Self::upload_images(server.as_str(), task_id.as_str(), chunk).await?;
+            let filename = std::path::Path::new(&path)
+                .file_name()
+                .ok_or("Invalid filename")?
+                .to_string_lossy()
+                .to_string();
 
+            let file = BinaryFile {
+                name: filename.clone(),
+                bytes,
+            };
+
+            let uploaded = Self::upload_images(server.as_str(), task_id.as_str(), &[file]).await?;
+            let uploaded_file = uploaded.get(0).ok_or("Upload failed")?;
             let url = format!("https://{}.iloveimg.com/v1/upscale", server);
-            let client = reqwest::Client::new();
 
             let mut headers = HeaderMap::new();
             headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
@@ -54,57 +72,36 @@ impl IloveimgUpscaleImgService {
                 HeaderValue::from_str("https://www.iloveimg.com").unwrap(),
             );
 
-            // ⚡ xử lý tối đa 3 file trong batch (thực ra chunk đã <=3 rồi)
-            let results: Vec<Result<UpscaleResult, String>> = stream::iter(items)
-                .map(|it| {
-                    let client = client.clone();
-                    let headers = headers.clone();
-                    let url = url.clone();
-                    let task_id = task_id.clone();
-                    let scale = scale.to_string();
+            let form = reqwest::multipart::Form::new()
+                .text("task", task_id)
+                .text("server_filename", uploaded_file.server_filename.clone())
+                .text("scale", scale.to_string());
 
-                    async move {
-                        let form = reqwest::multipart::Form::new()
-                            .text("task", task_id)
-                            .text("server_filename", it.server_filename.clone())
-                            .text("scale", scale);
+            let result_bytes = client
+                .post(&url)
+                .headers(headers)
+                .multipart(form)
+                .send()
+                .await
+                .map_err(|e| e.to_string())?
+                .bytes()
+                .await
+                .map_err(|e| e.to_string())?;
 
-                        let bytes = client
-                            .post(&url)
-                            .headers(headers)
-                            .multipart(form)
-                            .send()
-                            .await
-                            .map_err(|e| e.to_string())?
-                            .bytes()
-                            .await
-                            .map_err(|e| e.to_string())?;
+            let output_path = download_dir.join(format!("upscaled_{}", filename));
 
-                        // let base64_str = BASE64_STANDARD.encode(&bytes);
-                        let file_size = bytes.len();
-                        let base64_str =
-                            tokio::task::spawn_blocking(move || BASE64_STANDARD.encode(&bytes))
-                                .await
-                                .unwrap();
+            tokio::fs::write(&output_path, &result_bytes)
+                .await
+                .map_err(|e| e.to_string())?;
 
-                        Ok(UpscaleResult {
-                            filename: it.server_filename,
-                            base64: base64_str,
-                            file_size: file_size,
-                        })
-                    }
-                })
-                .buffer_unordered(3)
-                .collect()
-                .await;
+            println!("Saved: {:?}", output_path);
 
-            for res in results {
-                final_results.push(res?);
-            }
-            sleep(Duration::from_millis(1000)).await;
+            outputs.push(output_path);
+
+            sleep(Duration::from_millis(800)).await;
         }
 
-        Ok(final_results)
+        Ok(outputs)
     }
 
     fn random_server() -> String {

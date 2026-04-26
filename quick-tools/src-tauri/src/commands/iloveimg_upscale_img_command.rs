@@ -1,26 +1,22 @@
-use crate::{
-    models::iloveimg_upscale_img_model::{BinaryFile, UpscaleResult},
-    states::AppState,
-};
+use crate::states::AppState;
 use tauri::{command, State};
 use tokio::sync::Mutex;
 
 #[command]
 pub async fn iloveimg_upscale_img_command(
     state: State<'_, Mutex<AppState>>,
-    scale: &str,
-    files: Vec<BinaryFile>,
-) -> Result<Vec<UpscaleResult>, String> {
-    let mut state_guard = state.lock().await;
-    let iloveimg_upscale_img_service = &mut state_guard.iloveimg_upscale_img_service;
+    scale: String,
+    files: Vec<String>,
+) -> Result<Vec<String>, String> {
+    let state_guard = state.lock().await;
+    let service = state_guard.iloveimg_upscale_img_service.lock().await;
 
-    // gọi hàm của service
-    let r = iloveimg_upscale_img_service
-        .lock()
-        .await
-        .upscale_images(scale, files)
-        .await
-        .map_err(|e| e.to_string());
+    let results = service.upscale_images(&scale, files).await?;
 
-    r
+    let output_paths = results
+        .into_iter()
+        .map(|p| p.to_string_lossy().to_string())
+        .collect();
+
+    Ok(output_paths)
 }

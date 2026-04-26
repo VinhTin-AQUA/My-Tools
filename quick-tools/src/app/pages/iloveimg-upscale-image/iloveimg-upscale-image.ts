@@ -25,7 +25,6 @@ export class IloveimgUpscaleImage {
     MAX_SIZE = 10 * 1024 * 1024; // 10MB
     MAX_TOTAL_SIZE = 15 * 1024 * 1024; // 15MB
 
-    files: { id: string; file: File }[] = [];
     previewList = signal<UpscaleResult[]>([]);
     // invalidImage = signal<UpscaleResult[]>([]);
     resultImages = signal<UpscaleResult[]>([]); // image list result from api
@@ -44,9 +43,31 @@ export class IloveimgUpscaleImage {
         private dialogService: DialogService,
     ) {}
 
+    ngOnInit() {
+        // const r = [
+        //     '/home/newtun/Downloads/upscale/upscaled_IMG_20260419_121538.jpg',
+        //     '/home/newtun/Downloads/1775370634348.jpg',
+        //     // '/home/newtun/Downloads/upscale/upscaled_IMG_20260419_121810.jpg',
+        //     // '/home/newtun/Downloads/upscale/upscaled_IMG_20260419_122008.jpg',
+        //     // '/home/newtun/Downloads/upscale/upscaled_IMG_20260419_122020.jpg',
+        // ];
+
+        // const list = r.map((p, index) => {
+        //     const t: UpscaleResult = {
+        //         id: crypto.randomUUID(),
+        //         filename: p.split('/').pop() ?? '',
+        //         file_size: 0,
+        //         src: convertFileSrc(p),
+        //         downloaded: false,
+        //         phisicalPath: p,
+        //     };
+        //     return t;
+        // });
+        // this.resultImages.set(list);
+    }
+
     async onFilesSelected() {
         const files = await DialogHelper.selectMultiFiles();
-
         if (!files) {
             this.dialogService.showToastMessage(
                 true,
@@ -64,108 +85,25 @@ export class IloveimgUpscaleImage {
                 file_size: 0,
                 src: convertFileSrc(p),
                 downloaded: false,
+                phisicalPath: p,
             };
             return t;
         });
-
         this.previewList.set(list);
-
-        console.log(list);
-        
-
-        // const input = event.target as HTMLInputElement;
-        // if (!input.files) return;
-
-        // const MAX_PIXELS = 33177600;
-        // const selectedFiles = Array.from(input.files) as File[];
-
-        // selectedFiles.forEach((file) => {
-        //     if (!file.type.startsWith('image/')) return;
-
-        //     const img = new Image();
-        //     const objectUrl = URL.createObjectURL(file);
-
-        //     img.onload = () => {
-        //         const width = img.width;
-        //         const height = img.height;
-        //         const totalPixels = width * height;
-
-        //         URL.revokeObjectURL(objectUrl);
-
-        //         // ❌ Không đạt điều kiện pixel
-        //         if (totalPixels >= MAX_PIXELS) {
-        //             console.warn(
-        //                 `Ảnh ${file.name} bị loại: ${width}x${height} = ${totalPixels} pixels`,
-        //             );
-        //             const canvas = document.createElement('canvas');
-        //             canvas.width = img.width;
-        //             canvas.height = img.height;
-        //             const ctx = canvas.getContext('2d')!;
-        //             ctx.drawImage(img, 0, 0);
-        //             const base64 = canvas.toDataURL(file.type);
-
-        //             this.invalidImage.update((list) => [
-        //                 ...list,
-        //                 {
-        //                     id,
-        //                     file_size: file.size,
-        //                     base64: base64,
-        //                     filename: file.name,
-        //                     downloaded: false,
-        //                 },
-        //             ]);
-        //             return;
-        //         }
-
-        //         const id = crypto.randomUUID();
-        //         this.files.push({ id, file });
-
-        //         const reader = new FileReader();
-        //         reader.onload = (e) => {
-        //             this.previewList.update((list) => [
-        //                 ...list,
-        //                 {
-        //                     id,
-        //                     file_size: file.size,
-        //                     base64: e.target!.result as string,
-        //                     filename: file.name,
-        //                     downloaded: false,
-        //                 },
-        //             ]);
-        //         };
-
-        //         reader.readAsDataURL(file);
-        //     };
-
-        //     img.onerror = () => {
-        //         URL.revokeObjectURL(objectUrl);
-        //         console.error(`Không đọc được ảnh: ${file.name}`);
-        //     };
-
-        //     img.src = objectUrl;
-        // });
-
-        // input.value = '';
     }
 
     removeFile(id: string) {
         this.previewList.update((list) => list.filter((item) => item.id !== id));
-        this.files = this.files.filter((item) => item.id !== id);
     }
 
     openPreview(index: number) {
-        // this.currentPreview = this.previewList()[index].base64;
-        // this.showPopup = true;
-    }
-
-    openPreviewInvalid(index: number) {
-        // this.currentPreview = this.invalidImage()[index].base64;
-        // this.showPopup = true;
+        this.currentPreview = this.previewList()[index].src;
+        this.showPopup = true;
     }
 
     openPreviewResult(index: number) {
-        // this.currentPreview = this.resultImages()[index].base64;
-        // this.showPopup = true;
+        this.currentPreview = this.resultImages()[index].src;
+        this.showPopup = true;
     }
 
     closePopup() {
@@ -179,49 +117,51 @@ export class IloveimgUpscaleImage {
     }
 
     async submit() {
-        // const isValid = this.validateFiles();
-        // if (!isValid) {
-        //     return;
-        // }
-        // this.dialogService.showLoadingDialog(true);
-        // const binaryFiles: BinaryFile[] = [];
-        // for (const file of this.files) {
-        //     const buffer = await file.file.arrayBuffer();
-        //     const bytes = Array.from(new Uint8Array(buffer));
-        //     binaryFiles.push({
-        //         name: file.file.name,
-        //         bytes: bytes,
-        //     });
-        // }
-        // const payload: ILoveImgUpscalePayloadCommand = {
-        //     files: binaryFiles,
-        //     scale: this.scale,
-        // };
-        // const r = await this.tauriCommandService.invokeCommand<UpscaleResult[]>(
-        //     Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
-        //     payload,
-        //     true,
-        // );
-        // if (r === null) {
-        //     return;
-        // }
-        // const previews: UpscaleResult[] = r.map((r) => ({
-        //     id: crypto.randomUUID(),
-        //     filename: r.filename,
-        //     base64: 'data:image/jpeg;base64,' + r.base64,
-        //     file_size: r.file_size,
-        //     downloaded: false,
-        // }));
-        // this.resultImages.set(previews);
-    }
+        const check = this.validateFiles();
+        if (!check) {
+            return;
+        }
 
-    async downloadBase64Image(img: UpscaleResult) {
-        // img.downloaded = true;
-        // await FileSystemHelper.writeImgToPicturesFromBase64(img.filename, img.base64);
+        const files = this.previewList().map((x) => x.phisicalPath);
+        const payload: ILoveImgUpscalePayloadCommand = {
+            files: files,
+            scale: this.scale,
+        };
+
+        const r = await this.tauriCommandService.invokeCommand<string[]>(
+            Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
+            payload,
+            true,
+        );
+
+        if (!r) {
+            this.dialogService.showToastMessage(
+                true,
+                'Error upscale images',
+                'Please try again',
+                false,
+            );
+            return;
+        }
+
+        console.log(r);
+
+        const list = r.map((p, index) => {
+            const t: UpscaleResult = {
+                id: crypto.randomUUID(),
+                filename: p.split('/').pop() ?? '',
+                file_size: 0,
+                src: convertFileSrc(p),
+                downloaded: false,
+                phisicalPath: p,
+            };
+            return t;
+        });
+        this.resultImages.set(list);
     }
 
     validateFiles() {
-        if (this.files.length === 0) {
+        if (this.previewList().length === 0) {
             this.dialogService.showToastMessage(
                 true,
                 'No image choosen',
@@ -231,7 +171,7 @@ export class IloveimgUpscaleImage {
             return false;
         }
 
-        if (this.files.length > this.MAX_FILES) {
+        if (this.previewList().length > this.MAX_FILES) {
             this.dialogService.showToastMessage(
                 true,
                 `Max files is ${this.MAX_FILES} files`,
@@ -242,13 +182,13 @@ export class IloveimgUpscaleImage {
         }
 
         let totalSize = 0;
-        for (const item of this.files) {
-            totalSize += item.file.size;
-            if (item.file.size > this.MAX_SIZE) {
+        for (const item of this.previewList()) {
+            totalSize += item.file_size;
+            if (item.file_size > this.MAX_SIZE) {
                 this.dialogService.showToastMessage(
                     true,
                     `Max size per file is ${this.MAX_SIZE} mb`,
-                    `The file "${item.file.name}" exceeds 10MB.`,
+                    `The file "${item.filename}" exceeds 10MB.`,
                     false,
                 );
                 return false;
