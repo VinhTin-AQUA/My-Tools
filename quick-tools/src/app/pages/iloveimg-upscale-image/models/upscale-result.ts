@@ -1,7 +1,7 @@
 interface UpscaleResult {
     id: string;
     filename: string;
-    base64: string;
+    src: string;
     file_size: number;
     downloaded: boolean;
 }

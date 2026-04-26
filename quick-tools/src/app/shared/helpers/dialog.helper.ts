@@ -11,6 +11,6 @@ export class DialogHelper {
                 extensions: ["png", "jpg", "webp"]
             }]
         });
-        console.log(files);
+        return files;
     }
 }

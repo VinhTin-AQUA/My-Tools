@@ -11,10 +11,12 @@ import {
 import { SelectBox } from '../../shared/components/select-box/select-box';
 import { OptionModel } from '../../core/models/option.model';
 import { DialogHelper } from '../../shared/helpers/dialog.helper';
+import { Button } from '../../shared/components/button/button';
+import { convertFileSrc } from '@tauri-apps/api/core';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
-    imports: [Icon, SelectBox],
+    imports: [Icon, SelectBox, Button],
     templateUrl: './iloveimg-upscale-image.html',
     styleUrl: './iloveimg-upscale-image.scss',
 })
@@ -25,7 +27,7 @@ export class IloveimgUpscaleImage {
 
     files: { id: string; file: File }[] = [];
     previewList = signal<UpscaleResult[]>([]);
-    invalidImage = signal<UpscaleResult[]>([]);
+    // invalidImage = signal<UpscaleResult[]>([]);
     resultImages = signal<UpscaleResult[]>([]); // image list result from api
     scale: string = '1';
     scaleOptions: OptionModel[] = [
@@ -43,7 +45,34 @@ export class IloveimgUpscaleImage {
     ) {}
 
     async onFilesSelected() {
-        await DialogHelper.selectMultiFiles(); 
+        const files = await DialogHelper.selectMultiFiles();
+
+        if (!files) {
+            this.dialogService.showToastMessage(
+                true,
+                'Error image selected',
+                'Please try again',
+                false,
+            );
+            return;
+        }
+
+        const list = files.map((p, index) => {
+            const t: UpscaleResult = {
+                id: crypto.randomUUID(),
+                filename: p.split('/').pop() ?? '',
+                file_size: 0,
+                src: convertFileSrc(p),
+                downloaded: false,
+            };
+            return t;
+        });
+
+        this.previewList.set(list);
+
+        console.log(list);
+        
+
         // const input = event.target as HTMLInputElement;
         // if (!input.files) return;
 
@@ -125,18 +154,18 @@ export class IloveimgUpscaleImage {
     }
 
     openPreview(index: number) {
-        this.currentPreview = this.previewList()[index].base64;
-        this.showPopup = true;
+        // this.currentPreview = this.previewList()[index].base64;
+        // this.showPopup = true;
     }
 
     openPreviewInvalid(index: number) {
-        this.currentPreview = this.invalidImage()[index].base64;
-        this.showPopup = true;
+        // this.currentPreview = this.invalidImage()[index].base64;
+        // this.showPopup = true;
     }
 
     openPreviewResult(index: number) {
-        this.currentPreview = this.resultImages()[index].base64;
-        this.showPopup = true;
+        // this.currentPreview = this.resultImages()[index].base64;
+        // this.showPopup = true;
     }
 
     closePopup() {
@@ -149,26 +178,21 @@ export class IloveimgUpscaleImage {
         return (size / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
-
     async submit() {
         // const isValid = this.validateFiles();
-
         // if (!isValid) {
         //     return;
         // }
-
         // this.dialogService.showLoadingDialog(true);
         // const binaryFiles: BinaryFile[] = [];
         // for (const file of this.files) {
         //     const buffer = await file.file.arrayBuffer();
         //     const bytes = Array.from(new Uint8Array(buffer));
-
         //     binaryFiles.push({
         //         name: file.file.name,
         //         bytes: bytes,
         //     });
         // }
-
         // const payload: ILoveImgUpscalePayloadCommand = {
         //     files: binaryFiles,
         //     scale: this.scale,
@@ -181,7 +205,6 @@ export class IloveimgUpscaleImage {
         // if (r === null) {
         //     return;
         // }
-
         // const previews: UpscaleResult[] = r.map((r) => ({
         //     id: crypto.randomUUID(),
         //     filename: r.filename,
@@ -193,8 +216,8 @@ export class IloveimgUpscaleImage {
     }
 
     async downloadBase64Image(img: UpscaleResult) {
-        img.downloaded = true;
-        await FileSystemHelper.writeImgToPicturesFromBase64(img.filename, img.base64);
+        // img.downloaded = true;
+        // await FileSystemHelper.writeImgToPicturesFromBase64(img.filename, img.base64);
     }
 
     validateFiles() {
