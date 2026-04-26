@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UploadResponse {
     pub server_filename: String,
@@ -11,9 +13,14 @@ pub struct BinaryFile {
     pub bytes: Vec<u8>,
 }
 
-#[derive(Serialize)]
-pub struct UpscaleResult {
-    pub filename: String,
-    pub base64: String,
-    pub file_size: usize,
+#[derive(Serialize, Deserialize)]
+pub struct UpscaleImageRequest {
+    pub id: String,
+    pub path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct UpscaleImageResult {
+    pub id: String,
+    pub path: String,
 }

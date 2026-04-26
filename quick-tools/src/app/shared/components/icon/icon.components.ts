@@ -64,6 +64,40 @@ export class TickIconComponent {}
 })
 export class TrashIconComponent {}
 
+// loading
+@Component({
+    selector: 'lib-icon-trash',
+    standalone: true,
+    template: `
+        <svg
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            data-iconid="346058"
+            data-svgname="Loader 3 fill"
+            stroke="currentColor"
+        >
+            <g>
+                <animateTransform
+                    attributeName="transform"
+                    attributeType="XML"
+                    type="rotate"
+                    from="0 12 12"
+                    to="360 12 12"
+                    dur="1s"
+                    repeatCount="indefinite"
+                />
+
+                <path fill="none"></path>
+                <path
+                    fill="currentColor"
+                    d="M3.055 13H5.07a7.002 7.002 0 0 0 13.858 0h2.016a9.001 9.001 0 0 1-17.89 0zm0-2a9.001 9.001 0 0 1 17.89 0H18.93a7.002 7.002 0 0 0-13.858 0H3.055z"
+                ></path>
+            </g>
+        </svg>
+    `,
+})
+export class LoadingIconComponent {}
+
 // error
 @Component({
     selector: 'lib-icon-trash',

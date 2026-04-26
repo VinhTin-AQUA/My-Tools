@@ -1,22 +1,21 @@
-use crate::states::AppState;
-use tauri::{command, State};
+use crate::{
+    models::iloveimg_upscale_img_model::{UpscaleImageRequest, UpscaleImageResult},
+    states::AppState,
+};
+use tauri::{command, AppHandle, State};
 use tokio::sync::Mutex;
 
 #[command]
 pub async fn iloveimg_upscale_img_command(
     state: State<'_, Mutex<AppState>>,
+    app_handler: AppHandle,
     scale: String,
-    files: Vec<String>,
-) -> Result<Vec<String>, String> {
+    files: Vec<UpscaleImageRequest>,
+) -> Result<Vec<UpscaleImageResult>, String> {
     let state_guard = state.lock().await;
     let service = state_guard.iloveimg_upscale_img_service.lock().await;
 
-    let results = service.upscale_images(&scale, files).await?;
+    let results = service.upscale_images(&scale, files, app_handler).await?;
 
-    let output_paths = results
-        .into_iter()
-        .map(|p| p.to_string_lossy().to_string())
-        .collect();
-
-    Ok(output_paths)
+    Ok(results)
 }

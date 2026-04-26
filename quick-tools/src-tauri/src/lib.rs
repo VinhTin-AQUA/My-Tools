@@ -7,6 +7,7 @@ use crate::services::iloveimg_upscale_img_service::IloveimgUpscaleImgService;
 use crate::services::ip_service::IpService;
 
 mod commands;
+mod constants;
 mod models;
 mod services;
 mod states;

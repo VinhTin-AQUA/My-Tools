@@ -1,15 +1,22 @@
 import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { Component, Input, Type } from '@angular/core';
-import { DownloadIconComponent, ErrorIconComponent, TickIconComponent, TrashIconComponent } from './icon.components';
+import {
+    DownloadIconComponent,
+    ErrorIconComponent,
+    LoadingIconComponent,
+    TickIconComponent,
+    TrashIconComponent,
+} from './icon.components';
 
 export const ICON_REGISTRY: Record<string, Type<any>> = {
     download: DownloadIconComponent,
     tick: TickIconComponent,
     trash: TrashIconComponent,
+    loading: LoadingIconComponent,
     error: ErrorIconComponent,
 };
 
-export type IconNames = 'download' | 'tick' | 'trash' | 'error';
+export type IconNames = 'download' | 'tick' | 'trash' | 'loading' | 'error';
 
 @Component({
     selector: 'app-icon',

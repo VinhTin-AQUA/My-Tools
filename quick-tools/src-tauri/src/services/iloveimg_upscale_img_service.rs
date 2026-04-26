@@ -1,22 +1,25 @@
-use base64::prelude::*;
-use futures::{stream, StreamExt};
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
-use std::{path::PathBuf, sync::Arc};
+use tauri::{AppHandle, Emitter};
 use tokio::time::{sleep, Duration};
 
-use crate::models::iloveimg_upscale_img_model::{BinaryFile, UploadResponse, UpscaleResult};
+use crate::{
+    constants::emit_events,
+    models::iloveimg_upscale_img_model::{
+        BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
+    },
+};
 
 pub struct IloveimgUpscaleImgService {}
 
 static TOKEN: &str = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOiIiLCJpYXQiOjE1MjMzNjQ4MjQsIm5iZiI6MTUyMzM2NDgyNCwianRpIjoicHJvamVjdF9wdWJsaWNfYzkwNWRkMWMwMWU5ZmQ3NzY5ODNjYTQwZDBhOWQyZjNfT1Vzd2EwODA0MGI4ZDJjN2NhM2NjZGE2MGQ2MTBhMmRkY2U3NyJ9.qvHSXgCJgqpC4gd6-paUlDLFmg0o2DsOvb1EUYPYx_E";
 static USER_AGENT_STR: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
 static SERVERS: &[&str] = &[
-    "api1g", "api2g", "api3g", "api7g", "api8g", "api9g", "api10g", "api11g", "api12g", "api13g",
+    "api1g", "api2g", "api3g",  "api8g", "api9g", "api10g", "api11g", "api12g", "api13g",
     "api14g", "api15g", "api16g", "api17g", "api18g", "api19g", "api20g", "api1g", "api1g",
     "api1g", "api2g", "api2g", "api2g", "api3g", "api3g", "api3g", "api11g", "api11g", "api11g",
-];
+]; // "api7g",
 
 impl IloveimgUpscaleImgService {
     pub fn new() -> Self {
@@ -26,8 +29,9 @@ impl IloveimgUpscaleImgService {
     pub async fn upscale_images(
         &self,
         scale: &str,
-        files: Vec<String>,
-    ) -> Result<Vec<PathBuf>, String> {
+        upscale_images: Vec<UpscaleImageRequest>,
+        app_handler: AppHandle,
+    ) -> Result<Vec<UpscaleImageResult>, String> {
         let download_dir = dirs::download_dir()
             .ok_or("Cannot find Downloads folder")?
             .join("upscale");
@@ -37,16 +41,18 @@ impl IloveimgUpscaleImgService {
             .map_err(|e| e.to_string())?;
 
         let client = reqwest::Client::new();
-        let mut outputs: Vec<PathBuf> = Vec::new();
+        let mut outputs: Vec<UpscaleImageResult> = Vec::new();
 
-        for path in files {
-            println!("Processing: {}", path);
+        for upscale_image in upscale_images {
+            println!("Processing: {}", upscale_image.path);
 
             let server = Self::random_server();
             let task_id = Self::get_task_id().await?;
-            let bytes = tokio::fs::read(&path).await.map_err(|e| e.to_string())?;
+            let bytes = tokio::fs::read(&upscale_image.path)
+                .await
+                .map_err(|e| e.to_string())?;
 
-            let filename = std::path::Path::new(&path)
+            let filename = std::path::Path::new(&upscale_image.path)
                 .file_name()
                 .ok_or("Invalid filename")?
                 .to_string_lossy()
@@ -96,7 +102,19 @@ impl IloveimgUpscaleImgService {
 
             println!("Saved: {:?}", output_path);
 
-            outputs.push(output_path);
+            let result = UpscaleImageResult {
+                id: upscale_image.id,
+                path: output_path.to_string_lossy().to_string()
+            };
+
+            app_handler
+                .emit(
+                    emit_events::UP_SCALE_IMAGE_RESULT,
+                    result.clone(),
+                )
+                .unwrap();
+
+            outputs.push(result);
 
             sleep(Duration::from_millis(800)).await;
         }
@@ -135,7 +153,6 @@ impl IloveimgUpscaleImgService {
     async fn upload_images(
         server: &str,
         task_id: &str,
-        // paths: &[String],
         files: &[BinaryFile],
     ) -> Result<Vec<UploadResponse>, String> {
         let url = format!("https://{}.iloveimg.com/v1/upload", server);

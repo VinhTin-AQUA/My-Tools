@@ -6,6 +6,7 @@ import { SplitImageHelper } from '../../shared/helpers/split-image.helper';
 import { FileHelper } from '../../shared/helpers/file.helper';
 import { ImagePiece } from '../../core/models/image-piece.model';
 import { FormsModule } from '@angular/forms';
+import { UploadImage } from '../../core/models/upload-image.model';
 
 @Component({
     selector: 'app-split-img',
