@@ -18,7 +18,7 @@ export class ThemeService {
         );
 
         this.appThemes.set(themes);
-        this.applyThemeToDOM('light');
+        this.applyThemeToDOM('dark');
     }
 
     private applyThemeToDOM(type: AppThemeType) {

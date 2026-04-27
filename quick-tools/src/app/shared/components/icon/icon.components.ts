@@ -77,16 +77,7 @@ export class TrashIconComponent {}
             stroke="currentColor"
         >
             <g>
-                <animateTransform
-                    attributeName="transform"
-                    attributeType="XML"
-                    type="rotate"
-                    from="0 12 12"
-                    to="360 12 12"
-                    dur="1s"
-                    repeatCount="indefinite"
-                />
-
+               
                 <path fill="none"></path>
                 <path
                     fill="currentColor"

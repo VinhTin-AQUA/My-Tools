@@ -11,6 +11,7 @@ import { SplashScreen } from './shared/components/splash-screen/splash-screen';
 import { IpAddress, IpAddressInfo } from './core/models/payload-commands/ip.payload';
 import { IpStore } from './shared/stores/ip.store';
 import { ThemeService } from './core/services/theme.service';
+import { NotificationHelper } from './shared/helpers/notification.helper';
 
 @Component({
     selector: 'app-root',
@@ -63,5 +64,8 @@ export class App {
         } else {
             this.success.set(false);
         }
+
+        // notification
+        await NotificationHelper.requestPermission();
     }
 }

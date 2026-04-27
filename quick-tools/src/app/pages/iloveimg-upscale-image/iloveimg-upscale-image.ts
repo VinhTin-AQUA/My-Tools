@@ -14,10 +14,12 @@ import { EmitEvents } from '../../core/constants/emit_events';
 import { UpscaleImageRequest, UpscaleImageResult } from '../../core/models/upload-image.model';
 import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
+import { NotificationHelper } from '../../shared/helpers/notification.helper';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
-    imports: [Icon, SelectBox, Button],
+    imports: [Icon, SelectBox, Button, DecimalPipe],
     templateUrl: './iloveimg-upscale-image.html',
     styleUrl: './iloveimg-upscale-image.scss',
 })
@@ -35,6 +37,7 @@ export class IloveimgUpscaleImage {
     upscaleUnlistenEvent: UnlistenFn | null = null;
     dragAndDropUnlistenEvent: UnlistenFn | null = null;
     submitted = signal<boolean>(false);
+    processedCount = signal<number>(0);
 
     constructor(
         private tauriCommandService: TauriCommandService,
@@ -42,10 +45,11 @@ export class IloveimgUpscaleImage {
     ) {}
 
     async ngOnInit() {
+        await NotificationHelper.sendNotification('Saved', "event.payload.path");
         this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
             EmitEvents.UP_SCALE_IMAGE_RESULT,
-            (event) => {
-                console.log(event);
+            async (event) => {
+                // console.log(event);
 
                 this.resultImages.update((x) => {
                     const newX: UpscaleResult = {
@@ -60,15 +64,15 @@ export class IloveimgUpscaleImage {
                     return [...x, newX];
                 });
 
+                this.processedCount.update((x) => x + 1);
+
                 this.previewList.update((images) =>
                     images.map((img) =>
                         img.id === event.payload.id ? { ...img, downloaded: true } : img,
                     ),
                 );
-                window.scrollTo({
-                    top: document.body.scrollHeight,
-                    behavior: 'smooth',
-                });
+
+                await NotificationHelper.sendNotification('Saved', event.payload.path);
             },
         );
 
@@ -79,7 +83,7 @@ export class IloveimgUpscaleImage {
                 console.log('User dropped', event.payload.paths);
 
                 const imagePaths = event.payload.paths.filter((path) =>
-                    IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(ext)),
+                    IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(`.${ext}`)),
                 );
 
                 const list = imagePaths.map((p, index) => {
@@ -150,6 +154,15 @@ export class IloveimgUpscaleImage {
     }
 
     async submit() {
+        if (this.submitted() == true) {
+            this.dialogService.showToastMessage(
+                true,
+                'Process is running',
+                'Please wait for current process',
+                false,
+            );
+            return;
+        }
         this.previewList.update((images) => images.map((img) => ({ ...img, downloaded: false })));
 
         this.submitted.set(true);
@@ -158,6 +171,7 @@ export class IloveimgUpscaleImage {
             return;
         }
         this.resultImages.set([]);
+        this.processedCount.set(0);
 
         const files = this.previewList().map((x) => {
             const file: UpscaleImageRequest = {

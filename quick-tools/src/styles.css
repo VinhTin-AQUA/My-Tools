@@ -1,9 +1,22 @@
 @import 'tailwindcss';
 
-.card {
-
-}
 
 .primary-btn {
     @apply bg-white text-slate-900 font-semibold hover:opacity-90 active:scale-[0.98] transition;
 }
+
+.rotate-spin {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+

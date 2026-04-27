@@ -1,104 +1,184 @@
-<div class="p-4 md:p-6 max-w-md md:max-w-3xl mx-auto space-y-5">
-    <app-button (click)="onFilesSelected()" class="w-full">
-        <span class="text-2xl">📷</span>
-        <span class="text-sm font-medium">Select Images</span>
-        <span class="text-xs">PNG, JPG, WEBP</span>
-    </app-button>
+<div class="flex flex-col max-w-md md:max-w-5xl mx-auto">
+    <!-- TOP: SCALE SELECTOR -->
+    <div class="p-4 bg-slate-900 sticky top-12 border-b z-10">
+        <app-select-box
+            label="Scale"
+            [options]="scaleOptions"
+            optionLabel="label"
+            optionValue="value"
+            [(value)]="scale"
+            [disabled]="submitted()"
+            class="w-full"
+        ></app-select-box>
 
-    <!-- PREVIEW LIST -->
-    @if (previewList().length > 0) {
-        <div class="space-y-2">
-            @for (img of previewList(); track img.id) {
-                <div
-                    (click)="openPreview($index)"
-                    class="flex items-center justify-between gap-3 p-3 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition cursor-pointer"
-                >
-                    <div class="flex items-center gap-3 min-w-0">
-                        <img [src]="img.src" class="w-12 h-12 rounded-lg object-cover shrink-0" />
+        <!-- UPLOAD BUTTON -->
+        <app-button (click)="onFilesSelected()" class="w-full">
+            <span class="text-2xl">📷</span>
+            <span class="text-sm font-medium">Select Images</span>
+            <span class="text-xs">PNG, JPG, WEBP</span>
+        </app-button>
+    </div>
 
-                        <div class="min-w-0">
-                            <p class="text-sm font-medium truncate">
-                                {{ img.filename }}
-                            </p>
-                            <p class="text-xs text-slate-400">
-                                {{ formatSize(img.file_size) }}
-                            </p>
+    <!-- CONTENT -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 mb-5">
+        <!-- GRID: PREVIEW + RESULT -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- PREVIEW COLUMN -->
+            @if (previewList().length > 0) {
+                <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-slate-400">Preview</h3>
+
+                    <div class="overflow-y-auto space-y-2 pr-1">
+                        @for (img of previewList(); track img.id) {
+                            <div
+                                (click)="openPreview($index)"
+                                class="flex items-center justify-between gap-3 p-3 bg-slate-800/50 border border-slate-700 rounded-xl hover:bg-slate-700/70 transition cursor-pointer"
+                            >
+                                <div class="flex items-center gap-3 min-w-0 flex-1">
+                                    <img
+                                        [src]="img.src"
+                                        class="w-12 h-12 rounded-lg object-cover"
+                                    />
+
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium truncate">
+                                            {{ img.filename }}
+                                        </p>
+                                        <p class="text-xs text-slate-400">
+                                            {{ formatSize(img.file_size) }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                @if (!img.downloaded) {
+                                    @if (submitted()) {
+                                        <div
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg text-yellow-300"
+                                        >
+                                            <app-icon
+                                                name="loading"
+                                                class="w-8 h-8 rotate-spin"
+                                            ></app-icon>
+                                        </div>
+                                    } @else {
+                                        <button
+                                            class="w-8 h-8 flex items-center justify-center rounded-lg text-red-300 hover:text-red-500 hover:bg-red-500/10"
+                                            (click)="removeFile(img.id); $event.stopPropagation()"
+                                            [disabled]="submitted() && !img.downloaded"
+                                        >
+                                            <app-icon name="trash" class="w-4 h-4"></app-icon>
+                                        </button>
+                                    }
+                                } @else {
+                                    <button
+                                        class="w-8 h-8 flex items-center justify-center rounded-lg text-red-300 hover:text-red-500 hover:bg-red-500/10"
+                                        (click)="removeFile(img.id); $event.stopPropagation()"
+                                        [disabled]="submitted() && !img.downloaded"
+                                    >
+                                        <app-icon name="trash" class="w-4 h-4"></app-icon>
+                                    </button>
+                                }
+                            </div>
+                        }
+
+                        <div class=" block gap-3 p-3">
+                            <div class="flex items-center gap-3 min-w-0 flex-1">
+                                <div class="w-12 h-12 rounded-lg"></div>
+
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium truncate"></p>
+                                    <p class="text-xs text-slate-400"></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            }
 
-                    @if (!img.downloaded) {
-                        <ng-container>
-                            @if (submitted()) {
-                                <div>
-                                    <app-icon name="loading" class="w-8 h-8"></app-icon>
+            <!-- RESULT COLUMN -->
+            @if (resultImages().length > 0) {
+                <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-slate-400">Results</h3>
+
+                    <div class="overflow-y-auto space-y-2 pr-1">
+                        @for (img of resultImages(); track $index) {
+                            <div
+                                (click)="openPreviewResult($index)"
+                                class="flex items-center justify-between gap-3 p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/10 transition cursor-pointer"
+                            >
+                                <div class="flex items-center gap-3 min-w-0 flex-1">
+                                    <img
+                                        [src]="img.src"
+                                        class="w-12 h-12 rounded-lg object-cover"
+                                    />
+
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-medium truncate">
+                                            {{ img.filename }}
+                                        </p>
+                                        <p class="text-xs text-emerald-400/70">
+                                            {{ formatSize(img.file_size) }}
+                                        </p>
+                                    </div>
                                 </div>
-                            } @else {
-                                <!-- normal -->
-                                <button
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-green-300 transition"
-                                    (click)="removeFile(img.id); $event.stopPropagation()"
-                                >
-                                    <app-icon name="trash" class="w-4 h-4"></app-icon>
-                                </button>
-                            }
-                        </ng-container>
-                    } @else {
-                        <button
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-green-300 transition"
-                            (click)="removeFile(img.id); $event.stopPropagation()"
-                        >
-                            <app-icon name="trash" class="w-4 h-4"></app-icon>
-                        </button>
+
+                                <app-icon name="tick" class="w-4 h-4 text-green-500"></app-icon>
+                            </div>
+                        }
+
+                        <div class="gap-3 p-3">
+                            <div class="flex items-center gap-3 min-w-0 flex-1">
+                                <div class="w-12 h-12 rounded-lg"></div>
+
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-sm font-medium truncate"></p>
+                                    <p class="text-xs text-slate-400"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- BOTTOM CONTROL PANEL -->
+    <div class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-700 p-4 space-y-3">
+        <!-- PROGRESS + RESULT COUNT -->
+        @if (previewList().length > 0) {
+            <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                    <span>{{ processedCount() }}/{{ previewList().length }}</span>
+                    @if (resultImages().length > 0) {
+                        <span class="text-emerald-400"> {{ resultImages().length }} results </span>
                     }
                 </div>
-            }
-        </div>
-    }
 
-    <app-select-box
-        label="Scale"
-        [options]="scaleOptions"
-        optionLabel="label"
-        optionValue="value"
-        [(value)]="scale"
-    ></app-select-box>
-
-    <!-- SUBMIT -->
-    <button class="primary-btn w-full py-3 rounded-xl" (click)="submit()">Submit</button>
-
-    <!-- RESULT SECTION -->
-    @if (resultImages().length > 0) {
-        <div class="space-y-2 pt-2">
-            <h3 class="text-sm font-semibold text-slate-400">Results</h3>
-
-            @for (img of resultImages(); track $index) {
-                <div
-                    class="flex items-center justify-between gap-3 p-3 bg-slate-800 border border-slate-700 rounded-xl"
-                >
+                <div class="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
                     <div
-                        class="flex items-center gap-3 min-w-0 cursor-pointer"
-                        (click)="openPreviewResult($index)"
-                    >
-                        <img [src]="img.src" class="w-12 h-12 rounded-lg object-cover shrink-0" />
-
-                        <div class="min-w-0 flex flex-col">
-                            <p class="text-sm font-medium truncate">
-                                {{ img.filename }}
-                            </p>
-
-                            <p class="text-xs text-slate-400 truncate">
-                                {{ img.phisicalPath }}
-                            </p>
-
-                            <p class="text-xs text-slate-500">
-                                {{ formatSize(img.file_size) }}
-                            </p>
-                        </div>
-                    </div>
+                        class="h-full bg-emerald-500 transition-all duration-300"
+                        [style.width]="(processedCount() / previewList().length) * 100 + '%'"
+                    ></div>
                 </div>
+            </div>
+        }
+
+        <!-- SUBMIT -->
+        <button
+            class="primary-btn w-full py-3 rounded-xl font-medium disabled:opacity-50"
+            (click)="submit()"
+            [disabled]="previewList().length === 0"
+        >
+            @if (submitted()) {
+                <span class="flex items-center justify-center gap-2">
+                    <app-icon name="loading" class="w-4 h-4 animate-spin"></app-icon>
+                    Processing...
+                </span>
+            } @else {
+                <span>Submit ({{ previewList().length }})</span>
             }
-        </div>
-    }
+        </button>
+    </div>
 </div>
 
 <!-- PREVIEW POPUP -->
