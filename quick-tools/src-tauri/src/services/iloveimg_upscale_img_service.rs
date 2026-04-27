@@ -16,9 +16,9 @@ pub struct IloveimgUpscaleImgService {}
 static TOKEN: &str = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOiIiLCJpYXQiOjE1MjMzNjQ4MjQsIm5iZiI6MTUyMzM2NDgyNCwianRpIjoicHJvamVjdF9wdWJsaWNfYzkwNWRkMWMwMWU5ZmQ3NzY5ODNjYTQwZDBhOWQyZjNfT1Vzd2EwODA0MGI4ZDJjN2NhM2NjZGE2MGQ2MTBhMmRkY2U3NyJ9.qvHSXgCJgqpC4gd6-paUlDLFmg0o2DsOvb1EUYPYx_E";
 static USER_AGENT_STR: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
 static SERVERS: &[&str] = &[
-    "api1g", "api2g", "api3g",  "api8g", "api9g", "api10g", "api11g", "api12g", "api13g",
-    "api14g", "api15g", "api16g", "api17g", "api18g", "api19g", "api20g", "api1g", "api1g",
-    "api1g", "api2g", "api2g", "api2g", "api3g", "api3g", "api3g", "api11g", "api11g", "api11g",
+    "api1g", "api2g", "api3g", "api8g", "api9g", "api10g", "api11g", "api12g", "api13g", "api14g",
+    "api15g", "api16g", "api17g", "api18g", "api19g", "api20g", "api1g", "api1g", "api1g", "api2g",
+    "api2g", "api2g", "api3g", "api3g", "api3g", "api11g", "api11g", "api11g",
 ]; // "api7g",
 
 impl IloveimgUpscaleImgService {
@@ -104,14 +104,11 @@ impl IloveimgUpscaleImgService {
 
             let result = UpscaleImageResult {
                 id: upscale_image.id,
-                path: output_path.to_string_lossy().to_string()
+                path: output_path.to_string_lossy().to_string(),
             };
 
             app_handler
-                .emit(
-                    emit_events::UP_SCALE_IMAGE_RESULT,
-                    result.clone(),
-                )
+                .emit(emit_events::UP_SCALE_IMAGE_RESULT, result.clone())
                 .unwrap();
 
             outputs.push(result);

@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UploadResponse {
     pub server_filename: String,

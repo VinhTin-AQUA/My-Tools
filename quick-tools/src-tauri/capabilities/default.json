@@ -1,45 +1,48 @@
 {
-    "$schema": "../gen/schemas/desktop-schema.json",
-    "identifier": "default",
-    "description": "enables the default permissions",
-    "windows": ["main"],
-    "permissions": [
-        "core:default",
-        "fs:default",
-        "android-fs:all-without-delete",
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "enables the default permissions",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "fs:default",
+    "android-fs:all-without-delete",
+    {
+      "identifier": "fs:allow-download-read-recursive",
+      "allow": [
         {
-            "identifier": "fs:allow-download-read-recursive",
-            "allow": [
-                {
-                    "path": "$DOWNLOAD/*"
-                }
-            ]
-        },
+          "path": "$DOWNLOAD/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-download-write-recursive",
+      "allow": [
         {
-            "identifier": "fs:allow-download-write-recursive",
-            "allow": [
-                {
-                    "path": "$DOWNLOAD/*"
-                }
-            ]
-        },
+          "path": "$DOWNLOAD/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-picture-read-recursive",
+      "allow": [
         {
-            "identifier": "fs:allow-picture-read-recursive",
-            "allow": [
-                {
-                    "path": "$PICTURE/*"
-                }
-            ]
-        },
+          "path": "$PICTURE/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-picture-write-recursive",
+      "allow": [
         {
-            "identifier": "fs:allow-picture-write-recursive",
-            "allow": [
-                {
-                    "path": "$PICTURE/*"
-                }
-            ]
-        },
-        "os:default",
-        "dialog:default"
-    ]
+          "path": "$PICTURE/*"
+        }
+      ]
+    },
+    "os:default",
+    "dialog:default",
+    "notification:default"
+  ]
 }

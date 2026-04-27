@@ -1,9 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { Icon } from '../../shared/components/icon/icon';
 import { DialogService } from '../../core/services/dialog-service';
-import { FileSystemHelper } from '../../shared/helpers/file-system.helper';
-import { SplitImageHelper } from '../../shared/helpers/split-image.helper';
 import { FileHelper } from '../../shared/helpers/file.helper';
+import { SplitImageHelper } from '../../shared/helpers/split-image.helper';
 import { ImagePiece } from '../../core/models/image-piece.model';
 import { FormsModule } from '@angular/forms';
 import { UploadImage } from '../../core/models/upload-image.model';
@@ -112,6 +111,6 @@ export class SplitImg {
 
     async downloadBase64Image(img: ImagePiece) {
         img.downloaded = true;
-        await FileSystemHelper.writeImgToPicturesFromBase64(crypto.randomUUID(), img.dataURL);
+        await FileHelper.writeImgToPicturesFromBase64(crypto.randomUUID(), img.dataURL);
     }
 }

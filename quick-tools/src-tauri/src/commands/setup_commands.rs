@@ -1,4 +1,4 @@
-use tauri::{AppHandle};
+use tauri::AppHandle;
 // use tokio::time::{sleep, Duration};
 
 #[tauri::command]

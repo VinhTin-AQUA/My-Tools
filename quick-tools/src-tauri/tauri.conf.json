@@ -14,11 +14,12 @@
             {
                 "label": "main",
                 "title": "Quick Tools",
-                "width": 800,
-                "height": 600,
+                "width": 1000,
+                "height": 800,
                 "resizable": true,
                 "fullscreen": false,
-                "center": true
+                "center": true,
+                "dragDropEnabled": true
             }
         ],
         "security": {

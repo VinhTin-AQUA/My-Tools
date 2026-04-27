@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { Icon } from '../../shared/components/icon/icon';
 import { TauriCommandService } from '../../core/services/tauri-command-service';
 import { DialogService } from '../../core/services/dialog-service';
@@ -12,6 +13,7 @@ import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import { EmitEvents } from '../../core/constants/emit_events';
 import { UpscaleImageRequest, UpscaleImageResult } from '../../core/models/upload-image.model';
 import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
+import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
@@ -30,7 +32,8 @@ export class IloveimgUpscaleImage {
 
     showPopup = false;
     currentPreview: string | null = null;
-    unlistenEvent: UnlistenFn | null = null;
+    upscaleUnlistenEvent: UnlistenFn | null = null;
+    dragAndDropUnlistenEvent: UnlistenFn | null = null;
     submitted = signal<boolean>(false);
 
     constructor(
@@ -39,7 +42,7 @@ export class IloveimgUpscaleImage {
     ) {}
 
     async ngOnInit() {
-        this.unlistenEvent = await listen<UpscaleImageResult>(
+        this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
             EmitEvents.UP_SCALE_IMAGE_RESULT,
             (event) => {
                 console.log(event);
@@ -68,6 +71,38 @@ export class IloveimgUpscaleImage {
                 });
             },
         );
+
+        this.dragAndDropUnlistenEvent = await getCurrentWebview().onDragDropEvent((event) => {
+            if (event.payload.type === 'over') {
+                // console.log('User hovering', event.payload.position);
+            } else if (event.payload.type === 'drop') {
+                console.log('User dropped', event.payload.paths);
+
+                const imagePaths = event.payload.paths.filter((path) =>
+                    IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(ext)),
+                );
+
+                const list = imagePaths.map((p, index) => {
+                    const t: UpscaleResult = {
+                        id: crypto.randomUUID(),
+                        filename: p.split('/').pop() ?? '',
+                        file_size: 0,
+                        src: convertFileSrc(p),
+                        downloaded: false,
+                        phisicalPath: p,
+                    };
+                    return t;
+                });
+
+                this.previewList.update((current) => {
+                    const existingPaths = new Set(current.map((x) => x.phisicalPath));
+                    const filtered = list.filter((item) => !existingPaths.has(item.phisicalPath));
+
+                    return [...current, ...filtered];
+                });
+            } else {
+            }
+        });
     }
 
     async onFilesSelected() {
@@ -205,8 +240,7 @@ export class IloveimgUpscaleImage {
     }
 
     ngDestroy() {
-        if (this.unlistenEvent) {
-            this.unlistenEvent();
-        }
+        this.upscaleUnlistenEvent?.();
+        this.dragAndDropUnlistenEvent?.();
     }
 }
