@@ -1,6 +1,7 @@
-import { writeFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { writeFile, BaseDirectory, readFile } from '@tauri-apps/plugin-fs';
 import { AndroidFs, AndroidPublicImageDir } from 'tauri-plugin-android-fs-api';
 import { platform } from '@tauri-apps/plugin-os';
+import { convertFileSrc } from '@tauri-apps/api/core';
 
 // rust: https://crates.io/crates/tauri-plugin-android-fs
 // js binding: https://www.npmjs.com/package/tauri-plugin-android-fs-api?activeTab=readme
@@ -26,6 +27,15 @@ export class FileHelper {
 
             reader.readAsDataURL(file);
         });
+    }
+
+    static async fileToBlobUrl(path: string) {
+
+        const t = convertFileSrc(path)
+
+        const data = await readFile(path);
+        const blob = new Blob([data]);
+        return URL.createObjectURL(blob);
     }
 
     //----------------------------------------------------------

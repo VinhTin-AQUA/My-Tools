@@ -14,6 +14,9 @@ export class DialogHelper {
                 },
             ],
         });
+
+        // path on android: "content://media/picker_get_content/0/com.android.providers.media.photopicker/media/38"
+        
         return files;
     }
 }

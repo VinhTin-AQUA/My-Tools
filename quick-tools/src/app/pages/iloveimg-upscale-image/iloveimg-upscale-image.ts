@@ -16,6 +16,7 @@ import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-command
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 import { NotificationHelper } from '../../shared/helpers/notification.helper';
 import { DecimalPipe } from '@angular/common';
+import { FileHelper } from '../../shared/helpers/file.helper';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
@@ -45,7 +46,7 @@ export class IloveimgUpscaleImage {
     ) {}
 
     async ngOnInit() {
-        await NotificationHelper.sendNotification('Saved', "event.payload.path");
+        await NotificationHelper.sendNotification('Saved', 'event.payload.path');
         this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
             EmitEvents.UP_SCALE_IMAGE_RESULT,
             async (event) => {
@@ -115,17 +116,25 @@ export class IloveimgUpscaleImage {
             return;
         }
 
-        const list = files.map((p, index) => {
-            const t: UpscaleResult = {
-                id: crypto.randomUUID(),
-                filename: p.split('/').pop() ?? '',
-                file_size: 0,
-                src: convertFileSrc(p),
-                downloaded: false,
-                phisicalPath: p,
-            };
-            return t;
-        });
+        const list = await Promise.all(
+            files.map(async (p, index) => {
+                const src = await FileHelper.fileToBlobUrl(p);
+
+                const t: UpscaleResult = {
+                    id: crypto.randomUUID(),
+                    filename: p.split('/').pop() ?? '',
+                    file_size: 0,
+                    // src: convertFileSrc(p),
+                    src: src,
+                    downloaded: false,
+                    phisicalPath: p,
+                };
+                return t;
+            }),
+        );
+
+        console.log(list);
+
         this.previewList.set(list);
     }
 

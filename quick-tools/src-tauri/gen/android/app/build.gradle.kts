@@ -51,23 +51,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-
-    // Cấu hình chữ ký cho bản release
-    signingConfigs {
-        create("release") {
-            storeFile = file("newtun-release-key.keystore")
-            storePassword = System.getenv("STORE_PASSWORD")
-            keyAlias = System.getenv("KEY_ALIAS")
-            keyPassword = System.getenv("KEY_PASSWORD")
-        }
-    }
-    
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false  // Bật true nếu bạn muốn shrink code (ProGuard)
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
 }
 
 rust {
@@ -75,7 +58,6 @@ rust {
 }
 
 dependencies {
-    implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("androidx.webkit:webkit:1.14.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-ktx:1.10.1")
@@ -83,7 +65,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
-    
 }
 
 apply(from = "tauri.build.gradle.kts")
