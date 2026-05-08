@@ -8,19 +8,17 @@ import { SelectBox } from '../../shared/components/select-box/select-box';
 import { OptionModel } from '../../core/models/option.model';
 import { DialogHelper } from '../../shared/helpers/dialog.helper';
 import { Button } from '../../shared/components/button/button';
-import { convertFileSrc } from '@tauri-apps/api/core';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import { EmitEvents } from '../../core/constants/emit_events';
 import { UpscaleImageRequest, UpscaleImageResult } from '../../core/models/upload-image.model';
 import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 import { NotificationHelper } from '../../shared/helpers/notification.helper';
-import { DecimalPipe } from '@angular/common';
 import { FileHelper } from '../../shared/helpers/file.helper';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
-    imports: [Icon, SelectBox, Button, DecimalPipe],
+    imports: [Icon, SelectBox, Button],
     templateUrl: './iloveimg-upscale-image.html',
     styleUrl: './iloveimg-upscale-image.scss',
 })
@@ -50,14 +48,13 @@ export class IloveimgUpscaleImage {
         this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
             EmitEvents.UP_SCALE_IMAGE_RESULT,
             async (event) => {
-                // console.log(event);
-
+                const src = await FileHelper.fileToBlobUrl(event.payload.path);
                 this.resultImages.update((x) => {
                     const newX: UpscaleResult = {
                         id: event.payload.id,
                         filename: event.payload.path.split('/').pop() ?? '',
                         file_size: 0,
-                        src: convertFileSrc(event.payload.path),
+                        src: src,
                         downloaded: false,
                         phisicalPath: event.payload.path,
                     };
@@ -66,7 +63,6 @@ export class IloveimgUpscaleImage {
                 });
 
                 this.processedCount.update((x) => x + 1);
-
                 this.previewList.update((images) =>
                     images.map((img) =>
                         img.id === event.payload.id ? { ...img, downloaded: true } : img,
@@ -77,7 +73,7 @@ export class IloveimgUpscaleImage {
             },
         );
 
-        this.dragAndDropUnlistenEvent = await getCurrentWebview().onDragDropEvent((event) => {
+        this.dragAndDropUnlistenEvent = await getCurrentWebview().onDragDropEvent(async (event) => {
             if (event.payload.type === 'over') {
                 // console.log('User hovering', event.payload.position);
             } else if (event.payload.type === 'drop') {
@@ -87,17 +83,20 @@ export class IloveimgUpscaleImage {
                     IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(`.${ext}`)),
                 );
 
-                const list = imagePaths.map((p, index) => {
-                    const t: UpscaleResult = {
-                        id: crypto.randomUUID(),
-                        filename: p.split('/').pop() ?? '',
-                        file_size: 0,
-                        src: convertFileSrc(p),
-                        downloaded: false,
-                        phisicalPath: p,
-                    };
-                    return t;
-                });
+                const list = await Promise.all(
+                    imagePaths.map(async (p, index) => {
+                        const src = await await FileHelper.fileToBlobUrl(p);
+                        const t: UpscaleResult = {
+                            id: crypto.randomUUID(),
+                            filename: p.split('/').pop() ?? '',
+                            file_size: 0,
+                            src: src,
+                            downloaded: false,
+                            phisicalPath: p,
+                        };
+                        return t;
+                    }),
+                );
 
                 this.previewList.update((current) => {
                     const existingPaths = new Set(current.map((x) => x.phisicalPath));
@@ -117,19 +116,17 @@ export class IloveimgUpscaleImage {
         }
 
         const list = await Promise.all(
-            files.map(async (p, index) => {
+            files.map(async (p) => {
                 const src = await FileHelper.fileToBlobUrl(p);
 
-                const t: UpscaleResult = {
+                return {
                     id: crypto.randomUUID(),
                     filename: p.split('/').pop() ?? '',
                     file_size: 0,
-                    // src: convertFileSrc(p),
-                    src: src,
+                    src,
                     downloaded: false,
                     phisicalPath: p,
                 };
-                return t;
             }),
         );
 

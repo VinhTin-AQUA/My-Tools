@@ -30,12 +30,18 @@ export class FileHelper {
     }
 
     static async fileToBlobUrl(path: string) {
+        const currentPlatform = platform();
+        let r = '';
+        if (currentPlatform === 'android') {
+            const data = await readFile(path);
+            const blob = new Blob([data]);
+            r = URL.createObjectURL(blob);
+        } else if (currentPlatform === 'linux' || currentPlatform === 'windows') {
+            r = convertFileSrc(path);
+        } else {
+        }
 
-        const t = convertFileSrc(path)
-
-        const data = await readFile(path);
-        const blob = new Blob([data]);
-        return URL.createObjectURL(blob);
+        return r;
     }
 
     //----------------------------------------------------------
