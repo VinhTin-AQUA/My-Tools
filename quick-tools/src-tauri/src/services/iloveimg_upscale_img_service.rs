@@ -5,10 +5,9 @@ use tauri::{AppHandle, Emitter};
 use tokio::time::{sleep, Duration};
 
 use crate::{
-    constants::emit_events,
-    models::iloveimg_upscale_img_model::{
+    constants::emit_events, helpers::folder_helper, models::iloveimg_upscale_img_model::{
         BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
-    },
+    }
 };
 
 pub struct IloveimgUpscaleImgService {}
@@ -32,13 +31,7 @@ impl IloveimgUpscaleImgService {
         upscale_images: Vec<UpscaleImageRequest>,
         app_handler: AppHandle,
     ) -> Result<Vec<UpscaleImageResult>, String> {
-        let download_dir = dirs::download_dir()
-            .ok_or("Cannot find Downloads folder")?
-            .join("upscale");
-
-        tokio::fs::create_dir_all(&download_dir)
-            .await
-            .map_err(|e| e.to_string())?;
+        let download_dir = folder_helper::create_folder_in_download(&["upscale", "images", "2026"]).await?;
 
         let client = reqwest::Client::new();
         let mut outputs: Vec<UpscaleImageResult> = Vec::new();
