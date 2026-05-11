@@ -6,13 +6,23 @@ export interface UploadImage {
     downloaded: boolean;
 }
 
-export interface UpscaleImageRequest {
-     id: string,
-     path: string,
+export interface SavedHandle {
+    kind: 'Path' | 'Uri';
+    value: string;
 }
 
+export interface UpscaleImageRequest {
+    id: string;
+    filename: string;
+    handle: SavedHandle;
+}
 
 export interface UpscaleImageResult {
     id: string;
-    path: string;
+    handle: SavedHandle;
+}
+
+export interface FileMetadata {
+    name: string;
+    size: number;
 }

@@ -8,6 +8,7 @@ use crate::services::ip_service::IpService;
 
 mod commands;
 mod constants;
+mod fs_kit;
 mod helpers;
 mod models;
 mod services;
@@ -44,6 +45,7 @@ pub fn run() {
             init_complete,
             get_your_ip_command,
             get_your_ip_info_command,
+            file_command::get_file_metadata,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

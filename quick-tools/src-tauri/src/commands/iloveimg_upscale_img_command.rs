@@ -13,9 +13,18 @@ pub async fn iloveimg_upscale_img_command(
     files: Vec<UpscaleImageRequest>,
 ) -> Result<Vec<UpscaleImageResult>, String> {
     let state_guard = state.lock().await;
+
     let service = state_guard.iloveimg_upscale_img_service.lock().await;
 
-    let results = service.upscale_images(&scale, files, app_handler).await?;
+    #[cfg(target_os = "android")]
+    let store = crate::fs_kit::android::AndroidFileStore::new(app_handler.clone());
+
+    #[cfg(not(target_os = "android"))]
+    let store = crate::fs_kit::desktop::DesktopFileStore::new();
+
+    let results = service
+        .upscale_images(&scale, files, app_handler, &store)
+        .await?;
 
     Ok(results)
 }

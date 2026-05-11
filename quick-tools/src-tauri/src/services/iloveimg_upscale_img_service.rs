@@ -5,9 +5,12 @@ use tauri::{AppHandle, Emitter};
 use tokio::time::{sleep, Duration};
 
 use crate::{
-    constants::emit_events, helpers::folder_helper, models::iloveimg_upscale_img_model::{
+    constants::emit_events,
+    fs_kit::{SavedHandle, UserFileStore},
+    helpers::folder_helper,
+    models::iloveimg_upscale_img_model::{
         BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
-    }
+    },
 };
 
 pub struct IloveimgUpscaleImgService {}
@@ -30,42 +33,46 @@ impl IloveimgUpscaleImgService {
         scale: &str,
         upscale_images: Vec<UpscaleImageRequest>,
         app_handler: AppHandle,
+        store: &dyn UserFileStore,
     ) -> Result<Vec<UpscaleImageResult>, String> {
-        let download_dir = folder_helper::create_folder_in_download(&["upscale", "images", "2026"]).await?;
-
         let client = reqwest::Client::new();
+
         let mut outputs: Vec<UpscaleImageResult> = Vec::new();
 
         for upscale_image in upscale_images {
-            println!("Processing: {}", upscale_image.path);
+            println!("Processing: {}", upscale_image.filename);
 
             let server = Self::random_server();
+
             let task_id = Self::get_task_id().await?;
-            let bytes = tokio::fs::read(&upscale_image.path)
+
+            // IMPORTANT:
+            // no tokio::fs::read here
+            let bytes = store
+                .read(&upscale_image.handle)
                 .await
                 .map_err(|e| e.to_string())?;
 
-            let filename = std::path::Path::new(&upscale_image.path)
-                .file_name()
-                .ok_or("Invalid filename")?
-                .to_string_lossy()
-                .to_string();
-
             let file = BinaryFile {
-                name: filename.clone(),
+                name: upscale_image.filename.clone(),
                 bytes,
             };
 
             let uploaded = Self::upload_images(server.as_str(), task_id.as_str(), &[file]).await?;
+
             let uploaded_file = uploaded.get(0).ok_or("Upload failed")?;
+
             let url = format!("https://{}.iloveimg.com/v1/upscale", server);
 
             let mut headers = HeaderMap::new();
+
             headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
+
             headers.insert(
                 AUTHORIZATION,
                 HeaderValue::from_str(&format!("Bearer {}", TOKEN)).unwrap(),
             );
+
             headers.insert(
                 ORIGIN,
                 HeaderValue::from_str("https://www.iloveimg.com").unwrap(),
@@ -87,17 +94,26 @@ impl IloveimgUpscaleImgService {
                 .await
                 .map_err(|e| e.to_string())?;
 
-            let output_path = download_dir.join(format!("upscaled_{}", filename));
-
-            tokio::fs::write(&output_path, &result_bytes)
+            // IMPORTANT:
+            // no tokio::fs::write here
+            let saved_handle = store
+                .save(
+                    &result_bytes,
+                    &format!("upscaled_{}", upscale_image.filename),
+                )
                 .await
                 .map_err(|e| e.to_string())?;
 
-            println!("Saved: {:?}", output_path);
+            let result_path = match &saved_handle {
+                SavedHandle::Path(path) => path.clone(),
+                SavedHandle::Uri(uri) => uri.clone(),
+            };
+
+            println!("Saved: {:?}", result_path);
 
             let result = UpscaleImageResult {
                 id: upscale_image.id,
-                path: output_path.to_string_lossy().to_string(),
+                path: result_path,
             };
 
             app_handler
@@ -211,3 +227,37 @@ impl IloveimgUpscaleImgService {
         Ok(result)
     }
 }
+
+// i guess since API 29 (scoped storage), outside the app-private directory you don't get a Path — only a content:// URI through the
+//   Storage Access Framework (SAF). That's why the plugin returns FileUri instead of PathBuf. You can't make it return a path, because there is no path.
+
+// #[derive(Serialize, Deserialize, Clone)]
+// #[serde(tag = "kind", content = "value")]
+// pub enum SavedHandle {
+//       Path(String),  // Windows/Linux: PathBuf.to_string_lossy().into_owned()
+//       Uri(String),   // Android: "content://..." from SAF
+//   }
+
+// Rule: never Path::new(&handle.value) on a Uri variant. Read/write only goes through the abstraction below.
+// for app-private data you don't need the fork at all — app_data_dir() gives you a real PathBuf everywhere, including Android (it points inside /data/data/<pkg>/files, no SAF involved).
+
+// Thin trait, two impls
+
+//   // fs_kit/mod.rs
+//   pub trait UserFileStore {
+//       async fn save(&self, bytes: &[u8], suggested_name: &str)
+//           -> Result<SavedHandle>;
+//       async fn read(&self, handle: &SavedHandle) -> Result<Vec<u8>>;
+//   }
+
+//   #[cfg(not(target_os = "android"))]
+//   mod desktop {
+//       // uses tauri-plugin-dialog + tokio::fs
+//       // returns SavedHandle::Path(...)
+//   }
+
+//   #[cfg(target_os = "android")]
+//   mod android {
+//       // uses tauri-plugin-android-fs
+//       // returns SavedHandle::Uri(...)
+//   }
