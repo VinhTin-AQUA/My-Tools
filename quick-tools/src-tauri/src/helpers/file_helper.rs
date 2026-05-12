@@ -48,7 +48,7 @@ async fn save_desktop(file_name: &str, bytes: &[u8]) -> Result<PathBuf, String> 
         .await
         .map_err(|e| e.to_string())?;
 
-    let output_path = download_dir.join(format!("upscaled_{}", file_name));
+    let output_path = download_dir.join(file_name);
 
     tokio::fs::write(&output_path, bytes)
         .await

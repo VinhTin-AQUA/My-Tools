@@ -88,20 +88,6 @@ impl IloveimgUpscaleImgService {
                 .await
                 .map_err(|e| e.to_string())?;
 
-            // tạo output path
-            // let input_path = Path::new(&upscale_image.path);
-
-            // let file_name = input_path.file_name().unwrap().to_string_lossy();
-
-            // let output_file_name = format!("upscaled_{}", file_name);
-
-            // let output_path: PathBuf = input_path.parent().unwrap().join(output_file_name);
-
-            // save file trực tiếp
-            // fs::write(&output_path, &result_bytes)
-            //     .await
-            //     .map_err(|e| e.to_string())?;
-
             // save to public directory (Downloads)
             let _ = file_helper::save_bytes(
                 uploaded_file.server_filename.clone().as_str(),

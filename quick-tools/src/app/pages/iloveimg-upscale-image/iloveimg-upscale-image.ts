@@ -218,15 +218,23 @@ export class IloveimgUpscaleImage {
             return;
         }
 
-        const upscaleReviewResultData = r.map((x) => {
-            const temp: UpscaleReviewResult = {
-                file_size: 0,
-                fileName: x.fileName,
-                id: x.id,
-                previewSrc: convertFileSrc(x.path),
-            };
-            return temp;
-        });
+        const upscaleReviewResultData: UpscaleReviewResult[] = await Promise.all(
+            r.map(async (x) => {
+                const info = await FileHelper.getStatOfFile(x.path);
+
+                const temp: UpscaleReviewResult = {
+                    file_size: info.size ?? 0,
+                    fileName: x.fileName,
+                    id: x.id,
+                    previewSrc: convertFileSrc(x.path),
+                };
+
+                return temp;
+            }),
+        );
+
+        console.log(upscaleReviewResultData);
+        
 
         this.upscaleReviewResults.set(upscaleReviewResultData);
 

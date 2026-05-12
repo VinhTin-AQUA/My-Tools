@@ -1,4 +1,13 @@
-import { writeFile, BaseDirectory, readFile, exists, mkdir, readDir, remove } from '@tauri-apps/plugin-fs';
+import {
+    writeFile,
+    BaseDirectory,
+    readFile,
+    exists,
+    mkdir,
+    readDir,
+    remove,
+    stat,
+} from '@tauri-apps/plugin-fs';
 import { join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
@@ -160,6 +169,13 @@ export class FileHelper {
                 });
             }
         }
+    }
+
+    static async getStatOfFile(path: string) {
+        const info = await stat(path, {
+            baseDir: BaseDirectory.AppData,
+        });
+        return info;
     }
 
     //----------------------------------------------------------
