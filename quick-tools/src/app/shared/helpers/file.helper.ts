@@ -8,12 +8,10 @@ import {
     remove,
     stat,
 } from '@tauri-apps/plugin-fs';
+import { appDataDir } from '@tauri-apps/api/path';
 import { join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
-import { invoke } from '@tauri-apps/api/core';
-import { Commands } from '../../core/constants/commands.enum';
-import { FileMetadata } from '../../core/models/upload-image.model';
 import { AndroidFs } from 'tauri-plugin-android-fs-api';
 import { platform } from '@tauri-apps/plugin-os';
 
@@ -29,6 +27,8 @@ export interface SelectedFile {
     downloaded: boolean;
     previewUrl: string;
 }
+import { convertFileSrc } from '@tauri-apps/api/core';
+import { AppConstants } from '../../core/constants/app_constants';
 
 export class FileHelper {
     static async selectMultiFiles(): Promise<SelectedFile[] | null> {
@@ -46,11 +46,49 @@ export class FileHelper {
         if (!files) {
             return null;
         }
-
         const normalized = Array.isArray(files) ? files : [files];
+        let newPaths: string[] = [];
+
+        const currentPlatform = platform();
+        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
+
+        if (currentPlatform === 'android') {
+            for (const uri of normalized) {
+                const res = await fetch(uri);
+                const blob = await res.blob();
+                const buffer = await blob.arrayBuffer();
+                const mime = res.headers.get('content-type') ?? 'image/png';
+                const map: Record<string, string> = {
+                    'image/jpeg': 'jpg',
+                    'image/png': 'png',
+                    'image/webp': 'webp',
+                    'image/heic': 'heic',
+                };
+                const extension = map[mime] ?? 'png';
+                const fileName = crypto.randomUUID().toString() + '.' + extension;
+                const newPath = await FileHelper.saveFileToAppData(
+                    fileName,
+                    AppConstants.IMAGES,
+                    new Uint8Array(buffer),
+                );
+                newPaths.push(newPath);
+            }
+        } else if (currentPlatform === 'linux' || currentPlatform === 'windows') {
+            for (const uri of normalized) {
+                const fileName = FileHelper.getFileName(uri);
+                const content = await readFile(uri);
+                const newPath = await FileHelper.saveFileToAppData(
+                    fileName,
+                    AppConstants.IMAGES,
+                    new Uint8Array(content),
+                );
+                newPaths.push(newPath);
+            }
+        }
 
         const results = await Promise.all(
-            normalized.map(async (path) => {
+            newPaths.map(async (path) => {
                 const metadata = await FileHelper.getStatOfFile(path);
 
                 // read binary file
@@ -63,7 +101,8 @@ export class FileHelper {
                     size: metadata.size,
                     content,
                     downloaded: false,
-                    previewUrl: FileHelper.uint8ArrayToBlobUrl(content),
+                    // previewUrl: FileHelper.uint8ArrayToBlobUrl(content),
+                    previewUrl: convertFileSrc(path),
                 };
             }),
         );
@@ -120,7 +159,8 @@ export class FileHelper {
             baseDir: BaseDirectory.AppData,
         });
 
-        const fullPath = await join(String(BaseDirectory.AppData), appFolder, fileName);
+        const dataDir = await appDataDir();
+        const fullPath = await join(dataDir, appFolder, fileName);
         return fullPath;
     }
 
