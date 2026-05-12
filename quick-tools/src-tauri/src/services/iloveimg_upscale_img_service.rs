@@ -1,19 +1,15 @@
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
-use tauri::{AppHandle, Emitter};
-use tokio::time::{sleep, Duration};
-
-use crate::{
-    constants::emit_events,
-    fs_kit::{SavedHandle, UserFileStore},
-    helpers::folder_helper,
-    models::iloveimg_upscale_img_model::{
-        BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
-    },
+use std::path::{Path, PathBuf};
+use tokio::{
+    fs,
+    time::{sleep, Duration},
 };
 
-pub struct IloveimgUpscaleImgService {}
+use crate::models::iloveimg_upscale_img_model::{
+    BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
+};
 
 static TOKEN: &str = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOiIiLCJpYXQiOjE1MjMzNjQ4MjQsIm5iZiI6MTUyMzM2NDgyNCwianRpIjoicHJvamVjdF9wdWJsaWNfYzkwNWRkMWMwMWU5ZmQ3NzY5ODNjYTQwZDBhOWQyZjNfT1Vzd2EwODA0MGI4ZDJjN2NhM2NjZGE2MGQ2MTBhMmRkY2U3NyJ9.qvHSXgCJgqpC4gd6-paUlDLFmg0o2DsOvb1EUYPYx_E";
 static USER_AGENT_STR: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0";
@@ -22,6 +18,8 @@ static SERVERS: &[&str] = &[
     "api15g", "api16g", "api17g", "api18g", "api19g", "api20g", "api1g", "api1g", "api1g", "api2g",
     "api2g", "api2g", "api3g", "api3g", "api3g", "api11g", "api11g", "api11g",
 ]; // "api7g",
+
+pub struct IloveimgUpscaleImgService;
 
 impl IloveimgUpscaleImgService {
     pub fn new() -> Self {
@@ -32,29 +30,25 @@ impl IloveimgUpscaleImgService {
         &self,
         scale: &str,
         upscale_images: Vec<UpscaleImageRequest>,
-        app_handler: AppHandle,
-        store: &dyn UserFileStore,
     ) -> Result<Vec<UpscaleImageResult>, String> {
         let client = reqwest::Client::new();
 
         let mut outputs: Vec<UpscaleImageResult> = Vec::new();
 
         for upscale_image in upscale_images {
-            println!("Processing: {}", upscale_image.filename);
+            println!("Processing: {}", upscale_image.file_name);
 
             let server = Self::random_server();
 
             let task_id = Self::get_task_id().await?;
 
-            // IMPORTANT:
-            // no tokio::fs::read here
-            let bytes = store
-                .read(&upscale_image.handle)
+            // đọc file trực tiếp từ path
+            let bytes = fs::read(&upscale_image.path)
                 .await
                 .map_err(|e| e.to_string())?;
 
             let file = BinaryFile {
-                name: upscale_image.filename.clone(),
+                name: upscale_image.file_name.clone(),
                 bytes,
             };
 
@@ -94,31 +88,28 @@ impl IloveimgUpscaleImgService {
                 .await
                 .map_err(|e| e.to_string())?;
 
-            // IMPORTANT:
-            // no tokio::fs::write here
-            let saved_handle = store
-                .save(
-                    &result_bytes,
-                    &format!("upscaled_{}", upscale_image.filename),
-                )
+            // tạo output path
+            let input_path = Path::new(&upscale_image.path);
+
+            let file_name = input_path.file_name().unwrap().to_string_lossy();
+
+            let output_file_name = format!("upscaled_{}", file_name);
+
+            let output_path: PathBuf = input_path.parent().unwrap().join(output_file_name);
+
+            // save file trực tiếp
+            fs::write(&output_path, &result_bytes)
                 .await
                 .map_err(|e| e.to_string())?;
 
-            let result_path = match &saved_handle {
-                SavedHandle::Path(path) => path.clone(),
-                SavedHandle::Uri(uri) => uri.clone(),
-            };
+            let result_path = output_path.to_string_lossy().to_string();
 
-            println!("Saved: {:?}", result_path);
+            println!("Saved: {}", result_path);
 
             let result = UpscaleImageResult {
                 id: upscale_image.id,
                 path: result_path,
             };
-
-            app_handler
-                .emit(emit_events::UP_SCALE_IMAGE_RESULT, result.clone())
-                .unwrap();
 
             outputs.push(result);
 
@@ -135,7 +126,9 @@ impl IloveimgUpscaleImgService {
 
     async fn get_task_id() -> Result<String, String> {
         let client = reqwest::Client::new();
+
         let mut headers = HeaderMap::new();
+
         headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
 
         let html = client
@@ -149,6 +142,7 @@ impl IloveimgUpscaleImgService {
             .map_err(|e| e.to_string())?;
 
         let re = Regex::new(r"ilovepdfConfig\.taskId\s*=\s*'([^']*)'").unwrap();
+
         Ok(re
             .captures(&html)
             .and_then(|c| c.get(1))
@@ -162,13 +156,18 @@ impl IloveimgUpscaleImgService {
         files: &[BinaryFile],
     ) -> Result<Vec<UploadResponse>, String> {
         let url = format!("https://{}.iloveimg.com/v1/upload", server);
+
         let client = reqwest::Client::new();
+
         let mut headers = HeaderMap::new();
+
         headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
+
         headers.insert(
             AUTHORIZATION,
             HeaderValue::from_str(&format!("Bearer {}", TOKEN)).unwrap(),
         );
+
         headers.insert(
             ORIGIN,
             HeaderValue::from_str("https://www.iloveimg.com").unwrap(),
@@ -196,68 +195,19 @@ impl IloveimgUpscaleImgService {
                 .headers(headers.clone())
                 .multipart(form)
                 .send()
-                .await;
+                .await
+                .map_err(|e| e.to_string())?;
 
-            match response {
-                Ok(resp) => {
-                    let text = resp.text().await.map_err(|e| e.to_string())?;
-                    result.push(
-                        serde_json::from_str(&text)
-                            .map_err(|e| format!("Invalid JSON {} => {}", e, text))?,
-                    );
-                }
-                Err(e) => {
-                    if e.is_connect() {
-                        eprintln!("Connection error: {:?}", e);
-                    } else if e.is_timeout() {
-                        eprintln!("Timeout error: {:?}", e);
-                    } else if e.is_request() {
-                        eprintln!("Request error: {:?}", e);
-                    } else if e.is_status() {
-                        eprintln!("HTTP status error: {:?}", e);
-                    } else {
-                        eprintln!("Other error: {:?}", e);
-                    }
-                    return Err(format!("Request failed: {:?}", e));
-                }
-            }
+            let text = response.text().await.map_err(|e| e.to_string())?;
+
+            result.push(
+                serde_json::from_str(&text)
+                    .map_err(|e| format!("Invalid JSON {} => {}", e, text))?,
+            );
+
             sleep(Duration::from_millis(500)).await;
         }
 
         Ok(result)
     }
 }
-
-// i guess since API 29 (scoped storage), outside the app-private directory you don't get a Path — only a content:// URI through the
-//   Storage Access Framework (SAF). That's why the plugin returns FileUri instead of PathBuf. You can't make it return a path, because there is no path.
-
-// #[derive(Serialize, Deserialize, Clone)]
-// #[serde(tag = "kind", content = "value")]
-// pub enum SavedHandle {
-//       Path(String),  // Windows/Linux: PathBuf.to_string_lossy().into_owned()
-//       Uri(String),   // Android: "content://..." from SAF
-//   }
-
-// Rule: never Path::new(&handle.value) on a Uri variant. Read/write only goes through the abstraction below.
-// for app-private data you don't need the fork at all — app_data_dir() gives you a real PathBuf everywhere, including Android (it points inside /data/data/<pkg>/files, no SAF involved).
-
-// Thin trait, two impls
-
-//   // fs_kit/mod.rs
-//   pub trait UserFileStore {
-//       async fn save(&self, bytes: &[u8], suggested_name: &str)
-//           -> Result<SavedHandle>;
-//       async fn read(&self, handle: &SavedHandle) -> Result<Vec<u8>>;
-//   }
-
-//   #[cfg(not(target_os = "android"))]
-//   mod desktop {
-//       // uses tauri-plugin-dialog + tokio::fs
-//       // returns SavedHandle::Path(...)
-//   }
-
-//   #[cfg(target_os = "android")]
-//   mod android {
-//       // uses tauri-plugin-android-fs
-//       // returns SavedHandle::Uri(...)
-//   }

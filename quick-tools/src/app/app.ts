@@ -6,7 +6,7 @@ import { Toast } from './shared/components/toast/toast';
 import { DialogService } from './core/services/dialog-service';
 import { LanguageService } from './core/services/language-service';
 import { TauriCommandService } from './core/services/tauri-command-service';
-import { Commands } from './core/enums/commands.enum';
+import { Commands } from './core/constants/commands.enum';
 import { SplashScreen } from './shared/components/splash-screen/splash-screen';
 import { IpAddress, IpAddressInfo } from './core/models/payload-commands/ip.payload';
 import { IpStore } from './shared/stores/ip.store';

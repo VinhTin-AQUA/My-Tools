@@ -24,28 +24,28 @@
         <!-- GRID: PREVIEW + RESULT -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- PREVIEW COLUMN -->
-            @if (previewList().length > 0) {
+            @if (selectedFiles().length > 0) {
                 <div class="space-y-2">
                     <h3 class="text-sm font-semibold text-slate-400">Preview</h3>
 
                     <div class="overflow-y-auto space-y-2 pr-1">
-                        @for (img of previewList(); track img.id) {
+                        @for (img of selectedFiles(); track img.id) {
                             <div
                                 (click)="openPreview($index)"
                                 class="flex items-center justify-between gap-3 p-3 bg-slate-800/50 border border-slate-700 rounded-xl hover:bg-slate-700/70 transition cursor-pointer"
                             >
                                 <div class="flex items-center gap-3 min-w-0 flex-1">
                                     <img
-                                        [src]="img.src"
+                                        [src]="img.previewUrl"
                                         class="w-12 h-12 rounded-lg object-cover"
                                     />
 
                                     <div class="min-w-0 flex-1">
                                         <p class="text-sm font-medium truncate">
-                                            {{ img.filename }}
+                                            {{ img.fileName }}
                                         </p>
                                         <p class="text-xs text-slate-400">
-                                            {{ formatSize(img.file_size) }}
+                                            {{ formatSize(img.size) }}
                                         </p>
                                     </div>
                                 </div>
@@ -145,10 +145,10 @@
     <!-- BOTTOM CONTROL PANEL -->
     <div class="fixed bottom-0 left-0 w-full bg-slate-900 border-t border-slate-700 p-4 space-y-3">
         <!-- PROGRESS + RESULT COUNT -->
-        @if (previewList().length > 0) {
+        @if (selectedFiles().length > 0) {
             <div class="space-y-2">
                 <div class="flex items-center justify-between text-xs text-slate-400">
-                    <span>{{ processedCount() }}/{{ previewList().length }}</span>
+                    <span>{{ processedCount() }}/{{ selectedFiles().length }}</span>
                     @if (resultImages().length > 0) {
                         <span class="text-emerald-400"> {{ resultImages().length }} results </span>
                     }
@@ -157,7 +157,7 @@
                 <div class="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
                     <div
                         class="h-full bg-emerald-500 transition-all duration-300"
-                        [style.width]="(processedCount() / previewList().length) * 100 + '%'"
+                        [style.width]="(processedCount() / selectedFiles().length) * 100 + '%'"
                     ></div>
                 </div>
             </div>
@@ -167,7 +167,7 @@
         <button
             class="primary-btn w-full py-3 rounded-xl font-medium disabled:opacity-50"
             (click)="submit()"
-            [disabled]="previewList().length === 0"
+            [disabled]="selectedFiles().length === 0"
         >
             @if (submitted()) {
                 <span class="flex items-center justify-center gap-2">
@@ -175,7 +175,7 @@
                     Processing...
                 </span>
             } @else {
-                <span>Submit ({{ previewList().length }})</span>
+                <span>Submit ({{ selectedFiles().length }})</span>
             }
         </button>
     </div>

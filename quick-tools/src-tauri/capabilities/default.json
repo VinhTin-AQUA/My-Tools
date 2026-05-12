@@ -5,40 +5,17 @@
     "windows": ["main"],
     "permissions": [
         "core:default",
+
         "fs:default",
+        "fs:allow-app-read-recursive",
+        "fs:allow-app-write-recursive",
+        "fs:allow-exists",
+        "fs:allow-mkdir",
+        "fs:allow-write-file",
+        "fs:allow-read-file",
+
         "android-fs:all-without-delete",
-        {
-            "identifier": "fs:allow-download-read-recursive",
-            "allow": [
-                {
-                    "path": "$DOWNLOAD/*"
-                }
-            ]
-        },
-        {
-            "identifier": "fs:allow-download-write-recursive",
-            "allow": [
-                {
-                    "path": "$DOWNLOAD/*"
-                }
-            ]
-        },
-        {
-            "identifier": "fs:allow-picture-read-recursive",
-            "allow": [
-                {
-                    "path": "$PICTURE/*"
-                }
-            ]
-        },
-        {
-            "identifier": "fs:allow-picture-write-recursive",
-            "allow": [
-                {
-                    "path": "$PICTURE/*"
-                }
-            ]
-        },
+
         "os:default",
         "dialog:default",
         "notification:default"

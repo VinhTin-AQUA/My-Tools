@@ -3,10 +3,9 @@ import { getCurrentWebview } from '@tauri-apps/api/webview';
 import { Icon } from '../../shared/components/icon/icon';
 import { TauriCommandService } from '../../core/services/tauri-command-service';
 import { DialogService } from '../../core/services/dialog-service';
-import { Commands } from '../../core/enums/commands.enum';
+import { Commands } from '../../core/constants/commands.enum';
 import { SelectBox } from '../../shared/components/select-box/select-box';
 import { OptionModel } from '../../core/models/option.model';
-import { DialogHelper } from '../../shared/helpers/dialog.helper';
 import { Button } from '../../shared/components/button/button';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import { EmitEvents } from '../../core/constants/emit_events';
@@ -14,7 +13,7 @@ import { UpscaleImageRequest, UpscaleImageResult } from '../../core/models/uploa
 import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 import { NotificationHelper } from '../../shared/helpers/notification.helper';
-import { FileHelper } from '../../shared/helpers/file.helper';
+import { FileHelper, SelectedFile } from '../../shared/helpers/file.helper';
 import { UpscaleResult } from './models/upscale-result';
 
 @Component({
@@ -24,7 +23,8 @@ import { UpscaleResult } from './models/upscale-result';
     styleUrl: './iloveimg-upscale-image.scss',
 })
 export class IloveimgUpscaleImage {
-    previewList = signal<UpscaleResult[]>([]);
+    // previewList = signal<UpscaleResult[]>([]);
+    selectedFiles = signal<SelectedFile[]>([]);
     resultImages = signal<UpscaleResult[]>([]);
     scale: string = '1';
     scaleOptions: OptionModel[] = [
@@ -103,53 +103,59 @@ export class IloveimgUpscaleImage {
     }
 
     async onFilesSelected() {
-        const files = await DialogHelper.selectMultiFiles();
+        const files = await FileHelper.selectMultiFiles();
 
         if (!files) {
             return;
         }
 
-        const list = await Promise.all(
-            files.map(async (file) => {
-                const src = await FileHelper.fileToBlobUrl(file.path);
+        // const list = await Promise.all(
+        //     files.map(async (file) => {
+        //         const src = await FileHelper.fileToBlobUrl(file.path);
 
-                const item: UpscaleResult = {
-                    id: crypto.randomUUID(),
+        //         const item: UpscaleResult = {
+        //             id: crypto.randomUUID(),
 
-                    filename: file.name,
+        //             filename: file.name,
 
-                    file_size: file.size,
+        //             file_size: file.size,
 
-                    src,
+        //             src,
 
-                    downloaded: false,
+        //             downloaded: false,
 
-                    handle: {
-                        kind: file.path.startsWith('content://') ? 'Uri' : 'Path',
+        //             handle: {
+        //                 kind: file.path.startsWith('content://') ? 'Uri' : 'Path',
 
-                        value: file.path,
-                    },
-                };
+        //                 value: file.path,
+        //             },
+        //         };
 
-                return item;
-            }),
-        );
+        //         return item;
+        //     }),
+        // );
 
-        this.previewList.set(list);
+        // this.previewList.set(list);
+        this.selectedFiles.set(files);
     }
 
     removeFile(id: string) {
-        this.previewList.update((list) => list.filter((item) => item.id !== id));
+        // this.previewList.update((list) => list.filter((item) => item.id !== id));
+
+        this.selectedFiles.update((list) => list.filter((item) => item.id !== id));
     }
 
     openPreview(index: number) {
-        this.currentPreview = this.previewList()[index].src;
+        // this.currentPreview = this.previewList()[index].src;
+        // this.showPopup = true;
+
+        this.currentPreview = this.selectedFiles()[index].previewUrl;
         this.showPopup = true;
     }
 
     openPreviewResult(index: number) {
-        this.currentPreview = this.resultImages()[index].src;
-        this.showPopup = true;
+        // this.currentPreview = this.resultImages()[index].src;
+        // this.showPopup = true;
     }
 
     closePopup() {
@@ -163,6 +169,14 @@ export class IloveimgUpscaleImage {
     }
 
     async submit() {
+        // xóa file cũ
+
+        // tạo file mới
+
+        const saved = await FileHelper.saveFilesToAppData(this.selectedFiles(), 'images');
+
+        console.log(saved);
+
         if (this.submitted() == true) {
             this.dialogService.showToastMessage(
                 true,
@@ -172,7 +186,7 @@ export class IloveimgUpscaleImage {
             );
             return;
         }
-        this.previewList.update((images) => images.map((img) => ({ ...img, downloaded: false })));
+        this.selectedFiles.update((images) => images.map((img) => ({ ...img, downloaded: false })));
 
         this.submitted.set(true);
         const check = this.validateFiles();
@@ -182,25 +196,10 @@ export class IloveimgUpscaleImage {
         this.resultImages.set([]);
         this.processedCount.set(0);
 
-        const files = this.previewList().map((x) => {
-            const file: UpscaleImageRequest = {
-                id: x.id,
-
-                filename: x.filename,
-
-                handle: x.handle,
-            };
-
-            return file;
-        });
-
         const payload: ILoveImgUpscalePayloadCommand = {
-            files: files,
+            files: this.selectedFiles(),
             scale: this.scale,
         };
-
-        console.log(files);
-        
 
         const r = await this.tauriCommandService.invokeCommand<UpscaleImageResult[]>(
             Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
@@ -208,7 +207,8 @@ export class IloveimgUpscaleImage {
         );
 
         console.log(r);
-        
+
+
         this.submitted.set(false);
         if (!r) {
             this.dialogService.showToastMessage(
@@ -219,6 +219,43 @@ export class IloveimgUpscaleImage {
             );
             return;
         }
+
+        // const files = this.previewList().map((x) => {
+        //     const file: UpscaleImageRequest = {
+        //         id: x.id,
+
+        //         filename: x.filename,
+
+        //         handle: x.handle,
+        //     };
+
+        //     return file;
+        // });
+
+        // const payload: ILoveImgUpscalePayloadCommand = {
+        //     files: files,
+        //     scale: this.scale,
+        // };
+
+        // console.log(files);
+
+        // const r = await this.tauriCommandService.invokeCommand<UpscaleImageResult[]>(
+        //     Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
+        //     payload,
+        // );
+
+        // console.log(r);
+
+        // this.submitted.set(false);
+        // if (!r) {
+        //     this.dialogService.showToastMessage(
+        //         true,
+        //         'Error upscale images',
+        //         'Please try again',
+        //         false,
+        //     );
+        //     return;
+        // }
     }
 
     validateFiles() {
@@ -226,49 +263,49 @@ export class IloveimgUpscaleImage {
         const MAX_SIZE = 10 * 1024 * 1024; // 10MB
         const MAX_TOTAL_SIZE = 15 * 1024 * 1024; // 15MB
 
-        if (this.previewList().length === 0) {
-            this.dialogService.showToastMessage(
-                true,
-                'No image choosen',
-                'Please choose at least 1 image',
-                false,
-            );
-            return false;
-        }
+        // if (this.previewList().length === 0) {
+        //     this.dialogService.showToastMessage(
+        //         true,
+        //         'No image choosen',
+        //         'Please choose at least 1 image',
+        //         false,
+        //     );
+        //     return false;
+        // }
 
-        if (this.previewList().length > MAX_FILES) {
-            this.dialogService.showToastMessage(
-                true,
-                `Max files is ${MAX_FILES} files`,
-                `You can only select a maximum of ${MAX_FILES} files.`,
-                false,
-            );
-            return false;
-        }
+        // if (this.previewList().length > MAX_FILES) {
+        //     this.dialogService.showToastMessage(
+        //         true,
+        //         `Max files is ${MAX_FILES} files`,
+        //         `You can only select a maximum of ${MAX_FILES} files.`,
+        //         false,
+        //     );
+        //     return false;
+        // }
 
-        let totalSize = 0;
-        for (const item of this.previewList()) {
-            totalSize += item.file_size;
-            if (item.file_size > MAX_SIZE) {
-                this.dialogService.showToastMessage(
-                    true,
-                    `Max size per file is ${MAX_SIZE} mb`,
-                    `The file "${item.filename}" exceeds 10MB.`,
-                    false,
-                );
-                return false;
-            }
-        }
+        // let totalSize = 0;
+        // for (const item of this.previewList()) {
+        //     totalSize += item.file_size;
+        //     if (item.file_size > MAX_SIZE) {
+        //         this.dialogService.showToastMessage(
+        //             true,
+        //             `Max size per file is ${MAX_SIZE} mb`,
+        //             `The file "${item.filename}" exceeds 10MB.`,
+        //             false,
+        //         );
+        //         return false;
+        //     }
+        // }
 
-        if (totalSize > MAX_TOTAL_SIZE) {
-            this.dialogService.showToastMessage(
-                true,
-                `Exceeded total capacity ${this.formatSize(totalSize)}`,
-                `The total size exceeds 15MB (currently ${this.formatSize(totalSize)})`,
-                false,
-            );
-            return false;
-        }
+        // if (totalSize > MAX_TOTAL_SIZE) {
+        //     this.dialogService.showToastMessage(
+        //         true,
+        //         `Exceeded total capacity ${this.formatSize(totalSize)}`,
+        //         `The total size exceeds 15MB (currently ${this.formatSize(totalSize)})`,
+        //         false,
+        //     );
+        //     return false;
+        // }
         return true;
     }
 

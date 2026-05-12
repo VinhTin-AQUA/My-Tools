@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { MAIN_ROUTE, MainRoutes } from '../../core/enums/routes.enum';
+import { MAIN_ROUTE, MainRoutes } from '../../core/constants/routes.enum';
 import { TauriCommandService } from '../../core/services/tauri-command-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { IpStore } from '../../shared/stores/ip.store';

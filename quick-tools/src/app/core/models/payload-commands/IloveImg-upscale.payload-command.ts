@@ -1,11 +1,17 @@
-import { UpscaleImageRequest } from "../upload-image.model";
+import { SelectedFile } from "../../../shared/helpers/file.helper";
 
-export interface BinaryFile {
-    name: string;
-    bytes: number[];
+// export interface BinaryFile {
+//     name: string;
+//     bytes: number[];
+// }
+
+export interface UpscaleImageFile {
+    id: string;
+    fileName: string;
+    path: string
 }
 
 export interface ILoveImgUpscalePayloadCommand {
-    files: UpscaleImageRequest[];
+    files: UpscaleImageFile[];
     scale: string,
 }

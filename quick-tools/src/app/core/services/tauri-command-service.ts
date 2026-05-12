@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
 import { DialogService } from './dialog-service';
-import { Commands } from '../enums/commands.enum';
+import { Commands } from '../constants/commands.enum';
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +10,7 @@ export class TauriCommandService {
     constructor(private dialogService: DialogService) {}
 
     async invokeCommand<T>(
-        command: Commands,
+        command: string,
         params: any,
         isLoading: boolean = false
     ): Promise<T | null> {

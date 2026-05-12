@@ -16,13 +16,11 @@ pub struct BinaryFile {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct UpscaleImageRequest {
     pub id: String,
-
-    pub handle: SavedHandle,
-
-    // không derive filename từ uri
-    pub filename: String,
+    pub file_name: String,
+    pub path: String
 }
 
 #[derive(Serialize, Deserialize, Clone)]
