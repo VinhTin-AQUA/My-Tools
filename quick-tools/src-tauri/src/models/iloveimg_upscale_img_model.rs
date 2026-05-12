@@ -15,7 +15,7 @@ pub struct BinaryFile {
     pub bytes: Vec<u8>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct UpscaleImageRequest {
     pub id: String,
 

@@ -199,6 +199,9 @@ export class IloveimgUpscaleImage {
             scale: this.scale,
         };
 
+        console.log(files);
+        
+
         const r = await this.tauriCommandService.invokeCommand<UpscaleImageResult[]>(
             Commands.ILOVEIMG_UPSCALE_IMG_COMMAND,
             payload,

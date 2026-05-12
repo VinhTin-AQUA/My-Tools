@@ -84,6 +84,7 @@ dependencies = [
  "dirs 5.0.1",
  "futures",
  "log",
+ "mime_guess",
  "rand 0.8.6",
  "regex",
  "reqwest 0.12.28",
