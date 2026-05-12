@@ -1,9 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::fs_kit::SavedHandle;
-
-pub type FsResult<T> = Result<T, Box<dyn std::error::Error + Send + Sync>>;
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UploadResponse {
     pub server_filename: String,

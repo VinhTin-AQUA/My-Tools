@@ -1,12 +1,12 @@
 import { writeFile, BaseDirectory, readFile, exists, mkdir } from '@tauri-apps/plugin-fs';
-import { AndroidFs, AndroidPublicImageDir } from 'tauri-plugin-android-fs-api';
-import { platform } from '@tauri-apps/plugin-os';
 import { join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 import { invoke } from '@tauri-apps/api/core';
 import { Commands } from '../../core/constants/commands.enum';
 import { FileMetadata } from '../../core/models/upload-image.model';
+import { AndroidFs } from 'tauri-plugin-android-fs-api';
+import { platform } from '@tauri-apps/plugin-os';
 
 // rust: https://crates.io/crates/tauri-plugin-android-fs
 // js binding: https://www.npmjs.com/package/tauri-plugin-android-fs-api?activeTab=readme

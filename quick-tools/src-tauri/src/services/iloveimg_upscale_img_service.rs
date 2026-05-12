@@ -1,14 +1,18 @@
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
-use std::path::{Path, PathBuf};
+use tauri::AppHandle;
 use tokio::{
     fs,
     time::{sleep, Duration},
 };
 
-use crate::models::iloveimg_upscale_img_model::{
-    BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
+use crate::{
+    constants::app_constants,
+    helpers::file_helper,
+    models::iloveimg_upscale_img_model::{
+        BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
+    },
 };
 
 static TOKEN: &str = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOiIiLCJpYXQiOjE1MjMzNjQ4MjQsIm5iZiI6MTUyMzM2NDgyNCwianRpIjoicHJvamVjdF9wdWJsaWNfYzkwNWRkMWMwMWU5ZmQ3NzY5ODNjYTQwZDBhOWQyZjNfT1Vzd2EwODA0MGI4ZDJjN2NhM2NjZGE2MGQ2MTBhMmRkY2U3NyJ9.qvHSXgCJgqpC4gd6-paUlDLFmg0o2DsOvb1EUYPYx_E";
@@ -28,6 +32,7 @@ impl IloveimgUpscaleImgService {
 
     pub async fn upscale_images(
         &self,
+        app: &AppHandle,
         scale: &str,
         upscale_images: Vec<UpscaleImageRequest>,
     ) -> Result<Vec<UpscaleImageResult>, String> {
@@ -39,10 +44,8 @@ impl IloveimgUpscaleImgService {
             println!("Processing: {}", upscale_image.file_name);
 
             let server = Self::random_server();
-
             let task_id = Self::get_task_id().await?;
 
-            // đọc file trực tiếp từ path
             let bytes = fs::read(&upscale_image.path)
                 .await
                 .map_err(|e| e.to_string())?;
@@ -53,11 +56,8 @@ impl IloveimgUpscaleImgService {
             };
 
             let uploaded = Self::upload_images(server.as_str(), task_id.as_str(), &[file]).await?;
-
             let uploaded_file = uploaded.get(0).ok_or("Upload failed")?;
-
             let url = format!("https://{}.iloveimg.com/v1/upscale", server);
-
             let mut headers = HeaderMap::new();
 
             headers.insert(USER_AGENT, HeaderValue::from_str(USER_AGENT_STR).unwrap());
@@ -89,20 +89,35 @@ impl IloveimgUpscaleImgService {
                 .map_err(|e| e.to_string())?;
 
             // tạo output path
-            let input_path = Path::new(&upscale_image.path);
+            // let input_path = Path::new(&upscale_image.path);
 
-            let file_name = input_path.file_name().unwrap().to_string_lossy();
+            // let file_name = input_path.file_name().unwrap().to_string_lossy();
 
-            let output_file_name = format!("upscaled_{}", file_name);
+            // let output_file_name = format!("upscaled_{}", file_name);
 
-            let output_path: PathBuf = input_path.parent().unwrap().join(output_file_name);
+            // let output_path: PathBuf = input_path.parent().unwrap().join(output_file_name);
 
             // save file trực tiếp
-            fs::write(&output_path, &result_bytes)
-                .await
-                .map_err(|e| e.to_string())?;
+            // fs::write(&output_path, &result_bytes)
+            //     .await
+            //     .map_err(|e| e.to_string())?;
 
-            let result_path = output_path.to_string_lossy().to_string();
+            // save to public directory (Downloads)
+            let _ = file_helper::save_bytes(
+                uploaded_file.server_filename.clone().as_str(),
+                &result_bytes,
+            )
+            .await?;
+
+            // save to private directory
+            let private_path = file_helper::save_bytes_to_private_dir(
+                app,
+                app_constants::SCALED_FOLDER,
+                uploaded_file.server_filename.clone().as_str(),
+                &result_bytes,
+            )
+            .await?;
+            let result_path = private_path.to_string_lossy().to_string();
 
             println!("Saved: {}", result_path);
 
@@ -110,7 +125,6 @@ impl IloveimgUpscaleImgService {
                 id: upscale_image.id,
                 path: result_path,
             };
-
             outputs.push(result);
 
             sleep(Duration::from_millis(800)).await;
