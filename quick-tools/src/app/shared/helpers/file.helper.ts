@@ -51,9 +51,7 @@ export class FileHelper {
 
         const results = await Promise.all(
             normalized.map(async (path) => {
-                const metadata = await invoke<FileMetadata>(Commands.GET_FILE_METADATA, {
-                    path,
-                });
+                const metadata = await FileHelper.getStatOfFile(path);
 
                 // read binary file
                 const content = await readFile(path);
@@ -61,11 +59,8 @@ export class FileHelper {
                 return {
                     id: crypto.randomUUID().toString(),
                     path,
-
-                    fileName: metadata.name,
-
+                    fileName: FileHelper.getFileName(path),
                     size: metadata.size,
-
                     content,
                     downloaded: false,
                     previewUrl: FileHelper.uint8ArrayToBlobUrl(content),
@@ -97,21 +92,6 @@ export class FileHelper {
             reader.readAsDataURL(file);
         });
     }
-
-    // static async fileToBlobUrl(path: string) {
-    //     const currentPlatform = platform();
-    //     let r = '';
-    //     if (currentPlatform === 'android') {
-    //         const data = await readFile(path);
-    //         const blob = new Blob([data]);
-    //         r = URL.createObjectURL(blob);
-    //     } else if (currentPlatform === 'linux' || currentPlatform === 'windows') {
-    //         r = convertFileSrc(path);
-    //     } else {
-    //     }
-
-    //     return r;
-    // }
 
     static async saveFileToAppData(
         fileName: string,
@@ -176,6 +156,10 @@ export class FileHelper {
             baseDir: BaseDirectory.AppData,
         });
         return info;
+    }
+
+    static getFileName(path: string): string {
+        return path.split(/[\\/]/).pop() ?? '';
     }
 
     //----------------------------------------------------------

@@ -19,7 +19,6 @@ export class LanguageService {
         this.translate.use('en'); // sử dụng ngôn ngữ khi mở ứng dụng
     }
 
-    // chuyển đổi giữa các ngôn ngữ
     use(lang: string) {
         this.translate.use(lang).subscribe({
             next: (_) => {},

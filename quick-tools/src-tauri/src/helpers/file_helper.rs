@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use tauri::{AppHandle, Manager};
 
-/// Save bytes into platform public directory
+// Save bytes into platform public directory
 pub async fn save_bytes(file_name: &str, bytes: &[u8]) -> Result<PathBuf, String> {
     #[cfg(target_os = "android")]
     {
@@ -15,6 +15,7 @@ pub async fn save_bytes(file_name: &str, bytes: &[u8]) -> Result<PathBuf, String
     }
 }
 
+// Save bytes into platform private directory
 pub async fn save_bytes_to_private_dir(
     app: &AppHandle,
     folder: &str,

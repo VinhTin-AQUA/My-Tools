@@ -1,10 +1,3 @@
-import { SelectedFile } from "../../../shared/helpers/file.helper";
-
-// export interface BinaryFile {
-//     name: string;
-//     bytes: number[];
-// }
-
 export interface UpscaleImageFile {
     id: string;
     fileName: string;

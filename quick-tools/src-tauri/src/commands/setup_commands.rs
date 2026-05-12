@@ -1,10 +1,8 @@
 use tauri::AppHandle;
-// use tokio::time::{sleep, Duration};
+
 
 #[tauri::command]
-pub async fn init_complete(app: AppHandle) -> Result<bool, ()> {
-    // sleep(Duration::from_secs(3)).await;
-
+pub async fn init_complete() -> Result<bool, ()> {
     #[cfg(not(target_os = "android"))]
     {}
 

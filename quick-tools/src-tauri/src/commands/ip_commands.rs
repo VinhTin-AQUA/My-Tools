@@ -10,7 +10,6 @@ pub async fn get_your_ip_command(state: State<'_, Mutex<AppState>>) -> Result<Ip
     let mut state_guard = state.lock().await;
     let ip_service = &mut state_guard.ip_service;
 
-    // gọi hàm của service
     let r = ip_service
         .lock()
         .await
@@ -29,7 +28,6 @@ pub async fn get_your_ip_info_command(
     let mut state_guard = state.lock().await;
     let ip_service = &mut state_guard.ip_service;
 
-    // gọi hàm của service
     let r = ip_service
         .lock()
         .await
