@@ -1,4 +1,4 @@
-import { writeFile, BaseDirectory, readFile, exists, mkdir } from '@tauri-apps/plugin-fs';
+import { writeFile, BaseDirectory, readFile, exists, mkdir, readDir, remove } from '@tauri-apps/plugin-fs';
 import { join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
@@ -22,6 +22,51 @@ export interface SelectedFile {
 }
 
 export class FileHelper {
+    static async selectMultiFiles(): Promise<SelectedFile[] | null> {
+        const files = await open({
+            multiple: true,
+            directory: false,
+            filters: [
+                {
+                    name: 'Image',
+                    extensions: IMAGE_EXTENSIONS,
+                },
+            ],
+        });
+
+        if (!files) {
+            return null;
+        }
+
+        const normalized = Array.isArray(files) ? files : [files];
+
+        const results = await Promise.all(
+            normalized.map(async (path) => {
+                const metadata = await invoke<FileMetadata>(Commands.GET_FILE_METADATA, {
+                    path,
+                });
+
+                // read binary file
+                const content = await readFile(path);
+
+                return {
+                    id: crypto.randomUUID().toString(),
+                    path,
+
+                    fileName: metadata.name,
+
+                    size: metadata.size,
+
+                    content,
+                    downloaded: false,
+                    previewUrl: FileHelper.uint8ArrayToBlobUrl(content),
+                };
+            }),
+        );
+
+        return results;
+    }
+
     static async writeImgToPicturesFromBase64(fileName: string, base64: string) {
         const currentPlatform = platform();
 
@@ -102,49 +147,19 @@ export class FileHelper {
         return savedPaths;
     }
 
-    static async selectMultiFiles(): Promise<SelectedFile[] | null> {
-        const files = await open({
-            multiple: true,
-            directory: false,
-            filters: [
-                {
-                    name: 'Image',
-                    extensions: IMAGE_EXTENSIONS,
-                },
-            ],
+    static async clearScaledFolderInAppData(folderName: string) {
+        const entries = await readDir(folderName, {
+            baseDir: BaseDirectory.AppData,
         });
 
-        if (!files) {
-            return null;
-        }
-
-        const normalized = Array.isArray(files) ? files : [files];
-
-        const results = await Promise.all(
-            normalized.map(async (path) => {
-                const metadata = await invoke<FileMetadata>(Commands.GET_FILE_METADATA, {
-                    path,
+        // xóa từng file
+        for (const entry of entries) {
+            if (entry.isFile && entry.name) {
+                await remove(`${folderName}/${entry.name}`, {
+                    baseDir: BaseDirectory.AppData,
                 });
-
-                // read binary file
-                const content = await readFile(path);
-
-                return {
-                    id: crypto.randomUUID().toString(),
-                    path,
-
-                    fileName: metadata.name,
-
-                    size: metadata.size,
-
-                    content,
-                    downloaded: false,
-                    previewUrl: FileHelper.uint8ArrayToBlobUrl(content)
-                };
-            }),
-        );
-
-        return results;
+            }
+        }
     }
 
     //----------------------------------------------------------

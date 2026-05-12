@@ -20,7 +20,10 @@ pub struct UpscaleImageRequest {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct UpscaleImageResult {
     pub id: String,
     pub path: String,
+    pub file_name: String,
+    
 }

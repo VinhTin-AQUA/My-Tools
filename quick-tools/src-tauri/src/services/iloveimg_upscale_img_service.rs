@@ -124,6 +124,7 @@ impl IloveimgUpscaleImgService {
             let result = UpscaleImageResult {
                 id: upscale_image.id,
                 path: result_path,
+                file_name: uploaded_file.server_filename.clone()
             };
             outputs.push(result);
 

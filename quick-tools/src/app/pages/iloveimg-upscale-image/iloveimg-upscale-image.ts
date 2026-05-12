@@ -9,12 +9,17 @@ import { OptionModel } from '../../core/models/option.model';
 import { Button } from '../../shared/components/button/button';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
 import { EmitEvents } from '../../core/constants/emit_events';
-import { UpscaleImageRequest, UpscaleImageResult } from '../../core/models/upload-image.model';
+import {
+    UpscaleImageRequest,
+    UpscaleImageResult,
+    UpscaleReviewResult,
+} from '../../core/models/upload-image.model';
 import { ILoveImgUpscalePayloadCommand } from '../../core/models/payload-commands/IloveImg-upscale.payload-command';
 import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
 import { NotificationHelper } from '../../shared/helpers/notification.helper';
 import { FileHelper, SelectedFile } from '../../shared/helpers/file.helper';
-import { UpscaleResult } from './models/upscale-result';
+import { convertFileSrc } from '@tauri-apps/api/core';
+import { AppConstants } from '../../core/constants/app_constants';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
@@ -25,7 +30,7 @@ import { UpscaleResult } from './models/upscale-result';
 export class IloveimgUpscaleImage {
     // previewList = signal<UpscaleResult[]>([]);
     selectedFiles = signal<SelectedFile[]>([]);
-    resultImages = signal<UpscaleResult[]>([]);
+    upscaleReviewResults = signal<UpscaleReviewResult[]>([]);
     scale: string = '1';
     scaleOptions: OptionModel[] = [
         { label: '1', value: '1' },
@@ -154,8 +159,8 @@ export class IloveimgUpscaleImage {
     }
 
     openPreviewResult(index: number) {
-        // this.currentPreview = this.resultImages()[index].src;
-        // this.showPopup = true;
+        this.currentPreview = this.upscaleReviewResults()[index].previewSrc;
+        this.showPopup = true;
     }
 
     closePopup() {
@@ -169,14 +174,6 @@ export class IloveimgUpscaleImage {
     }
 
     async submit() {
-        // xóa file cũ
-
-        // tạo file mới
-
-        const saved = await FileHelper.saveFilesToAppData(this.selectedFiles(), 'images');
-
-        console.log(saved);
-
         if (this.submitted() == true) {
             this.dialogService.showToastMessage(
                 true,
@@ -193,8 +190,12 @@ export class IloveimgUpscaleImage {
         if (!check) {
             return;
         }
-        this.resultImages.set([]);
+        this.upscaleReviewResults.set([]);
         this.processedCount.set(0);
+
+        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
+        const saved = await FileHelper.saveFilesToAppData(this.selectedFiles(), 'images');
 
         const payload: ILoveImgUpscalePayloadCommand = {
             files: this.selectedFiles(),
@@ -206,9 +207,6 @@ export class IloveimgUpscaleImage {
             payload,
         );
 
-        console.log(r);
-
-
         this.submitted.set(false);
         if (!r) {
             this.dialogService.showToastMessage(
@@ -219,6 +217,18 @@ export class IloveimgUpscaleImage {
             );
             return;
         }
+
+        const upscaleReviewResultData = r.map((x) => {
+            const temp: UpscaleReviewResult = {
+                file_size: 0,
+                fileName: x.fileName,
+                id: x.id,
+                previewSrc: convertFileSrc(x.path),
+            };
+            return temp;
+        });
+
+        this.upscaleReviewResults.set(upscaleReviewResultData);
 
         // const files = this.previewList().map((x) => {
         //     const file: UpscaleImageRequest = {

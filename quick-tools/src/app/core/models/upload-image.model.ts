@@ -14,9 +14,21 @@ export interface UpscaleImageRequest {
 export interface UpscaleImageResult {
     id: string;
     path: string
+    fileName: string,
 }
 
 export interface FileMetadata {
     name: string;
     size: number;
 }
+
+export interface UpscaleReviewResult {
+    id: string;
+
+    fileName: string;
+
+    previewSrc: string;
+
+    file_size: number;
+}
+
