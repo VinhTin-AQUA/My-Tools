@@ -1,22 +1,45 @@
 <div class="flex flex-col max-w-md md:max-w-5xl mx-auto">
     <!-- TOP: SCALE SELECTOR -->
-    <div class="p-4 bg-slate-900 sticky top-12 border-b z-10">
-        <app-select-box
-            label="Scale"
-            [options]="scaleOptions"
-            optionLabel="label"
-            optionValue="value"
-            [(value)]="scale"
-            [disabled]="submitted()"
-            class="w-full"
-        ></app-select-box>
+    <div class="sticky top-12 z-10 bg-slate-900/90 backdrop-blur border-b border-slate-700">
+        <div class="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+            <!-- LEFT: SELECT -->
+            <div class="w-full sm:w-56">
+                <app-select-box
+                    label="Scale"
+                    [options]="scaleOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [(value)]="scale"
+                    [disabled]="submitted()"
+                    class="w-full"
+                ></app-select-box>
+            </div>
 
-        <!-- UPLOAD BUTTON -->
-        <app-button (click)="onFilesSelected()" class="w-full">
-            <span class="text-2xl">📷</span>
-            <span class="text-sm font-medium">Select Images</span>
-            <span class="text-xs">PNG, JPG, WEBP</span>
-        </app-button>
+            <!-- RIGHT: ACTIONS -->
+            <div class="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-2">
+                <app-button
+                    (click)="onClear()"
+                    class="flex-1 sm:flex-none h-10 flex items-center justify-center gap-1 text-white bg-red-700 hover:bg-red-600 transition rounded-lg px-3"
+                >
+                    <span class="flex items-center">
+                        <app-icon name="trash" class="w-4 h-4 text-white"></app-icon>
+                    </span>
+
+                    <span class="text-sm font-medium hidden sm:inline"> Clear </span>
+                </app-button>
+
+                <app-button
+                    (click)="onFilesSelected()"
+                    class="flex-1 sm:flex-none h-10 flex items-center justify-center gap-1 text-white bg-indigo-600 hover:bg-indigo-500 transition rounded-lg px-3"
+                >
+                    <span class="text-lg leading-none"
+                        ><app-icon name="camera" class="w-4 h-4 text-white"></app-icon
+                    ></span>
+
+                    <span class="text-sm font-medium hidden sm:inline"> Upload </span>
+                </app-button>
+            </div>
+        </div>
     </div>
 
     <!-- CONTENT -->
@@ -81,7 +104,7 @@
                             </div>
                         }
 
-                        <div class=" block gap-3 p-3">
+                        <div class="block gap-3 p-3">
                             <div class="flex items-center gap-3 min-w-0 flex-1">
                                 <div class="w-12 h-12 rounded-lg"></div>
 
@@ -150,7 +173,9 @@
                 <div class="flex items-center justify-between text-xs text-slate-400">
                     <span>{{ processedCount() }}/{{ selectedFiles().length }}</span>
                     @if (upscaleReviewResults().length > 0) {
-                        <span class="text-emerald-400"> {{ upscaleReviewResults().length }} results </span>
+                        <span class="text-emerald-400">
+                            {{ upscaleReviewResults().length }} results
+                        </span>
                     }
                 </div>
 

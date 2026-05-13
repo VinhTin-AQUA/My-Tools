@@ -1,6 +1,7 @@
 import { CommonModule, NgComponentOutlet } from '@angular/common';
 import { Component, Input, Type } from '@angular/core';
 import {
+    CameraIconComponent,
     DownloadIconComponent,
     ErrorIconComponent,
     LoadingIconComponent,
@@ -14,9 +15,10 @@ export const ICON_REGISTRY: Record<string, Type<any>> = {
     trash: TrashIconComponent,
     loading: LoadingIconComponent,
     error: ErrorIconComponent,
+    camera: CameraIconComponent,
 };
 
-export type IconNames = 'download' | 'tick' | 'trash' | 'loading' | 'error';
+export type IconNames = 'download' | 'tick' | 'trash' | 'loading' | 'error' | 'camera';
 
 @Component({
     selector: 'app-icon',

@@ -36,9 +36,6 @@ export class FileHelper {
         const currentPlatform = platform();
         let newPaths: string[] = [];
 
-        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
-        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
-
         if (currentPlatform === 'android') {
             const files = await AndroidFs.showOpenFilePicker({
                 multiple: true,
@@ -114,9 +111,6 @@ export class FileHelper {
         }
 
         let newPaths: string[] = [];
-
-        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
-        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
 
         for (const uri of paths) {
             const fileName = FileHelper.getFileName(uri);
@@ -250,6 +244,12 @@ export class FileHelper {
 
     static getFileName(path: string): string {
         return path.split(/[\\/]/).pop() ?? '';
+    }
+
+    static async removeInAppData(filePath: string) {
+        await remove(filePath, {
+            baseDir: BaseDirectory.AppData,
+        });
     }
 
     //----------------------------------------------------------

@@ -77,7 +77,6 @@ export class TrashIconComponent {}
             stroke="currentColor"
         >
             <g>
-               
                 <path fill="none"></path>
                 <path
                     fill="currentColor"
@@ -110,3 +109,90 @@ export class LoadingIconComponent {}
     `,
 })
 export class ErrorIconComponent {}
+
+// common
+@Component({
+    selector: 'lib-icon-trash',
+    standalone: true,
+    template: `<svg
+        fill="currentColor"
+        stroke="currentColor"
+        viewBox="0 0 64 64"
+        enable-background="new 0 0 64 64"
+        version="1.1"
+        xml:space="preserve"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        data-iconid="381351"
+        data-svgname="Electronic camera photo"
+    >
+        <g id="_x31_-smartphone"></g>
+
+        <g id="_x32_-smartTV"></g>
+
+        <g id="_x33_-telepon"></g>
+
+        <g id="_x34_-computer"></g>
+
+        <g id="_x35_-kalkulator"></g>
+
+        <g id="_x36_-radio"></g>
+
+        <g id="_x37_-hadset"></g>
+
+        <g id="_x38_-usbflashdisk"></g>
+
+        <g id="_x39_-camera">
+            <g>
+                <path
+                    d="M43.938,18.6L42.056,9.36H21.944L20.062,18.6H18V15h-8v3.6H6v34.186C6,57.315,9.252,61,13.25,61h37.5    c3.998,0,7.25-3.685,7.25-8.214V18.6H43.938z M23.577,11.36h16.846l1.476,7.239H22.102L23.577,11.36z M12,17h4v1.6h-4V17z     M56,52.786C56,56.212,53.645,59,50.75,59h-37.5C10.355,59,8,56.212,8,52.786V20.6h48V52.786z"
+                ></path>
+
+                <path
+                    d="M32,52c6.617,0,12-5.383,12-12s-5.383-12-12-12s-12,5.383-12,12S25.383,52,32,52z M32,30c5.514,0,10,4.486,10,10    s-4.486,10-10,10s-10-4.486-10-10S26.486,30,32,30z"
+                ></path>
+
+                <path
+                    d="M32,47c3.859,0,7-3.14,7-7s-3.141-7-7-7s-7,3.14-7,7S28.141,47,32,47z M32,35c2.757,0,5,2.243,5,5s-2.243,5-5,5    s-5-2.243-5-5S29.243,35,32,35z"
+                ></path>
+
+                <path
+                    d="M49,30c2.206,0,4-1.794,4-4s-1.794-4-4-4s-4,1.794-4,4S46.794,30,49,30z M49,24c1.103,0,2,0.897,2,2s-0.897,2-2,2    s-2-0.897-2-2S47.897,24,49,24z"
+                ></path>
+            </g>
+        </g>
+
+        <g id="_x31_0-printer"></g>
+
+        <g id="_x31_1-powerbank"></g>
+
+        <g id="_x31_2-kulkas"></g>
+
+        <g id="_x31_3-modem"></g>
+
+        <g id="_x31_4-tablet"></g>
+
+        <g id="_x31_5-gamebot"></g>
+
+        <g id="_x31_6-wasing_machine"></g>
+
+        <g id="_x31_7-handdryer"></g>
+
+        <g id="_x31_8-blender"></g>
+
+        <g id="_x31_9-controller"></g>
+
+        <g id="_x32_0-michrophone"></g>
+
+        <g id="_x32_1-lamp"></g>
+    </svg>`,
+})
+export class CameraIconComponent {}
+
+// common
+@Component({
+    selector: 'lib-icon-trash',
+    standalone: true,
+    template: ``,
+})
+export class CommonIconComponent {}

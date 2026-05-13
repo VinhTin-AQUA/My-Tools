@@ -69,6 +69,12 @@ export class IloveimgUpscaleImage {
                         img.id === event.payload.id ? { ...img, downloaded: true } : img,
                     ),
                 );
+
+                this.selectedFiles.update((files) =>
+                    files.map((file) =>
+                        file.id === event.payload.id ? { ...file, downloaded: true } : file,
+                    ),
+                );
                 await NotificationHelper.sendNotification('Saved', event.payload.path);
             },
         );
@@ -81,28 +87,52 @@ export class IloveimgUpscaleImage {
                     IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(`.${ext}`)),
                 );
 
-                const list = await FileHelper.dragAndDropFile(imagePaths);
+                const files = await FileHelper.dragAndDropFile(imagePaths);
 
-                if (!list) {
+                if (!files) {
                     return;
                 }
 
-                this.selectedFiles.set(list);
+                this.selectedFiles.update((current) => {
+                    const existingPaths = new Set(current.map((f) => f.path));
+
+                    const newFiles = files.filter((f) => !existingPaths.has(f.path));
+
+                    return [...current, ...newFiles];
+                });
             } else {
             }
         });
     }
 
     async onFilesSelected() {
+        // const files = await FileHelper.selectMultiFiles();
+
+        // if (!files) {
+        //     return;
+        // }
+        // this.selectedFiles.set(files);
+
         const files = await FileHelper.selectMultiFiles();
 
         if (!files) {
             return;
         }
-        this.selectedFiles.set(files);
+
+        this.selectedFiles.update((current) => {
+            const existingPaths = new Set(current.map((f) => f.path));
+
+            const newFiles = files.filter((f) => !existingPaths.has(f.path));
+
+            return [...current, ...newFiles];
+        });
     }
 
-    removeFile(id: string) {
+    async removeFile(id: string) {
+        const file = this.selectedFiles().find((x) => x.id === id);
+        if (file) {
+            await FileHelper.removeInAppData(`${AppConstants.IMAGES}/${file.fileName}`);
+        }
         this.selectedFiles.update((list) => list.filter((item) => item.id !== id));
     }
 
@@ -143,6 +173,7 @@ export class IloveimgUpscaleImage {
         if (!check) {
             return;
         }
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
         this.upscaleReviewResults.set([]);
         this.processedCount.set(0);
 
@@ -167,21 +198,21 @@ export class IloveimgUpscaleImage {
             return;
         }
 
-        const upscaleReviewResultData: UpscaleReviewResult[] = await Promise.all(
-            r.map(async (x) => {
-                const info = await FileHelper.getStatOfFile(x.path);
+        // const upscaleReviewResultData: UpscaleReviewResult[] = await Promise.all(
+        //     r.map(async (x) => {
+        //         const info = await FileHelper.getStatOfFile(x.path);
 
-                const temp: UpscaleReviewResult = {
-                    file_size: info.size ?? 0,
-                    fileName: x.fileName,
-                    id: x.id,
-                    previewSrc: convertFileSrc(x.path),
-                };
+        //         const temp: UpscaleReviewResult = {
+        //             file_size: info.size ?? 0,
+        //             fileName: x.fileName,
+        //             id: x.id,
+        //             previewSrc: convertFileSrc(x.path),
+        //         };
 
-                return temp;
-            }),
-        );
-        this.upscaleReviewResults.set(upscaleReviewResultData);
+        //         return temp;
+        //     }),
+        // );
+        // this.upscaleReviewResults.set(upscaleReviewResultData);
     }
 
     validateFiles() {
@@ -235,8 +266,18 @@ export class IloveimgUpscaleImage {
         return true;
     }
 
-    ngDestroy() {
+    async onClear() {
+        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
+        this.selectedFiles.set([])
+        this.upscaleReviewResults.set([])
+    }
+
+    async ngOnDestroy() {
         this.upscaleUnlistenEvent?.();
         this.dragAndDropUnlistenEvent?.();
+
+        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
     }
 }
