@@ -70,7 +70,6 @@ export class FileHelper {
             }
 
             const normalized = Array.isArray(files) ? files : [files];
-
             for (const uri of normalized) {
                 const fileName = FileHelper.getFileName(uri);
                 const content = await readFile(uri);
@@ -85,8 +84,6 @@ export class FileHelper {
             alert('Platform is not supported!!');
             return null;
         }
-
-        console.log(newPaths);
 
         const results = await Promise.all(
             newPaths.map(async (path) => {
