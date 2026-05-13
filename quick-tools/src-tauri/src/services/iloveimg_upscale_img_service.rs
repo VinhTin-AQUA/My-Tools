@@ -90,6 +90,7 @@ impl IloveimgUpscaleImgService {
 
             // save to public directory (Downloads)
             let _ = file_helper::save_bytes(
+                app,
                 uploaded_file.server_filename.clone().as_str(),
                 &result_bytes,
             )
@@ -110,7 +111,7 @@ impl IloveimgUpscaleImgService {
             let result = UpscaleImageResult {
                 id: upscale_image.id,
                 path: result_path,
-                file_name: uploaded_file.server_filename.clone()
+                file_name: uploaded_file.server_filename.clone(),
             };
             outputs.push(result);
 

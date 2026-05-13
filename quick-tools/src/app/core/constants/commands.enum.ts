@@ -5,5 +5,6 @@ export const Commands = {
     INIT_COMPLETE: 'init_complete',
     GET_YOUR_IP_COMMAND: 'get_your_ip_command',
     GET_YOUR_IP_INFO_COMMAND: 'get_your_ip_info_command',
-    GET_FILE_METADATA: 'get_file_metadata'
+    GET_FILE_METADATA: 'get_file_metadata',
+    COPY_FILE_FROM_URI: 'copy_file_from_uri',
 }

@@ -44,7 +44,7 @@ pub fn run() {
             init_complete,
             get_your_ip_command,
             get_your_ip_info_command,
-            file_command::get_file_metadata,
+            file_command::copy_file_from_uri,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

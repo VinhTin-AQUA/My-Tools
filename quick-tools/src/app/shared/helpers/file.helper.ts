@@ -11,9 +11,12 @@ import {
 import { appDataDir } from '@tauri-apps/api/path';
 import { join } from '@tauri-apps/api/path';
 import { open } from '@tauri-apps/plugin-dialog';
-import { IMAGE_EXTENSIONS } from '../../core/constants/file-extensions';
+import { IMAGE_EXTENSIONS, MIME_TYPES } from '../../core/constants/file-extensions';
 import { AndroidFs } from 'tauri-plugin-android-fs-api';
 import { platform } from '@tauri-apps/plugin-os';
+import { convertFileSrc, invoke } from '@tauri-apps/api/core';
+import { AppConstants } from '../../core/constants/app_constants';
+import { Commands } from '../../core/constants/commands.enum';
 
 // rust: https://crates.io/crates/tauri-plugin-android-fs
 // js binding: https://www.npmjs.com/package/tauri-plugin-android-fs-api?activeTab=readme
@@ -27,54 +30,47 @@ export interface SelectedFile {
     downloaded: boolean;
     previewUrl: string;
 }
-import { convertFileSrc } from '@tauri-apps/api/core';
-import { AppConstants } from '../../core/constants/app_constants';
 
 export class FileHelper {
     static async selectMultiFiles(): Promise<SelectedFile[] | null> {
-        const files = await open({
-            multiple: true,
-            directory: false,
-            filters: [
-                {
-                    name: 'Image',
-                    extensions: IMAGE_EXTENSIONS,
-                },
-            ],
-        });
-
-        if (!files) {
-            return null;
-        }
-        const normalized = Array.isArray(files) ? files : [files];
+        const currentPlatform = platform();
         let newPaths: string[] = [];
 
-        const currentPlatform = platform();
         await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
         await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
 
         if (currentPlatform === 'android') {
-            for (const uri of normalized) {
-                const res = await fetch(uri);
-                const blob = await res.blob();
-                const buffer = await blob.arrayBuffer();
-                const mime = res.headers.get('content-type') ?? 'image/png';
-                const map: Record<string, string> = {
-                    'image/jpeg': 'jpg',
-                    'image/png': 'png',
-                    'image/webp': 'webp',
-                    'image/heic': 'heic',
-                };
-                const extension = map[mime] ?? 'png';
-                const fileName = crypto.randomUUID().toString() + '.' + extension;
-                const newPath = await FileHelper.saveFileToAppData(
-                    fileName,
-                    AppConstants.IMAGES,
-                    new Uint8Array(buffer),
-                );
+            const files = await AndroidFs.showOpenFilePicker({
+                multiple: true,
+                mimeTypes: MIME_TYPES,
+
+            });
+
+            for (let file of files) {
+                const newPath = await invoke<string>(Commands.COPY_FILE_FROM_URI, {
+                    uri: file,
+                });
+
                 newPaths.push(newPath);
             }
         } else if (currentPlatform === 'linux' || currentPlatform === 'windows') {
+            const files = await open({
+                multiple: true,
+                directory: false,
+                filters: [
+                    {
+                        name: 'Image',
+                        extensions: IMAGE_EXTENSIONS,
+                    },
+                ],
+            });
+
+            if (!files) {
+                return null;
+            }
+
+            const normalized = Array.isArray(files) ? files : [files];
+
             for (const uri of normalized) {
                 const fileName = FileHelper.getFileName(uri);
                 const content = await readFile(uri);
@@ -85,7 +81,12 @@ export class FileHelper {
                 );
                 newPaths.push(newPath);
             }
+        } else {
+            alert('Platform is not supported!!');
+            return null;
         }
+
+        console.log(newPaths);
 
         const results = await Promise.all(
             newPaths.map(async (path) => {
@@ -177,6 +178,14 @@ export class FileHelper {
     }
 
     static async clearScaledFolderInAppData(folderName: string) {
+        const folderExists = await exists(folderName, {
+            baseDir: BaseDirectory.AppData,
+        });
+
+        if (!folderExists) {
+            return;
+        }
+
         const entries = await readDir(folderName, {
             baseDir: BaseDirectory.AppData,
         });

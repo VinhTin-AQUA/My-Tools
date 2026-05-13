@@ -1,12 +1,15 @@
 use std::path::PathBuf;
 
 use tauri::{AppHandle, Manager};
+use tauri_plugin_android_fs::{AndroidFsExt, PublicImageDir};
+
+use crate::constants::app_constants;
 
 // Save bytes into platform public directory
-pub async fn save_bytes(file_name: &str, bytes: &[u8]) -> Result<PathBuf, String> {
+pub async fn save_bytes(app: &AppHandle, file_name: &str, bytes: &[u8]) -> Result<PathBuf, String> {
     #[cfg(target_os = "android")]
     {
-        Self::save_android(file_name, bytes).await
+        save_android(app, file_name, bytes).await
     }
 
     #[cfg(not(target_os = "android"))]
@@ -80,7 +83,7 @@ async fn save_android(app: &AppHandle, file_name: &str, bytes: &[u8]) -> Result<
             PublicImageDir::Pictures,
             format!("{}/{}", app_constants::APP_NAME, file_name),
             Some("image/png"),
-            &[],
+            bytes,
         )
         .await
         .map_err(|e| e.to_string())?;
