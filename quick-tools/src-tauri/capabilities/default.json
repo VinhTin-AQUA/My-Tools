@@ -6,6 +6,10 @@
     "permissions": [
         "core:default",
 
+        "core:window:allow-close",
+        "core:window:allow-destroy",
+
+
         "fs:default",
         "fs:allow-app-read-recursive",
         "fs:allow-app-write-recursive",

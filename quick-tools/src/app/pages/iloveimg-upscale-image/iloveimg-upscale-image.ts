@@ -20,6 +20,7 @@ import { NotificationHelper } from '../../shared/helpers/notification.helper';
 import { FileHelper, SelectedFile } from '../../shared/helpers/file.helper';
 import { convertFileSrc } from '@tauri-apps/api/core';
 import { AppConstants } from '../../core/constants/app_constants';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 @Component({
     selector: 'app-iloveimg-upscale-image',
@@ -42,6 +43,7 @@ export class IloveimgUpscaleImage {
     dragAndDropUnlistenEvent: UnlistenFn | null = null;
     submitted = signal<boolean>(false);
     processedCount = signal<number>(0);
+    appWindow = getCurrentWindow();
 
     constructor(
         private tauriCommandService: TauriCommandService,
@@ -103,16 +105,21 @@ export class IloveimgUpscaleImage {
             } else {
             }
         });
+
+        this.appWindow.onCloseRequested(async (event) => {
+            event.preventDefault();
+
+            await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+
+            await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
+
+            setTimeout(async () => {
+                await this.appWindow.destroy();
+            }, 50);
+        });
     }
 
     async onFilesSelected() {
-        // const files = await FileHelper.selectMultiFiles();
-
-        // if (!files) {
-        //     return;
-        // }
-        // this.selectedFiles.set(files);
-
         const files = await FileHelper.selectMultiFiles();
 
         if (!files) {
@@ -269,8 +276,8 @@ export class IloveimgUpscaleImage {
     async onClear() {
         await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
         await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
-        this.selectedFiles.set([])
-        this.upscaleReviewResults.set([])
+        this.selectedFiles.set([]);
+        this.upscaleReviewResults.set([]);
     }
 
     async ngOnDestroy() {
