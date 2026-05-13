@@ -43,7 +43,6 @@ export class FileHelper {
             const files = await AndroidFs.showOpenFilePicker({
                 multiple: true,
                 mimeTypes: MIME_TYPES,
-
             });
 
             for (let file of files) {
@@ -83,6 +82,51 @@ export class FileHelper {
         } else {
             alert('Platform is not supported!!');
             return null;
+        }
+
+        const results = await Promise.all(
+            newPaths.map(async (path) => {
+                const metadata = await FileHelper.getStatOfFile(path);
+
+                // read binary file
+                const content = await readFile(path);
+
+                return {
+                    id: crypto.randomUUID().toString(),
+                    path,
+                    fileName: FileHelper.getFileName(path),
+                    size: metadata.size,
+                    content,
+                    downloaded: false,
+                    // previewUrl: FileHelper.uint8ArrayToBlobUrl(content),
+                    previewUrl: convertFileSrc(path),
+                };
+            }),
+        );
+
+        return results;
+    }
+
+    static async dragAndDropFile(paths: string[]): Promise<SelectedFile[] | null> {
+        const currentPlatform = platform();
+        if (currentPlatform !== 'linux' && currentPlatform !== 'windows') {
+            return [];
+        }
+
+        let newPaths: string[] = [];
+
+        await FileHelper.clearScaledFolderInAppData(AppConstants.IMAGES);
+        await FileHelper.clearScaledFolderInAppData(AppConstants.SCALED);
+
+        for (const uri of paths) {
+            const fileName = FileHelper.getFileName(uri);
+            const content = await readFile(uri);
+            const newPath = await FileHelper.saveFileToAppData(
+                fileName,
+                AppConstants.IMAGES,
+                new Uint8Array(content),
+            );
+            newPaths.push(newPath);
         }
 
         const results = await Promise.all(

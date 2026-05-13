@@ -49,61 +49,48 @@ export class IloveimgUpscaleImage {
     ) {}
 
     async ngOnInit() {
-        // await NotificationHelper.sendNotification('Saved', 'event.payload.path');
-        // this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
-        //     EmitEvents.UP_SCALE_IMAGE_RESULT,
-        //     async (event) => {
-        //         const src = await FileHelper.fileToBlobUrl(event.payload.path);
-        //         this.resultImages.update((x) => {
-        //             const newX: UpscaleResult = {
-        //                 id: event.payload.id,
-        //                 filename: event.payload.path.split('/').pop() ?? '',
-        //                 file_size: 0,
-        //                 src: src,
-        //                 downloaded: false,
-        //                 phisicalPath: event.payload.path,
-        //             };
-        //             return [...x, newX];
-        //         });
-        //         this.processedCount.update((x) => x + 1);
-        //         this.previewList.update((images) =>
-        //             images.map((img) =>
-        //                 img.id === event.payload.id ? { ...img, downloaded: true } : img,
-        //             ),
-        //         );
-        //         await NotificationHelper.sendNotification('Saved', event.payload.path);
-        //     },
-        // );
-        // this.dragAndDropUnlistenEvent = await getCurrentWebview().onDragDropEvent(async (event) => {
-        //     if (event.payload.type === 'over') {
-        //         // console.log('User hovering', event.payload.position);
-        //     } else if (event.payload.type === 'drop') {
-        //         console.log('User dropped', event.payload.paths);
-        //         const imagePaths = event.payload.paths.filter((path) =>
-        //             IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(`.${ext}`)),
-        //         );
-        //         const list = await Promise.all(
-        //             imagePaths.map(async (p, index) => {
-        //                 const src = await await FileHelper.fileToBlobUrl(p);
-        //                 const t: UpscaleResult = {
-        //                     id: crypto.randomUUID(),
-        //                     filename: p.split('/').pop() ?? '',
-        //                     file_size: 0,
-        //                     src: src,
-        //                     downloaded: false,
-        //                     phisicalPath: p,
-        //                 };
-        //                 return t;
-        //             }),
-        //         );
-        //         this.previewList.update((current) => {
-        //             const existingPaths = new Set(current.map((x) => x.phisicalPath));
-        //             const filtered = list.filter((item) => !existingPaths.has(item.phisicalPath));
-        //             return [...current, ...filtered];
-        //         });
-        //     } else {
-        //     }
-        // });
+        this.upscaleUnlistenEvent = await listen<UpscaleImageResult>(
+            EmitEvents.UP_SCALE_IMAGE_RESULT,
+            async (event) => {
+                const info = await FileHelper.getStatOfFile(event.payload.path);
+
+                this.upscaleReviewResults.update((x) => {
+                    const newX: UpscaleReviewResult = {
+                        file_size: info.size ?? 0,
+                        fileName: event.payload.fileName,
+                        id: event.payload.id,
+                        previewSrc: convertFileSrc(event.payload.path),
+                    };
+                    return [...x, newX];
+                });
+                this.processedCount.update((x) => x + 1);
+                this.upscaleReviewResults.update((images) =>
+                    images.map((img) =>
+                        img.id === event.payload.id ? { ...img, downloaded: true } : img,
+                    ),
+                );
+                await NotificationHelper.sendNotification('Saved', event.payload.path);
+            },
+        );
+
+        this.dragAndDropUnlistenEvent = await getCurrentWebview().onDragDropEvent(async (event) => {
+            if (event.payload.type === 'over') {
+            } else if (event.payload.type === 'drop') {
+                console.log('User dropped', event.payload.paths);
+                const imagePaths = event.payload.paths.filter((path) =>
+                    IMAGE_EXTENSIONS.some((ext) => path.toLowerCase().endsWith(`.${ext}`)),
+                );
+
+                const list = await FileHelper.dragAndDropFile(imagePaths);
+
+                if (!list) {
+                    return;
+                }
+
+                this.selectedFiles.set(list);
+            } else {
+            }
+        });
     }
 
     async onFilesSelected() {

@@ -1,14 +1,14 @@
 use rand::seq::SliceRandom;
 use regex::Regex;
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, ORIGIN, USER_AGENT};
-use tauri::AppHandle;
+use tauri::{AppHandle, Emitter};
 use tokio::{
     fs,
     time::{sleep, Duration},
 };
 
 use crate::{
-    constants::app_constants,
+    constants::{app_constants, emit_events},
     helpers::file_helper,
     models::iloveimg_upscale_img_model::{
         BinaryFile, UploadResponse, UpscaleImageRequest, UpscaleImageResult,
@@ -113,7 +113,9 @@ impl IloveimgUpscaleImgService {
                 path: result_path,
                 file_name: uploaded_file.server_filename.clone(),
             };
-            outputs.push(result);
+            outputs.push(result.clone());
+
+            app.emit(emit_events::UP_SCALE_IMAGE_RESULT, result).unwrap();
 
             sleep(Duration::from_millis(800)).await;
         }
