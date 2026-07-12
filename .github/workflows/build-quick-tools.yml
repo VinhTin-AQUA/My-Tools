@@ -1,6 +1,6 @@
 # https://github.com/tauri-apps/tauri-action/issues/525
 
-name: 'publish'
+name: quick tools
 
 on:
     push:

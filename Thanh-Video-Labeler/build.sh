@@ -11,6 +11,7 @@ rm -rf Thanh-Video-Labeler_publish_win
 
 cp -r Thanh-Video-Labeler-App/dist/ExcelVideoLabelerApp/browser/* Thanh-Video-Labeler/wwwroot/
 
+dotnet restore Thanh-Video-Labeler/Thanh-Video-Labeler.csproj
 dotnet publish Thanh-Video-Labeler/Thanh-Video-Labeler.csproj -c Release -r linux-x64 -p:SelfContained=true  -o ./Thanh-Video-Labeler_publish_linux
 dotnet publish Thanh-Video-Labeler/Thanh-Video-Labeler.csproj -c Release -r win-x64 -p:SelfContained=true  -o ./Thanh-Video-Labeler_publish_win
 

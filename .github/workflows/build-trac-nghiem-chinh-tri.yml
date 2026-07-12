@@ -1,6 +1,4 @@
-# https://github.com/tauri-apps/tauri-action/issues/525
-
-name: 'publish'
+name: trac nghiem chinh tri
 
 on:
     push:
