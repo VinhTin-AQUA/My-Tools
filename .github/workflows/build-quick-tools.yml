@@ -227,8 +227,8 @@ jobs:
 
             - name: Build app bundle
               run: |
-                npm run tauri build -- --no-bundle --target x86_64-pc-windows-msvc
-                
+                  npm run tauri build -- --no-bundle --target x86_64-pc-windows-msvc
+
             - name: Rename exe file
               shell: cmd
               run: |
@@ -238,19 +238,19 @@ jobs:
             - name: Create .zip
               shell: powershell
               run: |
-                Remove-Item -Recurse -Force $env:WINDOWS_FILE_NAME -ErrorAction Ignore
-                New-Item -ItemType Directory -Path $env:WINDOWS_FILE_NAME
+                  Remove-Item -Recurse -Force $env:WINDOWS_FILE_NAME -ErrorAction Ignore
+                  New-Item -ItemType Directory -Path $env:WINDOWS_FILE_NAME
 
-                Copy-Item "src-tauri/target/x86_64-pc-windows-msvc/release/$env:WINDOWS_FILE_NAME.exe" -Destination $env:WINDOWS_FILE_NAME
-                Copy-Item "src-tauri/icons/Square150x150Logo.png" -Destination $env:WINDOWS_FILE_NAME
+                  Copy-Item "src-tauri/target/x86_64-pc-windows-msvc/release/$env:WINDOWS_FILE_NAME.exe" -Destination $env:WINDOWS_FILE_NAME
+                  Copy-Item "src-tauri/icons/Square150x150Logo.png" -Destination $env:WINDOWS_FILE_NAME
 
-                Compress-Archive -Path $env:WINDOWS_FILE_NAME -DestinationPath "$env:WINDOWS_FILE_NAME.zip" -Force
+                  Compress-Archive -Path $env:WINDOWS_FILE_NAME -DestinationPath "$env:WINDOWS_FILE_NAME.zip" -Force
 
             - name: Upload artifacts
               uses: actions/upload-artifact@v4
               with:
-                name: windows-build
-                path: ./${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
+                  name: windows-build
+                  path: ./${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
 
     release:
         runs-on: ubuntu-latest
@@ -264,8 +264,7 @@ jobs:
             - name: Download all artifact
               uses: actions/download-artifact@v4
               with:
-                path: ${{ env.PROJECT_DIR }}/artifacts
-
+                  path: ${{ env.PROJECT_DIR }}/artifacts
 
             - name: List files
               run: ls -R artifacts

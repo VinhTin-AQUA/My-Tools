@@ -15,8 +15,8 @@ on:
             - '.github/workflows/build-trac-nghiem-chinh-tri.yml'
 
 defaults:
-  run:
-    working-directory: Trac-Nghiem-Chinh-Tri # only apply for run command
+    run:
+        working-directory: Trac-Nghiem-Chinh-Tri # only apply for run command
 
 env:
     PROJECT_DIR: Trac-Nghiem-Chinh-Tri
