@@ -1,0 +1,92 @@
+<div class="layout font-sans bg-zinc-100">
+    <!-- Header (macOS Titlebar) -->
+    <header
+        class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 bg-white/80 backdrop-blur-xl border-b border-zinc-200/70 shadow-sm"
+    >
+        <div class="flex items-center gap-3">
+            <button
+                (click)="toggleDrawer()"
+                class="p-2 rounded-lg text-zinc-600 hover:bg-zinc-200/60 active:scale-95 transition"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-zinc-200/70 flex items-center justify-center">
+                    <img class="w-10" src="/64x64.png" alt="">
+                </div>
+
+                <h1 class="text-lg font-semibold text-zinc-900 tracking-tight">
+                    {{ 'app.title' | translate }}
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Drawer overlay -->
+    @if (isDrawerOpen) {
+    <div class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" (click)="toggleDrawer()"></div>
+    }
+
+    <!-- Sidebar (macOS Sidebar) -->
+    <nav
+        class="fixed top-0 left-0 z-50 h-screen w-64 bg-white/90 backdrop-blur-xl border-r border-zinc-200/70 shadow-xl rounded-r-2xl transform transition-transform duration-300"
+        [class.translate-x-0]="isDrawerOpen"
+        [class.-translate-x-full]="!isDrawerOpen"
+    >
+        <div class="flex items-center justify-between p-4 border-b border-zinc-200/70">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center">
+                    <img class="w-10" src="/64x64.png" alt="">
+                </div>
+
+                <h2 class="text-sm font-semibold text-zinc-900">Menu</h2>
+            </div>
+
+            <button
+                (click)="toggleDrawer()"
+                class="p-2 rounded-lg text-zinc-500 hover:bg-zinc-200/60 transition"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                >
+                    <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-3">
+            <ul class="space-y-1">
+                @for (item of navItems; track $index) {
+                <li>
+                    <a
+                        [routerLink]="item.url"
+                        routerLinkActive="bg-blue-500/90 text-white font-medium"
+                        [routerLinkActiveOptions]="{ exact: true }"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm hover:bg-zinc-400/60 transition"
+                    >
+                        <span>{{ item.name | translate }}</span>
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="pt-16 bg-zinc-100 ">
+        <router-outlet></router-outlet>
+    </main>
+</div>

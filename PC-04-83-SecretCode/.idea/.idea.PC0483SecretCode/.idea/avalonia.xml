@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="PC0483SecretCode/App.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Controls/Sidebar.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Styles/ButtonSidebarStyles.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Styles/ButtonStyles.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Styles/TextInput.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Styles/Themes.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Styles/ToggleButtonStyles.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Views/ConverterView.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+        <entry key="PC0483SecretCode/Views/MainWindow.axaml" value="PC0483SecretCode/PC0483SecretCode.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,26 @@
+<header
+    class="sticky-nav bg-slate-900 text-xl text-white hadow-md px-6 py-4 flex justify-between items-center z-50"
+>
+    <div></div>
+    <div class="flex space-x-6">
+        @for (link of menuItems; track $index) {
+        <a
+            class="tab-button hover:text-amber-500 duration-100"
+            [routerLink]="link.routerLink"
+            routerLinkActive="active-tab"
+            >{{ link.name }}</a
+        >
+        }
+    </div>
+
+    <!-- Nút setting bên phải -->
+    <div>
+        <a
+            class="tab-button"
+            routerLink="/settings"
+            routerLinkActive="active-tab"
+        >
+            ⚙️ Setting
+        </a>
+    </div>
+</header>

@@ -1,0 +1,77 @@
+<div class="p-6 lg:max-w-1/2 mx-auto bg-white rounded-2xl shadow-md space-y-6">
+    <h2 class="text-4xl font-semibold text-gray-800">⚙️ Settings</h2>
+
+    <div class="space-y-2 text-2xl">
+        <p class="text-gray-600">
+            📁 Excel file name:
+            <span class="font-medium text-gray-800">{{
+                excelFileName() || "Nothing"
+            }}</span>
+        </p>
+        <p class="text-gray-600">
+            📁 Sheet name on working:
+            <span class="font-medium text-gray-800">{{
+                sheetName() || "Nothing"
+            }}</span>
+        </p>
+    </div>
+
+    <hr />
+
+    <!-- reset data -->
+    <div>
+        <!-- <div class="flex items-center gap-3 text-[1.2rem]">
+            <label class="flex items-center space-x-2">
+                <input [(ngModel)]="isRemoveExcefile" class="scale-150 accent-red-600" type="checkbox" />
+                <span>Excel File</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input [(ngModel)]="isRemoveDb" class="scale-150 accent-red-600" type="checkbox" />
+                <span>Database</span>
+            </label>
+
+            <label class="flex items-center space-x-2">
+                <input [(ngModel)]="isRemoveVideosAndTxt" class="scale-150 accent-red-600" type="checkbox" />
+                <span>Videos and txt files</span>
+            </label>
+        </div> -->
+
+        <button
+            (click)="openModal = true"
+            class="mt-4 px-5 py-2 border border-red-700 text-red-400 font-semibold rounded-xl hover:bg-red-700 hover:text-white transition"
+        >
+            🗑️ Reset
+        </button>
+    </div>
+</div>
+
+<!-- Reset data Modal -->
+@if(openModal) {
+<div
+    class="fixed inset-0 bg-gray-600/40 bg-opacity-40 flex items-center justify-center z-50 "
+>
+    <div
+        class="bg-white rounded-2xl p-6 w-full max-w-md shadow-lg animate-fade-in"
+    >
+        <h2 class="text-[1.5rem] font-semibold mb-4">Confirm</h2>
+        <p class="mb-6 text-[1.2rem] text-red-600">
+            Database, Excel file, txt files and videos will be deleted !!
+        </p>
+
+        <div class="flex justify-end space-x-3">
+            <button
+                (click)="openModal = false"
+                class="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300"
+            >
+                Cancel
+            </button>
+            <button
+                (click)="resetData()"
+                class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+            >
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,178 @@
+<div class="min-h-screen bg-gray-100 p-6">
+    <!-- Filter Section -->
+    <div
+        class="md:text-sm lg:text-xl bg-white p-4 rounded-2xl shadow mb-6 grid grid-cols-1 md:grid-cols-5 gap-4"
+    >
+        <input
+            type="text"
+            [(ngModel)]="filters.transIdOrPayment"
+            placeholder="TransId or Payment"
+            class="border border-gray-300 rounded-lg p-2 w-full"
+        />
+        <label class="flex items-center space-x-2">
+            <input class="scale-150 accent-red-600 " type="checkbox" [(ngModel)]="filters.label" />
+            <span>Labeled</span>
+        </label>
+        <label class="flex items-center space-x-2">
+            <input class="scale-150 accent-red-600 " type="checkbox" [(ngModel)]="filters.noLabel" />
+            <span>Unlabeled</span>
+        </label>
+
+        <button
+            type="button"
+            (click)="applyFilter()"
+            class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg px-5 py-2.5 me-2 mb-2"
+        >
+            ApplyFilter
+        </button>
+
+        <button
+            type="button"
+            (click)="openExportExcelPopup()"
+            class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg px-5 py-2.5 me-2 mb-2"
+        >
+            Export excel
+        </button>
+    </div>
+
+    <!-- Item List Section -->
+    <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+    >
+        @for (item of videos(); track $index) {
+        <div class="bg-white p-4 rounded-2xl shadow sm:text-sm md:text-[1.15rem] xl:text-[1.2rem]">
+            <div
+                class="flex xl:items-center justify-between xl:justify-between flex-col xl:flex-row"
+            >
+                <div class="flex-1">
+                    <div class="font-semibold ">
+                        TransId: {{ item.transID }}
+                    </div>
+                    <div class="text-gray-600">Payment: {{ item.payment }}</div>
+                    <div class="mt-2">
+                        @if (item.label) {
+                        <div>
+                            <span class="font-bold">Label: </span>
+                            <span class="px-2 py-1 text-green-800">{{
+                                item.label
+                            }}</span>
+                        </div>
+                        } @else {
+                        <span
+                            class="px-2 py-1 bg-red-100 text-red-800 rounded-sm text-md"
+                            >Unlabeled</span
+                        >
+                        }
+                    </div>
+
+                    <div class="mt-2">
+                        <div>
+                            <span class="font-bold">Downloaded: </span>
+
+                            @if(item.videoStatus === 0) {
+                            <span
+                                class="clamp bg-yellow-100 rounded-sm px-2 py-1 text-yellow-800 text-md"
+                                >Not downloaded yet</span
+                            >
+                            } @else if (item.videoStatus === 1) {
+                            <span
+                                class="clamp bg-green-100 rounded-sm px-2 py-1 text-green-800 text-md"
+                                >Downloaded</span
+                            >
+                            } @else {
+                            <span
+                                class="clamp bg-red-100 rounded-sm px-2 py-1 text-red-800 text-md"
+                                >Cannot download</span
+                            >
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-2 xl:mt-0">
+                    <button
+                        (click)="openVideoModal(item)"
+                        type="button"
+                        class="w-full text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg px-5 py-2.5 mt-2 md:m-0"
+                    >
+                        Details
+                    </button>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6 space-x-2">
+        <button
+            (click)="prevPage()"
+            [disabled]="filters.page === 1"
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+            Trước
+        </button>
+        <span class="px-4 py-2">Trang {{ filters.page }}</span>
+        <button
+            (click)="nextPage()"
+            class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+        >
+            Sau
+        </button>
+    </div>
+</div>
+
+<!-- Modal hiển thị VideoInfo -->
+@if(selectedVideo) {
+<div
+    class="fixed top-10 left-0 p-10 w-full h-screen bg-gray-600/40 overflow-y-auto"
+>
+    <div class="relative max-1/2 mx-auto bg-white rounded-xl p-4">
+        <button
+            class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl"
+            (click)="closeModal()"
+        >
+            ✖
+        </button>
+        <app-labeling-details
+            (nextVideo)="onNext()"
+            (prevVideo)="onPrev()"
+            [videoInfo]="selectedVideo"
+        ></app-labeling-details>
+    </div>
+</div>
+}
+
+<!-- Popup export excel -->
+@if(showPopup) {
+<div class="fixed inset-0 flex justify-center items-center z-50 bg-gray-500/40">
+    <!-- Popup Box -->
+    <div class="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 class="text-xl font-semibold mb-4">Export excel</h2>
+
+        <label class="inline-flex items-center mb-4">
+            <input
+                type="checkbox"
+                [(ngModel)]="clearAllData"
+                class="form-checkbox h-4 w-4 text-red-600"
+            />
+            <span class="ml-2">Clear All Data</span>
+        </label>
+
+        <div class="flex justify-end space-x-2">
+            <button
+                (click)="downloadExcel()"
+                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+                Export
+            </button>
+            <button
+                (click)="closeExportExcelPopup()"
+                class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+            >
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+}

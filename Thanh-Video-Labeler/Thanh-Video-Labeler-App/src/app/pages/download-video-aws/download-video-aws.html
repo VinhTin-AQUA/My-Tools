@@ -1,0 +1,190 @@
+<section class="text-gray-600 body-font">
+    <div class="container px-5 py-2 mx-auto flex flex-wrap items-center">
+        <div
+            class="w-full md:w-2/3 bg-gray-100 rounded-lg p-8 flex flex-col mx-auto"
+        >
+            <h2
+                class="text-gray-900 text-[2rem] text-center font-medium title-font mb-5"
+            >
+                Download Video on AWS
+            </h2>
+
+            <div class="relative mb-4 text-[1.2rem]">
+                <label
+                    class="block mb-2 font-medium text-gray-900"
+                    for="file_input"
+                    >Upload file</label
+                >
+                <input
+                    #fileInput
+                    class="block w-full text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
+                    aria-describedby="file_input_help"
+                    id="file_input"
+                    type="file"
+                    accept=".xlsx"
+                    (change)="onFileSelected($event)"
+                />
+            </div>
+
+            <button
+                (click)="toggleOpenWarningUpload(true)"
+                class="text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+            >
+                Upload
+            </button>
+
+            <div class="grid grid-cols-3 gap-2 mt-4 text-[1.2rem]">
+                <div>
+                    File Name:
+                    <span
+                        class="bg-blue-100 text-blue-800 font-medium me-2 px-2.5 py-0.5 rounded-sm border border-blue-400 wrap-anywhere"
+                        >{{ fileName() }}</span
+                    >
+                </div>
+
+                <div>
+                    Total Video:
+                    <span
+                        class="bg-green-100 text-green-800 font-medium me-2 px-2.5 py-0.5 rounded-sm border border-green-400"
+                        >{{ totalVideo() }}</span
+                    >
+                </div>
+
+                <div>
+                    Total Downloaded:
+                    <span
+                        class="bg-yellow-100 text-yellow-800 font-medium me-2 px-2.5 py-0.5 rounded-sm border border-yellow-300"
+                        >{{ awsVideoTotalSuccessStore.totalSuccess() }}</span
+                    >
+                </div>
+            </div>
+
+            <div class="mt-5">
+                @if(!isDownloading()) {
+                <button
+                    (click)="startDownload()"
+                    class="text-white bg-green-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg mb-2"
+                >
+                    Start Download
+                </button>
+                } @else {
+                <div class="flex items-center gap-2">
+                    <button
+                        (click)="stopDownload()"
+                        class="text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg mb-2"
+                    >
+                        Stop Download
+                    </button>
+                    <div class="">
+                        <span class="loader"></span>
+                    </div>
+                </div>
+                }
+
+                <div class="grid grid-col-1 gap-2 mb-5">
+                    <div>
+                        <h2
+                            class="text-gray-900 text-[1.2rem] font-medium title-font wrap-anywhere"
+                        >
+                            VideoName: {{ awsVideoDownlingStore.videoName() }}
+                        </h2>
+                    </div>
+                    <div>
+                        <h2
+                            class="text-gray-900 text-[1.2rem] font-medium title-font"
+                        >
+                            Progress:
+                            <span
+                                class="bg-pink-100 text-pink-800 text-[1.2rem] font-medium me-2 px-2.5 py-0.5 rounded-sm border border-pink-400"
+                                >{{ awsVideoDownlingStore.progress() }}</span
+                            >
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto max-h-64">
+                    <h2
+                        class="text-gray-900 text-[1.2rem] font-medium title-font"
+                    >
+                        Failed:
+                    </h2>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="sticky top-0 bg-gray-100 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Case
+                                </th>
+                                <th
+                                    class="sticky top-0 bg-gray-100 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    ServerId
+                                </th>
+                                <th
+                                    class="sticky top-0 bg-gray-100 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Link
+                                </th>
+
+                                <th
+                                    class="sticky top-0 bg-gray-100 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                ></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @for (item of awsVideoDownlingErrorStore.errors();
+                            track $index) {
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ item.case }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ item.serverId }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {{ item.link }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button
+                                        (click)="copyToClipboard(item.link)"
+                                        type="button"
+                                        class="text-white bg-yellow-400 hover:bg-yellow-500 rounded-md text-sm px-5 py-2.5 text-center wrap-anywhere"
+                                    >
+                                        Copy Link
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if(showWarningUploadVideo()) {
+<div class="fixed inset-0 flex justify-center items-center z-50 bg-gray-500/40">
+    <!-- Popup Box -->
+    <div class="bg-white p-6 rounded-lg shadow-md w-96">
+        <h2 class="text-xl font-semibold mb-4">
+            Uploading to the file will delete all the previous data
+        </h2>
+        <div class="flex justify-end space-x-2">
+            <button
+                (click)="upload()"
+                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+                Upload
+            </button>
+            <button
+                (click)="toggleOpenWarningUpload(false)"
+                class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+            >
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
+}

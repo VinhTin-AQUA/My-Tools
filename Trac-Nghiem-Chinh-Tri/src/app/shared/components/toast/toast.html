@@ -1,0 +1,40 @@
+<div
+    class="fixed top-5 right-5 z-50 w-[90%] max-w-sm md:w-80 flex gap-4 items-center p-4 rounded-2xl backdrop-blur-xl border border-white/40 shadow-xl animate-slide-in transition-all duration-200"
+    [ngClass]="{
+        'ring-1 ring-green-300/40 bg-green-300/80': toastStore.isSuccess(),
+        'ring-1 ring-red-300/40 bg-red-300/80': !toastStore.isSuccess()
+    }"
+>
+    <!-- Icon -->
+    <div
+        class="flex items-center justify-center w-9 h-9 rounded-full text-sm"
+        [ngClass]="{
+            'bg-green-100 text-green-600': toastStore.isSuccess(),
+            'bg-red-100 text-red-600': !toastStore.isSuccess()
+        }"
+    >
+        @if (toastStore.isSuccess()) {
+        <ng-container>✓</ng-container>
+        } @else {
+        <ng-container>✕</ng-container>
+        }
+    </div>
+
+    <!-- Nội dung -->
+    <div class="flex-1">
+        <h3 class="text-sm font-semibold text-zinc-900 leading-tight">
+            {{ toastStore.title() }}
+        </h3>
+        <p class="text-sm text-zinc-600 mt-0.5">
+            {{ toastStore.message() }}
+        </p>
+    </div>
+
+    <!-- nút x -->
+    <button
+        (click)="hide()"
+        class="text-zinc-400 hover:text-zinc-700 transition text-lg leading-none"
+    >
+        ×
+    </button>
+</div>

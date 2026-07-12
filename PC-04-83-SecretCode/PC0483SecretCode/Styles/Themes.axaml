@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- color -->
+    <Color x:Key="primary">#0f172a</Color>
+    <Color x:Key="secondary">#64748b</Color>
+    
+    <!-- svg -->
+    <x:String x:Key="convert">avares://PC0483SecretCode/Assets/Svg/convert.svg</x:String>
+    <x:String x:Key="menu">avares://PC0483SecretCode/Assets/Svg/menu.svg</x:String>
+    
+</ResourceDictionary>

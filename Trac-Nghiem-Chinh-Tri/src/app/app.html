@@ -1,0 +1,7 @@
+<router-outlet></router-outlet>
+
+@if(dialogService.isShowLoadingDialog()) {
+<app-loader></app-loader>
+} @if(toastStore.isShow()) {
+<app-toast></app-toast>
+}

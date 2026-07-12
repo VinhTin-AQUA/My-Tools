@@ -1,0 +1,102 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:PC0483SecretCode.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PC0483SecretCode.Controls.SidebarView"
+             x:DataType="vm:SidebarViewModel">
+    <UserControl.DataContext>
+        <vm:SidebarViewModel />
+    </UserControl.DataContext>
+    
+    <Border Padding="5" 
+            x:Name="SidebarColumn"
+            Background="{StaticResource primary}" 
+            Width="200">
+        
+        <!-- Transition -->
+        <Border.Styles>
+            <Style Selector="Border">
+                <Setter Property="Transitions">
+                    <Transitions>
+                        <DoubleTransition Property="Width" Duration="0:0:0.2" />
+                    </Transitions>
+                </Setter>
+            </Style>
+        </Border.Styles>
+        
+        <Grid RowDefinitions="50,*,70" >
+            <Border Grid.Row="0" Padding="0,10">
+                <Grid ColumnDefinitions="*,Auto" >
+                    <TextBlock x:Name="SidebarLabel" Grid.Column="0" 
+                               Text="PC 04-83" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Stretch"
+                               FontSize="14" 
+                               Foreground="White"
+                               Padding="10,0,0,0"
+                               FontWeight="DemiBold" />
+                    
+                    <Button Grid.Column="1" Click="Toggle_Sidebar_OnClick">
+                        <Svg Path="{StaticResource menu}" Css=".fill { fill: #0f172a; } " Width="24" Height="24" />
+                        
+                        <Button.Styles>
+                            <Style Selector="Button">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="Foreground" Value="{StaticResource primary}" />
+                                <Setter Property="Width" Value="40" />
+                                <Setter Property="Height" Value="40" />
+                            </Style>
+                            
+                            <!-- hover -->
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#94a3b8"/>
+                            </Style>
+                            
+                            <!-- press -->
+                            <Style Selector="Button:pressed /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#e2e8f0"/>
+                            </Style>
+
+                            <Style Selector="Button /template/ ContentPresenter">
+                                <Setter Property="Transitions">
+                                    <Transitions>
+                                        <!-- Width sẽ thay đổi trong 1 giây. DoubleTransition vì Width có kiểu là Double -->
+                                        <BrushTransition Property="Background" Duration="0:0:0.1" />
+                                    </Transitions>
+                                </Setter>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                </Grid>
+            </Border>
+        
+            <!-- List Menu -->
+            <StackPanel Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding Items}">  
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Classes="button-sidebar" Margin="0,0,0,10" >
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                                    <Svg Path="{Binding Icon}" Css=".fill { fill: #0f172a; } " Width="24" Height="24"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="{StaticResource primary}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel> 
+        
+            <StackPanel Grid.Row="2">
+                
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

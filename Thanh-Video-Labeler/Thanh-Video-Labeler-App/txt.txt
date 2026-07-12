@@ -1,0 +1,14 @@
+ten thu muc: 06082025 (Ngày 6 tháng 8 năm 25)
+giai nen xong xoa zip
+
+- upload
+    - lưu tên file, số lượng video, số lượng đã tải
+
+- tải hết 1 lượt
+- lưu lịch sử tải video
+- nếu upload file mới thì xóa cơ sở dữ liệu cũ, xóa lich sử tải cũ
+
+- khi tai
+    - hien thi %/(dung luong cua 1 video)
+    - hien thi thong tin video
+    - 

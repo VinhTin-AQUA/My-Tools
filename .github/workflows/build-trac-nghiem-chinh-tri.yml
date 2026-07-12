@@ -1,0 +1,114 @@
+# https://github.com/tauri-apps/tauri-action/issues/525
+
+name: 'publish'
+
+on:
+    push:
+        branches: ['main']
+        paths:
+            - 'Trac-Nghiem-Chinh-Tri/**'
+            - '.github/workflows/build-trac-nghiem-chinh-tri.yml'
+
+    workflow_dispatch:
+    pull_request:
+        branches: ['main']
+        paths:
+            - 'Trac-Nghiem-Chinh-Tri/**'
+            - '.github/workflows/build-trac-nghiem-chinh-tri.yml'
+
+defaults:
+  run:
+    working-directory: Trac-Nghiem-Chinh-Tri # only apply for run command
+
+env:
+    PROJECT_DIR: Trac-Nghiem-Chinh-Tri
+    TAG_NAME: Trac-Nghiem-Chinh-Tri_v1.0.0
+    RELEASE_NAME: 'trac-nghiem-chinh-tri_v1.0.0'
+    EXE_FILE_NAME: 'trac-nghiem-chinh-tri_v1.0.0_portable.exe'
+
+jobs:
+    publish-windows:
+        runs-on: windows-latest
+
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            # - name: Setup GitHub CLI
+            #   run: |
+            #       choco install gh --version=2.83.2 -y
+            #   shell: powershell
+
+            - name: setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+
+            - name: install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+              with:
+                  targets: x86_64-pc-windows-msvc
+
+            - name: Install Visual Studio Build Tools
+              uses: microsoft/setup-msbuild@v1
+
+            - name: Install Rust target
+              run: rustup target add x86_64-pc-windows-msvc
+
+            # - name: Install Tauri CLI
+            #   run: cargo install tauri-cli
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Build app bundle
+              run: npm run tauri build -- --no-bundle --target x86_64-pc-windows-msvc
+
+            - name: Rename exe file
+              shell: cmd
+              run: |
+                  set "dir=src-tauri\target\x86_64-pc-windows-msvc\release"
+                  ren "%dir%\app.exe" "%EXE_FILE_NAME%"
+
+            - name: Remove old tag if exists
+              shell: powershell
+              run: |
+                  $tag = $env:TAG_NAME
+                  $tags = git ls-remote --tags origin | ForEach-Object { $_.Split("`t")[1] }
+                  if ($tags -contains "refs/tags/$tag") {
+                      Write-Host "Deleting old tag..."
+                      git push origin :refs/tags/$tag
+                  } else {
+                      Write-Host "No old tag found."
+                  }
+
+            - name: Create Tag
+              shell: powershell
+              run: |
+                  git config user.name "github-actions"
+                  git config user.email "github-actions@github.com"
+                  git tag $env:TAG_NAME
+                  git push origin $env:TAG_NAME
+
+            - name: Remove old release if exists
+              shell: bash
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+                    gh release delete "$TAG_NAME" -y
+                    echo "Deleted release for tag $TAG_NAME"
+                  else
+                    echo "Release for tag $TAG_NAME does not exist"
+                  fi
+
+            - name: Publish
+              uses: softprops/action-gh-release@v1
+              with:
+                  draft: false
+                  name: '${{ env.RELEASE_NAME }}'
+                  tag_name: '${{ env.TAG_NAME }}'
+                  generate_release_notes: true
+                  files: |
+                      ${{ env.PROJECT_DIR }}/src-tauri/target/x86_64-pc-windows-msvc/release/${{ env.EXE_FILE_NAME }}

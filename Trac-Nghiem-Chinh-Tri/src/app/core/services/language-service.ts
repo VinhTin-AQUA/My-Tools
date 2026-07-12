@@ -1,0 +1,32 @@
+import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageOption } from '../models/language-option.model';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class LanguageService {
+    public static readonly LANGUAGES: LanguageOption[] = [
+        { code: 'en', name: 'English', flag: '🇬🇧' },
+        { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+    ];
+
+    private translate = inject(TranslateService);
+
+    constructor() {
+        const codes = LanguageService.LANGUAGES.map((x) => x.code);
+        this.translate.addLangs(codes);
+        this.translate.setFallbackLang('vi');
+        this.translate.use('vi'); // sử dụng ngôn ngữ khi mở ứng dụng
+    }
+
+    // chuyển đổi giữa các ngôn ngữ
+    use(lang: string) {
+        this.translate.use(lang).subscribe({
+            next: (_) => {},
+            error: (err) => {
+                console.log(err);
+            },
+        });
+    }
+}

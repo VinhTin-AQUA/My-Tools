@@ -1,0 +1,1 @@
+npm run tauri dev # or npx tauri dev

@@ -1,0 +1,68 @@
+<div class="max-w-4xl mx-auto p-10 bg-zinc-100 ">
+    <h1 class="text-3xl font-semibold mb-10 text-zinc-900 tracking-tight">
+        {{ 'settings.title' | translate }}
+    </h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- IMPORT -->
+        <div class="p-6 rounded-2xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm">
+            <h2 class="text-lg font-semibold mb-4 text-zinc-900">
+                {{ 'settings.importTitle' | translate }}
+            </h2>
+
+            <!-- <input
+                type="file"
+                accept=".json"
+                (change)="onImportFile($event)"
+                class="w-full rounded-xl border border-zinc-300 bg-white/80 px-3 py-2 cursor-pointer file:mr-4 file:rounded-lg file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:text-sm file:font-medium file:text-zinc-800 hover:file:bg-zinc-300"
+            /> -->
+
+            <button
+                class="btn-primary w-full px-4 py-2.5 text-sm font-medium"
+                (click)="importData()"
+            >
+                {{ 'settings.importButton' | translate }}
+            </button>
+        </div>
+
+        <!-- EXPORT -->
+        <div class="p-6 rounded-2xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm">
+            <h2 class="text-lg font-semibold mb-4 text-zinc-900">
+                {{ 'settings.exportTitle' | translate }}
+            </h2>
+
+            <button
+                class="btn-primary w-full px-4 py-2.5 text-sm font-medium"
+                (click)="exportData()"
+            >
+                {{ 'settings.exportButton' | translate }}
+            </button>
+        </div>
+
+        <!-- RESET DATA -->
+        <div
+            class="p-8 md:col-span-2 rounded-2xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm"
+        >
+            <h2 class="text-lg font-semibold mb-3 text-zinc-900">
+                {{ 'settings.resetTitle' | translate }}
+            </h2>
+
+            <p class="text-zinc-600 mb-6">
+                {{ 'settings.resetDescription' | translate }}
+            </p>
+
+            <button (click)="onShowDelete()" class="btn-danger w-full px-4 py-3 text-sm font-semibold" (click)="resetAll()">
+                {{ 'settings.resetButton' | translate }}
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (isShowQuestionDialog()) {
+<app-question-cancel-dialog
+    (close)="onShowQuestionDialogClose($event)"
+    [isSuccess]="false"
+    [message]="'deleteQuestionDialog.message'"
+    [title]="'deleteQuestionDialog.title'"
+></app-question-cancel-dialog>
+}

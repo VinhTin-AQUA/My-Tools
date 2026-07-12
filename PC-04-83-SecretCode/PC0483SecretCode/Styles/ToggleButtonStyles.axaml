@@ -1,0 +1,28 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- hover -->
+    <Style Selector="ToggleButton:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#64748b"/>
+    </Style>
+        
+    <!-- press -->
+    <Style Selector="ToggleButton:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="#334155"/>
+    </Style>
+
+    <Style Selector="ToggleButton /template/ ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+
+                <!-- Background sẽ thay đổi trong 1 giây. BrushTransition vì Background có kiểu là Brush -->
+                <BrushTransition Property="Background" Duration="0:0:0.09" ></BrushTransition>
+            </Transitions>
+        </Setter>
+    </Style>
+</Styles>

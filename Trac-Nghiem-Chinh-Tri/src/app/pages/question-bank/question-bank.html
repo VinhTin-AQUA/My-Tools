@@ -1,0 +1,138 @@
+<div class="max-w-6xl mx-auto p-8 bg-zinc-100 min-h-screen">
+    <h1 class="text-3xl font-semibold mb-8 text-zinc-900 tracking-tight">Quản lý câu hỏi</h1>
+
+    <!-- SEARCH + ADD -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+        <input
+            type="text"
+            placeholder="Tìm kiếm câu hỏi..."
+            [(ngModel)]="searchTerm"
+            class="w-full md:w-1/2 rounded-xl border border-zinc-300 bg-white/80 px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
+
+        <a
+            [routerLink]="'/' + mainRoutes.ADD_QUESTION"
+            class="inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+        >
+            {{ 'question-bank.addQuestion' | translate }}
+        </a>
+    </div>
+
+    <!-- TABLE -->
+    <div
+        class="overflow-hidden rounded-2xl bg-white/70 backdrop-blur-md border border-white/40 shadow-sm"
+    >
+        <table class="w-full text-sm">
+            <thead class="bg-zinc-100/80 text-zinc-700">
+                <tr>
+                    <th class="p-4 border-b border-zinc-200 text-left font-medium">
+                        {{ 'question-bank.questionId' | translate }}
+                    </th>
+                    <th class="p-4 border-b border-zinc-200 text-left font-medium">
+                        {{ 'question-bank.question' | translate }}
+                    </th>
+                    <th class="p-4 border-b border-zinc-200 text-center font-medium">
+                        {{ 'question-bank.action' | translate }}
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="bg-white/60">
+                @for (q of questions(); track $index) {
+                <tr class="border-b border-zinc-200 hover:bg-zinc-100/70 transition">
+                    <td class="p-4 text-zinc-800">
+                        {{ q.id }}
+                    </td>
+
+                    <td class="p-4">
+                        <span class="line-clamp-2 text-zinc-700">
+                            {{ q.content }}
+                        </span>
+                    </td>
+
+                    <td class="p-4 text-center space-x-2">
+                        <button
+                            class="btn-secondary px-3 py-1.5 text-xs font-medium"
+                            (click)="openDetail(q)"
+                        >
+                            Xem
+                        </button>
+
+                        <button
+                            class="btn-primary px-3 py-1.5 text-xs font-medium rounded-lg"
+                            (click)="onEditQuetion(q)"
+                        >
+                            Sửa
+                        </button>
+
+                        <button
+                            class="btn-danger px-3 py-1.5 text-xs font-medium"
+                            (click)="onShowDelete(q)"
+                        >
+                            Xóa
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- DETAIL MODAL -->
+    @if (showDetail && selectedQuestion() !== null) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md">
+        <div
+            class="w-full max-w-xl rounded-2xl bg-white/80 backdrop-blur-md border border-white/40 shadow-xl p-8"
+        >
+            <!-- Title -->
+            <h2 class="text-xl font-semibold text-zinc-900 mb-4">
+                {{ 'question-bank.questionDetails' | translate }}
+            </h2>
+
+            <!-- Question content -->
+            <p class="text-zinc-700 mb-5 font-medium">
+                {{ selectedQuestion()?.content }}
+            </p>
+
+            <!-- Answers -->
+            <ul class="space-y-3">
+                @for (a of selectedQuestion()?.answers; track $index) {
+                <li
+                    class="p-3 rounded-xl border border-zinc-200 bg-white/70"
+                    [ngClass]="{
+                        'bg-green-200/70 border-green-300 text-green-500 font-medium': a.is_correct
+                    }"
+                >
+                    {{ a.content }}
+
+                    @if (a.is_correct) {
+                    <span class="ml-1 text-green-500">
+                        ({{ 'question-bank.correct' | translate }})
+                    </span>
+                    }
+                </li>
+                }
+            </ul>
+
+            <!-- Close button -->
+            <div class="text-right mt-8">
+                <button
+                    class="px-5 py-2.5 text-sm font-medium text-zinc-800 bg-zinc-200 hover:bg-zinc-300 rounded-xl transition"
+                    (click)="showDetail = false"
+                >
+                    {{ 'question-bank.close' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+@if (isShowQuestionDialog()) {
+<app-question-cancel-dialog
+    (close)="onShowQuestionDialogClose($event)"
+    [isSuccess]="false"
+    [message]="'deleteQuestionDialog.message'"
+    [title]="'deleteQuestionDialog.title'"
+></app-question-cancel-dialog>
+}

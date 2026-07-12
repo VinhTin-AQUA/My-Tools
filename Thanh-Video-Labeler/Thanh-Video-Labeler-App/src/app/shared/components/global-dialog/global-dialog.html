@@ -1,0 +1,24 @@
+@if(dialog().visible) {
+<div
+    class="fixed top-15 right-1 z-50 w-full max-w-sm rounded-xl border px-4 py-3 shadow-lg transition-all duration-300"
+    [ngClass]="{
+        'bg-green-100 border-green-400 text-green-800':
+            dialog().isSuccess === true,
+        'bg-red-100 border-red-400 text-red-800': dialog().isSuccess === false
+    }"
+>
+    <div class="flex justify-between items-start">
+        <div>
+            <div class="font-semibold text-lg">{{ dialog().title }}</div>
+            <div class="text-sm">{{ dialog().message }}</div>
+        </div>
+        <button
+            class="ml-4 text-xl font-bold leading-none text-gray-500 hover:text-black"
+            (click)="closeDialog()"
+            aria-label="Close"
+        >
+            &times;
+        </button>
+    </div>
+</div>
+}

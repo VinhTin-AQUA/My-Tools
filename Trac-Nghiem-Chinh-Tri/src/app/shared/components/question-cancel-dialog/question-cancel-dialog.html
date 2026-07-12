@@ -1,0 +1,77 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md">
+    <div
+        class=" transition-opacity origin-center animate-in fade-in-0 zoom-in-95 duration-200"
+    >
+        <div
+            class="w-full max-w-md mx-4 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-xl border border-white/40 shadow-xl transform transition-all duration-200 ease-out"
+            [ngClass]="{
+                'ring-1 ring-red-300/40': !isSuccess
+            }"
+        >
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-zinc-200/70">
+                <div class="flex items-center justify-between">
+                    <h3
+                        class="text-lg font-semibold tracking-tight"
+                        [ngClass]="{
+                            'text-red-600': !isSuccess,
+                            'text-zinc-900': isSuccess
+                        }"
+                    >
+                        {{ title | translate }}
+                    </h3>
+
+                    <button
+                        (click)="onCancel()"
+                        class="p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-200/60 hover:text-zinc-800 transition"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="px-6 py-5">
+                <p
+                    class="text-sm leading-relaxed"
+                    [ngClass]="{
+                        'text-red-600': !isSuccess,
+                        'text-zinc-600': isSuccess
+                    }"
+                >
+                    {{ message | translate }}
+                </p>
+            </div>
+
+            <!-- Actions -->
+            <div class="px-6 py-4 border-t border-zinc-200/70 bg-zinc-50/60">
+                <div class="flex justify-end gap-3">
+                    <button
+                        (click)="onCancel()"
+                        class="px-5 py-2 text-sm font-medium text-zinc-700 bg-white/80 border border-zinc-300 rounded-xl hover:bg-zinc-100 transition"
+                    >
+                        {{ 'questionCancelDialog.cancel' | translate }}
+                    </button>
+
+                    <button
+                        (click)="onOK()"
+                        class="px-5 py-2 text-sm font-medium text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
+                        [ngClass]="{
+                            'bg-red-500 hover:bg-red-600': !isSuccess,
+                            'bg-blue-500 hover:bg-blue-600': isSuccess
+                        }"
+                    >
+                        {{ 'questionCancelDialog.ok' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

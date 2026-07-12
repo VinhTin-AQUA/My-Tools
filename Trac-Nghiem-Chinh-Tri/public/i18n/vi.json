@@ -1,0 +1,72 @@
+{
+    "app": {
+        "title": "Trắc nghiệm"
+    },
+    "menuSidebar": {
+        "home": "Trang chủ",
+        "startExam": "Bắt đầu thi",
+        "settings": "Cài đặt",
+        "questionBank": "Ngân hàng câu hỏi"
+    },
+    "add-question": {
+        "inputQuestion": "Nhập câu hỏi...",
+        "answerList": "Danh sách đáp án",
+        "answerContent": "Nội dung đáp án",
+        "addAnswer": "Thêm đáp án",
+        "saveQuestion": "Lưu câu hỏi",
+        "addQuestion": "Thêm câu hỏi",
+        "questionContent": "Nội dung câu hỏi"
+    },
+    "home": {
+        "homeTitle1": "Thi trắc nghiệm – Bộ câu hỏi tổng hợp",
+        "homeTitle2": "Mỗi bài thi gồm 20 câu hỏi được lấy ngẫu nhiên từ ngân hàng câu hỏi.",
+        "startExam": "Bắt đầu thi ngay",
+        "questionInBank": "Câu hỏi trong ngân hàng",
+        "totalQuestionPerTest": "Câu mỗi bài thi",
+        "timePerTest": "Thời gian mỗi bài"
+    },
+    "question-bank": {
+        "addQuestion": "Thêm câu hỏi",
+        "questionId": "Id",
+        "question": "Câu hỏi",
+        "action": "Hành động",
+        "questionDetails": "Chi tiết câu hỏi",
+        "correct": "đúng",
+        "close": "Đóng"
+    },
+    "settings": {
+        "title": "Cài đặt hệ thống",
+        "importTitle": "Import dữ liệu",
+        "importButton": "Nhập câu hỏi",
+        "exportTitle": "Export dữ liệu",
+        "exportButton": "Xuất câu hỏi",
+        "resetTitle": "Xóa toàn bộ dữ liệu",
+        "resetDescription": "Thao tác này sẽ xóa vĩnh viễn toàn bộ ngân hàng câu hỏi. Không thể hoàn tác!",
+        "resetButton": "Xóa tất cả dữ liệu"
+    },
+    "startExam": {
+        "submit": "Nộp bài",
+        "resultTitle": "Kết quả bài thi",
+        "score": "Điểm",
+        "correctCount": "Số câu đúng",
+        "retryOld": "Thi lại câu hỏi cũ",
+        "retryNew": "Thi lại với câu hỏi mới",
+        "noQuestion": "Không có câu hỏi nào",
+        "sidebarTitle": "Nhận câu hỏi",
+        "questionCount": "Số lượng câu hỏi",
+        "random": "Random",
+        "startExam": "Bắt đầu thi"
+    },
+    "questionCancelDialog": {
+        "cancel": "Hủy",
+        "ok": "Ok"
+    },
+    "deleteQuestionDialog": {
+        "title": "Xóa câu hỏi",
+        "message": "Bạn có chắc chắn muốn xóa câu hỏi này"
+    },
+    "editQuestion": {
+        "updateQuestion": "Cập nhật câu hỏi",
+        "questionContent": "Nội dung câu hỏi"
+    }
+}

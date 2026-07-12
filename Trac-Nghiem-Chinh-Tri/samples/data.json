@@ -1,0 +1,125 @@
+{
+    "questions": [
+        { "id": 1, "content": "Quốc gia nào có diện tích lớn nhất thế giới?" },
+        { "id": 2, "content": "Thủ đô của Nhật Bản là gì?" },
+        { "id": 3, "content": "Ai là người phát minh ra bóng đèn điện?" },
+        { "id": 4, "content": "Dòng sông dài nhất thế giới là sông nào?" },
+        { "id": 5, "content": "Hành tinh nào lớn nhất trong Hệ Mặt Trời?" },
+        { "id": 6, "content": "Tổ chức nào điều hành World Cup bóng đá?" },
+        { "id": 7, "content": "Kim tự tháp Giza nằm ở quốc gia nào?" },
+        { "id": 8, "content": "Ngôn ngữ nào có nhiều người sử dụng nhất thế giới?" },
+        { "id": 9, "content": "Châu lục nào đông dân nhất thế giới?" },
+        { "id": 10, "content": "Đại dương nào lớn nhất thế giới?" },
+        { "id": 11, "content": "Thực phẩm nào giàu protein nhất?" },
+        { "id": 12, "content": "Loại vitamin nào có nhiều trong cam?" },
+        { "id": 13, "content": "Gạo là nguồn cung cấp chủ yếu chất gì?" },
+        { "id": 14, "content": "Thực phẩm nào tốt cho tim mạch?" },
+        { "id": 15, "content": "Sữa cung cấp nhiều khoáng chất nào?" },
+        { "id": 16, "content": "Loại dầu nào được xem là tốt cho sức khỏe?" },
+        { "id": 17, "content": "Rau xanh chứa nhiều chất gì?" },
+        { "id": 18, "content": "Cá hồi giàu chất béo nào?" },
+        { "id": 19, "content": "Trái cây nào giàu kali?" },
+        { "id": 20, "content": "Thực phẩm nào giúp cung cấp chất xơ?" }
+    ],
+    "answers": [
+        { "id": 1, "content": "Nga", "is_correct": true, "question_id": 1 },
+        { "id": 2, "content": "Canada", "is_correct": false, "question_id": 1 },
+        { "id": 3, "content": "Trung Quốc", "is_correct": false, "question_id": 1 },
+        { "id": 4, "content": "Mỹ", "is_correct": false, "question_id": 1 },
+
+        { "id": 5, "content": "Tokyo", "is_correct": true, "question_id": 2 },
+        { "id": 6, "content": "Osaka", "is_correct": false, "question_id": 2 },
+        { "id": 7, "content": "Kyoto", "is_correct": false, "question_id": 2 },
+        { "id": 8, "content": "Nagoya", "is_correct": false, "question_id": 2 },
+
+        { "id": 9, "content": "Thomas Edison", "is_correct": true, "question_id": 3 },
+        { "id": 10, "content": "Nikola Tesla", "is_correct": false, "question_id": 3 },
+        { "id": 11, "content": "Albert Einstein", "is_correct": false, "question_id": 3 },
+        { "id": 12, "content": "Isaac Newton", "is_correct": false, "question_id": 3 },
+
+        { "id": 13, "content": "Sông Nile", "is_correct": true, "question_id": 4 },
+        { "id": 14, "content": "Sông Amazon", "is_correct": false, "question_id": 4 },
+        { "id": 15, "content": "Sông Dương Tử", "is_correct": false, "question_id": 4 },
+        { "id": 16, "content": "Sông Mississippi", "is_correct": false, "question_id": 4 },
+
+        { "id": 17, "content": "Sao Mộc", "is_correct": true, "question_id": 5 },
+        { "id": 18, "content": "Sao Thổ", "is_correct": false, "question_id": 5 },
+        { "id": 19, "content": "Trái Đất", "is_correct": false, "question_id": 5 },
+        { "id": 20, "content": "Sao Hỏa", "is_correct": false, "question_id": 5 },
+
+        { "id": 21, "content": "FIFA", "is_correct": true, "question_id": 6 },
+        { "id": 22, "content": "UEFA", "is_correct": false, "question_id": 6 },
+        { "id": 23, "content": "AFC", "is_correct": false, "question_id": 6 },
+        { "id": 24, "content": "IOC", "is_correct": false, "question_id": 6 },
+
+        { "id": 25, "content": "Ai Cập", "is_correct": true, "question_id": 7 },
+        { "id": 26, "content": "Mexico", "is_correct": false, "question_id": 7 },
+        { "id": 27, "content": "Peru", "is_correct": false, "question_id": 7 },
+        { "id": 28, "content": "Ấn Độ", "is_correct": false, "question_id": 7 },
+
+        { "id": 29, "content": "Tiếng Trung", "is_correct": true, "question_id": 8 },
+        { "id": 30, "content": "Tiếng Anh", "is_correct": false, "question_id": 8 },
+        { "id": 31, "content": "Tiếng Tây Ban Nha", "is_correct": false, "question_id": 8 },
+        { "id": 32, "content": "Tiếng Hindi", "is_correct": false, "question_id": 8 },
+
+        { "id": 33, "content": "Châu Á", "is_correct": true, "question_id": 9 },
+        { "id": 34, "content": "Châu Phi", "is_correct": false, "question_id": 9 },
+        { "id": 35, "content": "Châu Âu", "is_correct": false, "question_id": 9 },
+        { "id": 36, "content": "Châu Mỹ", "is_correct": false, "question_id": 9 },
+
+        { "id": 37, "content": "Thái Bình Dương", "is_correct": true, "question_id": 10 },
+        { "id": 38, "content": "Đại Tây Dương", "is_correct": false, "question_id": 10 },
+        { "id": 39, "content": "Ấn Độ Dương", "is_correct": false, "question_id": 10 },
+        { "id": 40, "content": "Bắc Băng Dương", "is_correct": false, "question_id": 10 },
+        { "id": 41, "content": "Thịt bò", "is_correct": true, "question_id": 11 },
+        
+        { "id": 42, "content": "Bánh mì", "is_correct": false, "question_id": 11 },
+        { "id": 43, "content": "Đường", "is_correct": false, "question_id": 11 },
+        { "id": 44, "content": "Dầu ăn", "is_correct": false, "question_id": 11 },
+
+        { "id": 45, "content": "Vitamin C", "is_correct": true, "question_id": 12 },
+        { "id": 46, "content": "Vitamin A", "is_correct": false, "question_id": 12 },
+        { "id": 47, "content": "Vitamin D", "is_correct": false, "question_id": 12 },
+        { "id": 48, "content": "Vitamin B12", "is_correct": false, "question_id": 12 },
+
+        { "id": 49, "content": "Tinh bột", "is_correct": true, "question_id": 13 },
+        { "id": 50, "content": "Chất béo", "is_correct": false, "question_id": 13 },
+        { "id": 51, "content": "Protein", "is_correct": false, "question_id": 13 },
+        { "id": 52, "content": "Vitamin", "is_correct": false, "question_id": 13 },
+
+        { "id": 53, "content": "Cá", "is_correct": true, "question_id": 14 },
+        { "id": 54, "content": "Kẹo", "is_correct": false, "question_id": 14 },
+        { "id": 55, "content": "Nước ngọt", "is_correct": false, "question_id": 14 },
+        { "id": 56, "content": "Khoai chiên", "is_correct": false, "question_id": 14 },
+
+        { "id": 57, "content": "Canxi", "is_correct": true, "question_id": 15 },
+        { "id": 58, "content": "Sắt", "is_correct": false, "question_id": 15 },
+        { "id": 59, "content": "Kali", "is_correct": false, "question_id": 15 },
+        { "id": 60, "content": "Natri", "is_correct": false, "question_id": 15 },
+
+        { "id": 61, "content": "Dầu ô liu", "is_correct": true, "question_id": 16 },
+        { "id": 62, "content": "Mỡ động vật", "is_correct": false, "question_id": 16 },
+        { "id": 63, "content": "Bơ thực vật", "is_correct": false, "question_id": 16 },
+        { "id": 64, "content": "Dầu chiên lại", "is_correct": false, "question_id": 16 },
+
+        { "id": 65, "content": "Chất xơ", "is_correct": true, "question_id": 17 },
+        { "id": 66, "content": "Đường", "is_correct": false, "question_id": 17 },
+        { "id": 67, "content": "Chất béo", "is_correct": false, "question_id": 17 },
+        { "id": 68, "content": "Muối", "is_correct": false, "question_id": 17 },
+
+        { "id": 69, "content": "Omega-3", "is_correct": true, "question_id": 18 },
+        { "id": 70, "content": "Omega-6", "is_correct": false, "question_id": 18 },
+        { "id": 71, "content": "Trans fat", "is_correct": false, "question_id": 18 },
+        { "id": 72, "content": "Cholesterol xấu", "is_correct": false, "question_id": 18 },
+
+        { "id": 73, "content": "Chuối", "is_correct": true, "question_id": 19 },
+        { "id": 74, "content": "Táo", "is_correct": false, "question_id": 19 },
+        { "id": 75, "content": "Nho", "is_correct": false, "question_id": 19 },
+        { "id": 76, "content": "Dâu", "is_correct": false, "question_id": 19 },
+
+        { "id": 77, "content": "Yến mạch", "is_correct": true, "question_id": 20 },
+        { "id": 78, "content": "Kẹo", "is_correct": false, "question_id": 20 },
+        { "id": 79, "content": "Nước ngọt", "is_correct": false, "question_id": 20 },
+        { "id": 80, "content": "Bánh kem", "is_correct": false, "question_id": 20 }
+    ]
+}
