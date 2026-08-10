@@ -73,7 +73,7 @@ jobs:
             - name: Upload artifacts - Windows
               uses: actions/upload-artifact@v4
               with:
-                  name: linux-build
+                  name: windows-build
                   path: ./${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
 
     release:
