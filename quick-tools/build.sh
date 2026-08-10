@@ -58,10 +58,13 @@ cp -R "$FRONTEND_DIST/." "$WWWROOT/"
 echo
 echo "Cleaning publish folder..."
 
-if [ -d "$SCRIPT_DIR/publish" ]; then
-    rm -rf "$SCRIPT_DIR/publish"
+if [ -d "$SCRIPT_DIR/publish-linux-x64" ]; then
+    rm -rf "$SCRIPT_DIR/publish-linux-x64"
 fi
 
+if [ -d "$SCRIPT_DIR/publish-win-x64" ]; then
+    rm -rf "$SCRIPT_DIR/publish-win-x64"
+fi
 
 # ================================
 # 4. Dotnet publish
@@ -76,8 +79,14 @@ dotnet publish \
     -c Release \
     -r linux-x64 \
     -p:SelfContained=true \
-    -o "$SCRIPT_DIR/publish"
+    -o "$SCRIPT_DIR/publish-linux-x64"
 
+dotnet publish \
+    "$SCRIPT_DIR/QuickTools-BE/QuickTools.Desktop/QuickTools.Desktop.csproj" \
+    -c Release \
+    -r win-x64 \
+    -p:SelfContained=true \
+    -o "$SCRIPT_DIR/publish-win-x64"
 
 # ================================
 # Rename EXE
@@ -85,15 +94,23 @@ dotnet publish \
 echo
 echo "Renaming executable..."
 
-if [ -f "$SCRIPT_DIR/publish/QuickTools.Desktop" ]; then
+if [ -f "$SCRIPT_DIR/publish-linux-x64/QuickTools.Desktop" ]; then
     mv \
-        "$SCRIPT_DIR/publish/QuickTools.Desktop" \
-        "$SCRIPT_DIR/publish/QuickTools"
+        "$SCRIPT_DIR/publish-linux-x64/QuickTools.Desktop" \
+        "$SCRIPT_DIR/publish-linux-x64/QuickTools"
 else
     echo "ERROR: QuickTools.Desktop not found."
     exit 1
 fi
 
+if [ -f "$SCRIPT_DIR/publish-win-x64/QuickTools.Desktop.exe" ]; then
+    mv \
+        "$SCRIPT_DIR/publish-win-x64/QuickTools.Desktop.exe" \
+        "$SCRIPT_DIR/publish-win-x64/QuickTools.exe"
+else
+    echo "ERROR: QuickTools.Desktop.exe not found."
+    exit 1
+fi
 
 echo
 echo "========================================"
@@ -101,5 +118,6 @@ echo "         BUILD SUCCESS"
 echo "========================================"
 echo
 echo "Output:"
-echo "$SCRIPT_DIR/publish"
+echo "$SCRIPT_DIR/publish-linux-x64"
+echo "$SCRIPT_DIR/publish-win-x64"
 echo
