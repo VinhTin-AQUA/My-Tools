@@ -61,7 +61,7 @@ jobs:
 
             - name: Create tar.gz
               run: |
-                  tar -czf ${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz ${{ env.LINUX_TARGET_DIR_TAR }}
+                  tar -czf ${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz publish
 
             - name: Upload artifacts
               uses: actions/upload-artifact@v4
@@ -103,13 +103,7 @@ jobs:
             - name: Create .zip
               shell: powershell
               run: |
-                  Remove-Item -Recurse -Force $env:WINDOWS_FILE_NAME -ErrorAction Ignore
-                  New-Item -ItemType Directory -Path $env:WINDOWS_FILE_NAME
-
-                  Copy-Item "src-tauri/target/x86_64-pc-windows-msvc/release/$env:WINDOWS_FILE_NAME.exe" -Destination $env:WINDOWS_FILE_NAME
-                  Copy-Item "src-tauri/icons/Square150x150Logo.png" -Destination $env:WINDOWS_FILE_NAME
-
-                  Compress-Archive -Path $env:WINDOWS_FILE_NAME -DestinationPath "$env:WINDOWS_FILE_NAME.zip" -Force
+                  Compress-Archive -Path publish -DestinationPath "$env:WINDOWS_FILE_NAME.zip" -Force
 
             - name: Upload artifacts
               uses: actions/upload-artifact@v4
