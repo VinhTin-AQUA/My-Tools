@@ -4,6 +4,8 @@ set -e
 
 # Always use the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PUBLISH_FOLDER_WINDOWS="quicktools-windows"
+PUBLISH_FOLDER_LINUX="quicktools-linux"
 
 echo "========================================"
 echo "       BUILD QUICKTOOLS"
@@ -58,12 +60,12 @@ cp -R "$FRONTEND_DIST/." "$WWWROOT/"
 echo
 echo "Cleaning publish folder..."
 
-if [ -d "$SCRIPT_DIR/publish-linux-x64" ]; then
-    rm -rf "$SCRIPT_DIR/publish-linux-x64"
+if [ -d "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX" ]; then
+    rm -rf "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX"
 fi
 
-if [ -d "$SCRIPT_DIR/publish-win-x64" ]; then
-    rm -rf "$SCRIPT_DIR/publish-win-x64"
+if [ -d "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS" ]; then
+    rm -rf "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS"
 fi
 
 # ================================
@@ -79,14 +81,14 @@ dotnet publish \
     -c Release \
     -r linux-x64 \
     -p:SelfContained=true \
-    -o "$SCRIPT_DIR/publish-linux-x64"
+    -o "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX"
 
 dotnet publish \
     "$SCRIPT_DIR/QuickTools-BE/QuickTools.Desktop/QuickTools.Desktop.csproj" \
     -c Release \
     -r win-x64 \
     -p:SelfContained=true \
-    -o "$SCRIPT_DIR/publish-win-x64"
+    -o "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS"
 
 # ================================
 # Rename EXE
@@ -94,19 +96,19 @@ dotnet publish \
 echo
 echo "Renaming executable..."
 
-if [ -f "$SCRIPT_DIR/publish-linux-x64/QuickTools.Desktop" ]; then
+if [ -f "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX/QuickTools.Desktop" ]; then
     mv \
-        "$SCRIPT_DIR/publish-linux-x64/QuickTools.Desktop" \
-        "$SCRIPT_DIR/publish-linux-x64/QuickTools"
+        "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX/QuickTools.Desktop" \
+        "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX/QuickTools"
 else
     echo "ERROR: QuickTools.Desktop not found."
     exit 1
 fi
 
-if [ -f "$SCRIPT_DIR/publish-win-x64/QuickTools.Desktop.exe" ]; then
+if [ -f "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS/QuickTools.Desktop.exe" ]; then
     mv \
-        "$SCRIPT_DIR/publish-win-x64/QuickTools.Desktop.exe" \
-        "$SCRIPT_DIR/publish-win-x64/QuickTools.exe"
+        "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS/QuickTools.Desktop.exe" \
+        "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS/QuickTools.exe"
 else
     echo "ERROR: QuickTools.Desktop.exe not found."
     exit 1
@@ -118,6 +120,6 @@ echo "         BUILD SUCCESS"
 echo "========================================"
 echo
 echo "Output:"
-echo "$SCRIPT_DIR/publish-linux-x64"
-echo "$SCRIPT_DIR/publish-win-x64"
+echo "$SCRIPT_DIR/$PUBLISH_FOLDER_LINUX"
+echo "$SCRIPT_DIR/$PUBLISH_FOLDER_WINDOWS"
 echo
