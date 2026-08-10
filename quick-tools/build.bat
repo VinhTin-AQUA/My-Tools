@@ -22,7 +22,7 @@ if errorlevel 1 (
 echo.
 echo [2/4] Building Angular frontend...
 
-call ng build
+call ng build --configuration=production
 if errorlevel 1 (
     echo ERROR: ng build failed.
     exit /b 1

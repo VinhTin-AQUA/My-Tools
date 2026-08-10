@@ -26,7 +26,7 @@ npm install
 echo
 echo "[2/4] Building Angular frontend..."
 
-ng build
+ng build --configuration=production
 
 
 # ================================

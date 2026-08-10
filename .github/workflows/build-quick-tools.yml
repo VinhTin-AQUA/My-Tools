@@ -130,6 +130,9 @@ jobs:
               with:
                   node-version: lts/*
 
+            - name: Install Angular CLI globally
+              run: npm install -g @angular/cli@21
+
             - name: Setup .NET
               uses: actions/setup-dotnet@v4
               with:
@@ -167,6 +170,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: lts/*
+
+            - name: Install Angular CLI globally
+              run: npm install -g @angular/cli@21
 
             - name: Setup .NET
               uses: actions/setup-dotnet@v4
