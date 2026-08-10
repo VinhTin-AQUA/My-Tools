@@ -64,10 +64,10 @@ REM ================================
 echo.
 echo [4/4] Publishing .NET application...
 
-dotnet restore "QuickTools-BE\QuickTools.Windows\QuickTools.Windows.csproj"
+dotnet restore "QuickTools-BE\QuickTools.Desktop\QuickTools.Desktop.csproj"
 
 dotnet publish ^
-    "QuickTools-BE\QuickTools.Windows\QuickTools.Windows.csproj" ^
+    "QuickTools-BE\QuickTools.Desktop\QuickTools.Desktop.csproj" ^
     -c Release ^
     -r win-x64 ^
     -p:SelfContained=true ^
@@ -85,10 +85,10 @@ REM ================================
 echo.
 echo Renaming executable...
 
-if exist "publish\QuickTools.Windows.exe" (
-    ren "publish\QuickTools.Windows.exe" "QuickTools.exe"
+if exist "publish\QuickTools.Desktop.exe" (
+    ren "publish\QuickTools.Desktop.exe" "QuickTools.exe"
 ) else (
-    echo ERROR: QuickTools.Windows.exe not found.
+    echo ERROR: QuickTools.Desktop.exe not found.
     exit /b 1
 )
 
