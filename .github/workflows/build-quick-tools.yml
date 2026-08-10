@@ -21,9 +21,6 @@ defaults:
 
 env:
     PROJECT_DIR: quick-tools
-
-
-    PROJECT_DIR: quick-tools
     VERSION: 1.0.0                    # Chỉ dùng cho .NET
     TAG_NAME: quick-tools_v1.0.0      # Dùng cho Git tag
     RELEASE_NAME: quick-tools_v1.0.0  # Dùng cho release name
