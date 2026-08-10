@@ -65,7 +65,6 @@ jobs:
 
             - name: Create archive for Windows
               run: |
-                  cd ${{ env.PROJECT_DIR }}
                   zip -r ${{ env.WINDOWS_FILE_NAME }}.zip quicktools-windows
 
             - name: Remove old tag if exists
