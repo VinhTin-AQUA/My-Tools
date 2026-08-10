@@ -1,0 +1,102 @@
+<div class="wrapper">
+    <div class="info-grid">
+        @for (item of infoItems(); track $index) {
+            <div class="info-card">
+                <div class="info-card-content">
+                    <div class="info-icon">
+                        {{ item.icon }}
+                    </div>
+
+                    <div class="info-text">
+                        <p class="info-label">
+                            {{ item.label }}
+                        </p>
+
+                        <p class="info-value" [pTooltip]="item.value" >
+                            {{ item.value }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Menu Container -->
+    <section class="menu-container">
+        <!-- Header -->
+        <div class="menu-header">
+            <h2 class="menu-title">
+                <span>📋</span>
+
+                Menu List
+
+                <span class="menu-count"> ({{ filteredMenuItems.length }} items) </span>
+            </h2>
+
+            <!-- Search -->
+            <div class="search-wrapper">
+                <div class="search-icon">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                        <path
+                            fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd"
+                        />
+                    </svg>
+                </div>
+
+                <input
+                    type="text"
+                    pInputText
+                    placeholder="Search menu..."
+                    [(ngModel)]="searchTerm"
+                    class="search-input"
+                />
+            </div>
+        </div>
+
+        <!-- Menu List -->
+        <div class="menu-content">
+            @if (filteredMenuItems.length > 0) {
+                <div class="menu-grid">
+                    @for (menu of filteredMenuItems; track menu.name) {
+                        <div [routerLink]="menu.route" class="menu-item">
+                            <div class="menu-item-icon">
+                                {{ menu.icon }}
+                            </div>
+
+                            <div class="menu-item-name">
+                                {{ menu.name }}
+                            </div>
+
+                            <div class="menu-item-arrow">
+                                <svg viewBox="0 0 20 20" fill="currentColor">
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+
+                    <p>
+                        No menu found matching
+                        <strong>{{ searchTerm }}</strong>
+                    </p>
+
+                    <p-button
+                        label="Clear search"
+                        class="clear-search"
+                        (click)="searchTerm = ''"
+                    ></p-button>
+                </div>
+            }
+        </div>
+    </section>
+</div>

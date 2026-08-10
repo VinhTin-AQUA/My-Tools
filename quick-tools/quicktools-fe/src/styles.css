@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@openng/icons/openng-icons.css';
+/* @import 'tailwindcss'; */
+
+html,
+body {
+    height: 100%;
+}
+
+* {
+    font-family:
+        'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--p-content-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--p-primary-color);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--p-primary-hover-color);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: var(--p-primary-active-color);
+}

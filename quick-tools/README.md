@@ -1,59 +1,77 @@
-# Quick Tools
+# QuickTools
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+## Setup, run and build
 
-## Development server
+### Desktop
 
-To start a local development server, run:
+- Setup: run **download_prerequisites.sh (Linux)** or **download_prerequisites.bat (Windows)**
+- Run:
+    - Check native folder **QuickTools-BE/QuickTools.Desktop/Native/linux-x64** or **QuickTools-BE/QuickTools.Desktop/Native/win-x64** same with **[Native folder structure](#native-folder-structure)**
+    - Open project by Visual Studio or Rider and Run
 
-```bash
-ng serve
+- Build: after run download_prerequisites script, run **build.sh (linux)** or **build.bat (windows)**
+
+### Android
+
+
+## Native folder structure
+
+- Cấu trúc thư mục Native
+
+```txt
+Native/
+├── linux-x64/
+│   ├── ffmpeg/
+│   │   ├── libavutil.so
+│   │   ├── libswresample.so
+│   │   ├── libswscale.so
+│   │   ├── libavcodec.so
+│   │   ├── libavformat.so
+│   │   ├── libavfilter.so
+│   │   └── libavdevice.so
+│   └── webui/
+├── win-x64/
+│   ├── ffmpeg/
+│   │   ├── avutil.dll
+│   │   ├── swresample.dll
+│   │   ├── swscale.dll
+│   │   ├── avcodec.dll
+│   │   ├── avformat.dll
+│   │   ├── avfilter.dll
+│   │   └── avdevice.dll
+│   └── webui/
+├── linux-arm64/
+└── win-arm64/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Tên thư mục phải trùng với tên trong DllImport. Ví dụ "webui"
 
-## Code scaffolding
+## Load binaries
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Vào QuickTools/Modules/LoaderManager/NativeLibraryManager.cs, thêm thư mục thư viện
 
-```bash
-ng generate component component-name
+```cs
+private static void RegisterLibraries()
+{
+    // Đăng ký từng thư viện
+    RegisterLibrary("webui", "webui");
+    RegisterLibrary("ffmpeg", "ffmpeg");
+    // Thêm các thư viện khác nếu cần
+    // RegisterLibrary("opencv", "opencv");
+    // RegisterLibrary("tensorflow", "tensorflow");
+}
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## build
 
-```bash
-ng generate --help
+```txt
+dotnet publish QuickTools\QuickTools.csproj -c Release -r win-x64 -p:SelfContained=true  -o ./publish
+
+dotnet publish QuickTools/QuickTools.csproj -c Release -r linux-x64 -p:SelfContained=true  -o ./publish
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
+```cs
+private const string Library = "webui";
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

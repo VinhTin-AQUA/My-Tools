@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Desktop", "QuickTools.Desktop\QuickTools.Desktop.csproj", "{6F0D80D1-A09D-4D2F-B12F-17B5FA4680DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Services", "QuickTools.Services\QuickTools.Services.csproj", "{EBF8F115-F07D-41F1-9D1D-19B509ECE695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Core", "QuickTools.Core\QuickTools.Core.csproj", "{0EE4C255-54A5-43E9-B754-5562B8D94ACD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F0D80D1-A09D-4D2F-B12F-17B5FA4680DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F0D80D1-A09D-4D2F-B12F-17B5FA4680DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F0D80D1-A09D-4D2F-B12F-17B5FA4680DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F0D80D1-A09D-4D2F-B12F-17B5FA4680DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF8F115-F07D-41F1-9D1D-19B509ECE695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF8F115-F07D-41F1-9D1D-19B509ECE695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF8F115-F07D-41F1-9D1D-19B509ECE695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF8F115-F07D-41F1-9D1D-19B509ECE695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
