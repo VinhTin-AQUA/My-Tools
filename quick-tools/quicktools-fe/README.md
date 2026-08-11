@@ -105,4 +105,6 @@ Một giao diện có thể đổi toàn bộ theme chỉ bằng cách thay đ�
 
 mô tả giao diện:
 
+tạo 1 component cho navigation chứa service trên và 1 nút để quay lại trang trước đó
+
 ```

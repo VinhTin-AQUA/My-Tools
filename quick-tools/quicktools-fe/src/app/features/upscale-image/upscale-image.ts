@@ -20,23 +20,24 @@ import {
     UpscaleImageResponseItem,
 } from './models/upscale_image';
 import { Notification } from '../../models/notification';
+import { NavigationComponent } from "../../components/navigation.component/navigation.component";
 
 @Component({
     selector: 'app-upscale-image',
     imports: [
-        FormsModule,
-        SelectModule,
-        ButtonModule,
-        FileUploadModule,
-        BadgeModule,
-        ButtonModule,
-        FileUploadModule,
-        ProgressBarModule,
-        FileUploadComponent,
-        FileSizePipe,
-        ToastModule,
-        // RippleModule,
-    ],
+    FormsModule,
+    SelectModule,
+    ButtonModule,
+    FileUploadModule,
+    BadgeModule,
+    ButtonModule,
+    FileUploadModule,
+    ProgressBarModule,
+    FileUploadComponent,
+    FileSizePipe,
+    ToastModule,
+    NavigationComponent
+],
     templateUrl: './upscale-image.html',
     styleUrl: './upscale-image.css',
     providers: [MessageService],
