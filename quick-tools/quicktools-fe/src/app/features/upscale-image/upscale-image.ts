@@ -20,24 +20,24 @@ import {
     UpscaleImageResponseItem,
 } from './models/upscale_image';
 import { Notification } from '../../models/notification';
-import { NavigationComponent } from "../../components/navigation.component/navigation.component";
+import { NavigationComponent } from '../../components/navigation.component/navigation.component';
 
 @Component({
     selector: 'app-upscale-image',
     imports: [
-    FormsModule,
-    SelectModule,
-    ButtonModule,
-    FileUploadModule,
-    BadgeModule,
-    ButtonModule,
-    FileUploadModule,
-    ProgressBarModule,
-    FileUploadComponent,
-    FileSizePipe,
-    ToastModule,
-    NavigationComponent
-],
+        FormsModule,
+        SelectModule,
+        ButtonModule,
+        FileUploadModule,
+        BadgeModule,
+        ButtonModule,
+        FileUploadModule,
+        ProgressBarModule,
+        FileUploadComponent,
+        FileSizePipe,
+        ToastModule,
+        NavigationComponent,
+    ],
     templateUrl: './upscale-image.html',
     styleUrl: './upscale-image.css',
     providers: [MessageService],
@@ -119,11 +119,13 @@ export class UpscaleImage {
             upscaleImageRequestItems: updatedFiles,
         };
         this.webuiService.callJson('upscaleImage', data);
+        this.isUploading.set(false);
     }
 
     onClear(): void {
         this.uploadedFiles.set([]);
         this.processedImages.set([]);
+        this.isUploading.set(false);
     }
 
     toggleSelect(image: FileModel): void {
@@ -167,7 +169,7 @@ export class UpscaleImage {
             },
         ]);
 
-        if(this.totalSizeProcessed() === this.processedImages().length) {
+        if (this.totalSizeProcessed() === this.processedImages().length) {
             this.isUploading.set(false);
         }
     }
