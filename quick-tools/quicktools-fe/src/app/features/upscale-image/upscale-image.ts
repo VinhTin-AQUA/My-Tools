@@ -99,6 +99,12 @@ export class UpscaleImage {
             return;
         }
 
+        this.messageService.add({
+            severity: 'success',
+            summary: 'Scaling Started',
+            detail: '',
+        });
+
         this.isUploading.set(true);
         const files = this.uploadedFiles();
         const updatedFiles = await Promise.all(
@@ -118,8 +124,7 @@ export class UpscaleImage {
             scale: this.scale,
             upscaleImageRequestItems: updatedFiles,
         };
-        this.webuiService.callJson('upscaleImage', data);
-        this.isUploading.set(false);
+        await this.webuiService.callJson('upscaleImage', data);
     }
 
     onClear(): void {
@@ -174,8 +179,8 @@ export class UpscaleImage {
         }
     }
 
-    openFolder(folderPath: string) {
-        this.webuiService.call('openFolder', folderPath);
+    async openFolder(folderPath: string) {
+        await this.webuiService.call('openFolder', folderPath);
     }
 
     ngOnDestroy() {
