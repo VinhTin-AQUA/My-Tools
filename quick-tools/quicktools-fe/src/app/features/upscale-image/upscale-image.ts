@@ -30,7 +30,6 @@ import { NavigationComponent } from '../../components/navigation.component/navig
         ButtonModule,
         FileUploadModule,
         BadgeModule,
-        ButtonModule,
         FileUploadModule,
         ProgressBarModule,
         FileUploadComponent,

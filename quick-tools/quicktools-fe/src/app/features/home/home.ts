@@ -46,6 +46,7 @@ export class Home {
     menuItems: MenuItem[] = [
         { icon: '🖼️', name: 'Upscale Img', route: '/upscale-image' },
         { icon: '🖼️', name: 'Split Img', route: '/profile' },
+        { icon: '🖼️', name: 'Canvas Compress Image', route: '/canvas-compress-image' },
     ];
 
     searchTerm: string = '';

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
 import { UpscaleImage } from './features/upscale-image/upscale-image';
+import { CanvasCompressImage } from './features/canvas-compress-image/canvas-compress-image';
 
 export const routes: Routes = [
     {
@@ -12,5 +13,10 @@ export const routes: Routes = [
         path: 'upscale-image',
         component: UpscaleImage,
         title: 'Upscale Image',
+    },
+        {
+        path: 'canvas-compress-image',
+        component: CanvasCompressImage,
+        title: 'Canvas Compress Image',
     },
 ];
