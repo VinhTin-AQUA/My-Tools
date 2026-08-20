@@ -1,0 +1,20 @@
+﻿@namespace QuickTools.Mobile.Components.Pages
+@page "/"
+
+<div class="product-search">
+    <input @bind="Keyword" placeholder="Search..." />
+
+    <button @onclick="Search">
+        Search
+    </button>
+
+    @if (Products.Count > 0)
+    {
+        <ul>
+            @foreach (var product in Products)
+            {
+                <li>@product.Name</li>
+            }
+        </ul>
+    }
+</div>

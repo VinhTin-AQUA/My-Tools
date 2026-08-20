@@ -1,0 +1,15 @@
+.product-search {
+    padding: 20px;
+}
+
+.product-search input {
+    padding: 8px;
+}
+
+.product-search button {
+    margin-left: 8px;
+}
+
+.product-search li {
+    margin-top: 5px;
+}

@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Services", "Quic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Core", "QuickTools.Core\QuickTools.Core.csproj", "{0EE4C255-54A5-43E9-B754-5562B8D94ACD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.Mobile", "QuickTools.Mobile\QuickTools.Mobile.csproj", "{771BC577-B104-427F-827D-68AA88B96337}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickTools.MobileTemplate", "QuickTools.MobileTemplate\QuickTools.MobileTemplate.csproj", "{5C729FB4-D78B-4D29-8621-73264275A18A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EE4C255-54A5-43E9-B754-5562B8D94ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{771BC577-B104-427F-827D-68AA88B96337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{771BC577-B104-427F-827D-68AA88B96337}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{771BC577-B104-427F-827D-68AA88B96337}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{771BC577-B104-427F-827D-68AA88B96337}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C729FB4-D78B-4D29-8621-73264275A18A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C729FB4-D78B-4D29-8621-73264275A18A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C729FB4-D78B-4D29-8621-73264275A18A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C729FB4-D78B-4D29-8621-73264275A18A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

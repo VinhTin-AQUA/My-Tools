@@ -1,0 +1,24 @@
+﻿@namespace QuickTools.MobileTemplate.Components.Pages
+@rendermode InteractiveServer
+@page "/"
+
+<div class="product-search">
+    <input @bind="Keyword" placeholder="Search..." />
+
+    <button @onclick="Search">
+        Search
+    </button>
+    
+    <p>@Products.Count</p>
+
+    @if (Products.Count > 0)
+    {
+        <ul>
+            @foreach (var product in Products)
+            {
+                <li>@product.Name</li>
+            }
+        </ul>
+    }
+    
+</div>
