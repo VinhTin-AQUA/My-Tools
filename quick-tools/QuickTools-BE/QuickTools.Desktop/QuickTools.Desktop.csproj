@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NewTun.WebUISharp" Version="1.0.2" />
+      <PackageReference Include="NewTun.WebUISharp" Version="1.0.4" />
     </ItemGroup>
     
 </Project>

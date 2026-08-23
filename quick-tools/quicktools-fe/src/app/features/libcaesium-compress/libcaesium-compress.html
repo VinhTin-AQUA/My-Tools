@@ -1,0 +1,187 @@
+<div class="image-upload-container">
+    <p-toast />
+
+    <div style="margin-bottom: 10px">
+        <app-navigation-component></app-navigation-component>
+    </div>
+
+    <!-- Section 2: Controls -->
+    <div class="controls-section">
+        <div class="controls-container">
+            <div class="select-wrapper">
+                <label class="control-label">Quality:</label>
+
+                <p-inputnumber
+                    [(ngModel)]="quality"
+                    inputId="minmax"
+                    mode="decimal"
+                    [min]="10"
+                    [max]="100"
+                    class="custom-input-number"
+                />
+            </div>
+
+            <div class="button-group">
+                <p-button
+                    label="🗑️ Clear"
+                    (onClick)="onClear()"
+                    variant="outlined"
+                    severity="contrast"
+                />
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <file-upload-component [(files)]="uploadedFiles"></file-upload-component>
+    </div>
+
+    <!-- Section 3: Two Columns -->
+    <div class="gallery-section">
+        <!-- Left Column - Original Images List -->
+        <div class="column left-column">
+            <h3 class="column-title">📷 Orginal {{ totalSize() | fileSize }}</h3>
+            <div class="image-list">
+                @for (image of uploadedFiles(); track image.id) {
+                    <div
+                        class="image-item"
+                        (click)="onImageClick(image)"
+                        [class.selected]="image.selected"
+                    >
+                        <div class="image-preview-url">
+                            <img [src]="image.previewUrl" [alt]="image.name" loading="lazy" />
+                        </div>
+                        <div class="image-info">
+                            <span class="image-name">{{ image.name }}</span>
+                            <span class="image-size">{{ image.size | fileSize }}</span>
+                        </div>
+
+                        <div class="">
+                            @if (!isUploading()) {
+                                <p-button
+                                    icon="pi pi-times"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    [raised]="true"
+                                    severity="danger"
+                                    (onClick)="removeImage($event, image.id)"
+                                />
+                            } @else if (
+                                image.processingStatus === FileProcessingStatus.PROCESSING
+                            ) {
+                                <span>
+                                    <i
+                                        class="pi pi-spin pi-spinner"
+                                        style="font-size: 1rem; color: yellow"
+                                    ></i>
+                                </span>
+                            } @else if (image.processingStatus === FileProcessingStatus.SUCCESS) {
+                                <span>
+                                    <i
+                                        class="pi pi-check"
+                                        style="font-size: 1rem; color: greenyellow"
+                                    ></i>
+                                </span>
+                            } @else if (image.processingStatus === FileProcessingStatus.FAILED) {
+                                <span>
+                                    <i
+                                        class="pi pi-exclamation-triangle"
+                                        style="font-size: 1rem; color: red"
+                                    ></i>
+                                </span>
+                            }
+                        </div>
+                    </div>
+                } @empty {
+                    <div class="empty-state">
+                        <span>📭 No image</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Right Column - Processed Images List -->
+        <div class="column right-column">
+            <h3 class="column-title">🔄 Processed {{ totalSizeProcessed() | fileSize }}</h3>
+            <div class="image-list">
+                @for (image of processedImages(); track image.id) {
+                    <div class="image-item processed-item">
+                        <div class="image-info">
+                            <span class="image-name">{{ image.name }}</span>
+                            <span class="image-size">{{ image.size | fileSize }}</span>
+                        </div>
+
+                        <p-button
+                            label="📁"
+                            (onClick)="openFolder(image.previewUrl)"
+                            [raised]="true"
+                            severity="secondary"
+                        />
+                    </div>
+                } @empty {
+                    <div class="empty-state">
+                        <span>📭 No image</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Submit & Progress -->
+    <div class="action-section">
+        <div class="action-container">
+            <!-- [disabled]="!images.length" -->
+
+            <p-button
+                label="✅ Submit"
+                (onClick)="onSubmit()"
+                [raised]="true"
+                severity="contrast"
+            />
+
+            @if (isUploading() || progress() > 0) {
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            [style.width.%]="(progress() / uploadedFiles().length) * 100"
+                            [style.background]="'var(--p-primary-color)'"
+                        ></div>
+                    </div>
+
+                    <span class="progress-label">
+                        {{ progress() }}/{{ uploadedFiles().length }}
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="source-section">
+        <div class="source-info">
+            <span class="source-label">📁 Cre:</span>
+            <span class="source-value">iIoveIMG</span>
+            <a target="_blank" href="https://www.iloveimg.com/upscale-image" class="source-link"
+                >🔗 Click here</a
+            >
+        </div>
+    </div>
+</div>
+
+<!-- Popup for image preview -->
+@if (showPopupImagePreview && selectedImage) {
+    <div class="popup-overlay" (click)="closePopupImagePreview()">
+        <div class="popup-content" (click)="$event.stopPropagation()">
+            <div class="popup-header">
+                <h3>{{ selectedImage.name }}</h3>
+                <button class="btn-close" (click)="closePopupImagePreview()">✕</button>
+            </div>
+            <div class="popup-body">
+                <img [src]="selectedImage.previewUrl" [alt]="selectedImage.name" />
+                <div class="popup-footer">
+                    <span>Kích thước: {{ selectedImage.size | fileSize }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

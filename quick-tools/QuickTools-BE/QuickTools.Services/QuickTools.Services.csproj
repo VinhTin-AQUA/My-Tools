@@ -10,4 +10,8 @@
       <ProjectReference Include="..\QuickTools.Core\QuickTools.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
+    </ItemGroup>
+
 </Project>

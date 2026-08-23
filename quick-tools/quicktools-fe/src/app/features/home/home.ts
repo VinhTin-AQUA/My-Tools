@@ -47,6 +47,7 @@ export class Home {
         { icon: '🖼️', name: 'Upscale Img', route: '/upscale-image' },
         { icon: '🖼️', name: 'Split Img', route: '/profile' },
         { icon: '🖼️', name: 'Canvas Compress Image', route: '/canvas-compress-image' },
+        { icon: '⬇', name: 'Libcaesium Compress', route: '/libcaesium-compress' },
     ];
 
     searchTerm: string = '';

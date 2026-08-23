@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
 import { UpscaleImage } from './features/upscale-image/upscale-image';
 import { CanvasCompressImage } from './features/canvas-compress-image/canvas-compress-image';
+import { LibcaesiumCompress } from './features/libcaesium-compress/libcaesium-compress';
 
 export const routes: Routes = [
     {
@@ -14,9 +15,14 @@ export const routes: Routes = [
         component: UpscaleImage,
         title: 'Upscale Image',
     },
-        {
+    {
         path: 'canvas-compress-image',
         component: CanvasCompressImage,
         title: 'Canvas Compress Image',
+    },
+    {
+        path: 'libcaesium-compress',
+        component: LibcaesiumCompress,
+        title: 'Libcaesium compress',
     },
 ];

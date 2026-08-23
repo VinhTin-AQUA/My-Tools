@@ -15,6 +15,9 @@ namespace QuickTools.Windows.Helpers
                 EFolder.Iloveimg_Upscale_Temp => Path.Combine(appDirectory, temps, "Iloveimg_Upscale_Temp"),
                 EFolder.Iloveimg_Upscale_Result => Path.Combine(appDirectory, temps, "Iloveimg_Upscale_Result"),
                 
+                EFolder.Libcaesium_Compress_Temp => Path.Combine(appDirectory, temps, "Libcaesium_Compress_Temp"),
+                EFolder.Libcaesium_Compress_Result => Path.Combine(appDirectory, temps, "Libcaesium_Compress_Result"),
+                
                 _ => string.Empty
             };
         }
@@ -167,6 +170,8 @@ namespace QuickTools.Windows.Helpers
         Temps,
         Iloveimg_Upscale_Temp,
         Iloveimg_Upscale_Result,
+        Libcaesium_Compress_Temp,
+        Libcaesium_Compress_Result,
     }
     
     public enum SystemFolder

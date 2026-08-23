@@ -1,5 +1,6 @@
 ﻿using QuickTools.Windows.Handlers.FolderHandlers;
 using QuickTools.Windows.Handlers.IloveimgHandlers;
+using QuickTools.Windows.Handlers.LibcaesiumHandlers;
 using WebUISharp;
 
 namespace QuickTools.Windows
@@ -8,10 +9,10 @@ namespace QuickTools.Windows
     {
         private static void Main()
         {
-            // NativeLibraryManager.Initialize();
-
             // Tạo window
             var window = WebUI.NewWindow();
+            
+            
             
             // WebUIBinder.Bind(window, "longTask", ExampleHandlers.LongTaskHandler);
             // WebUIBinder.Bind(window, "getData", ExampleHandlers.GetDataHandler);
@@ -20,6 +21,8 @@ namespace QuickTools.Windows
             // WebUIBinder.BindAsyncFunction(window, "asyncFunction", ExampleHandlers.MyAsyncFunction);
             
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "upscaleImage", UpscaleImageHandler.UpscaleImage);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "libcaesiumCompressImage", LibcaesiumHandler.CompressImage);
+            
             WebUIBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
 
             // Cấu hình async
