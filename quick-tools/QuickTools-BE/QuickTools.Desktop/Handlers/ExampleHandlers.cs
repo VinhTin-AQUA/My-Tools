@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using QuickTools.Windows.Modules.WebUI;
-using QuickTools.Windows.Modules.WebUI.Methods;
+using WebUISharp;
 
 namespace QuickTools.Windows.Handlers
 {
@@ -11,7 +10,7 @@ namespace QuickTools.Windows.Handlers
         public static void LongTaskHandler(UIntPtr window, UIntPtr event_type, IntPtr element, UIntPtr event_number, UIntPtr bind_id)
         {
             // Lấy param
-            long param = InterfaceMethods.webui_interface_get_int_at(window, event_number, UIntPtr.Zero);
+            long param = WebUI.InterfaceGetIntAt(window, event_number, UIntPtr.Zero);
             Console.WriteLine($"[LongTask] Started with param: {param}");
 
             Task.Run(async () =>
@@ -22,13 +21,13 @@ namespace QuickTools.Windows.Handlers
                     long result = param * 2;
 
                     // Trả về kết quả
-                    InterfaceMethods.webui_interface_set_response(window, event_number, result.ToString());
+                    WebUI.InterfaceSetResponse(window, event_number, result.ToString());
                     Console.WriteLine($"[LongTask] Completed: {result}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[LongTask] Error: {ex.Message}");
-                    InterfaceMethods.webui_interface_set_response(window, event_number, $"Error: {ex.Message}");
+                    WebUI.InterfaceSetResponse(window, event_number, $"Error: {ex.Message}");
                 }
             });
         }
@@ -51,13 +50,13 @@ namespace QuickTools.Windows.Handlers
                         timestamp = DateTime.Now
                     };
                     string json = JsonSerializer.Serialize(data);
-                    InterfaceMethods.webui_interface_set_response(window, event_number, json);
+                    WebUI.InterfaceSetResponse(window, event_number, json);
                     Console.WriteLine("[GetData] Data returned");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[GetData] Error: {ex.Message}");
-                    InterfaceMethods.webui_interface_set_response(window, event_number, $"Error: {ex.Message}");
+                    WebUI.InterfaceSetResponse(window, event_number, $"Error: {ex.Message}");
                 }
             });
         }
@@ -66,8 +65,8 @@ namespace QuickTools.Windows.Handlers
         public static void SendDataHandler(UIntPtr window, UIntPtr event_type, IntPtr element, UIntPtr event_number, UIntPtr bind_id)
         {
             // Lấy string data từ event
-            IntPtr dataPtr = InterfaceMethods.webui_interface_get_string_at(window, event_number, UIntPtr.Zero);
-            string jsonData = MarshalHelper.PtrToString(dataPtr);
+            IntPtr dataPtr = WebUI.InterfaceGetStringAt(window, event_number, UIntPtr.Zero);
+            string jsonData = WebUI.PtrToString(dataPtr);
             Console.WriteLine($"[SendData] Received: {jsonData}");
 
             Task.Run(async () =>
@@ -91,13 +90,13 @@ namespace QuickTools.Windows.Handlers
                         }
                     }
                     
-                    InterfaceMethods.webui_interface_set_response(window, event_number, "Data saved successfully!");
+                    WebUI.InterfaceSetResponse(window, event_number, "Data saved successfully!");
                     Console.WriteLine("[SendData] Data saved");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[SendData] Error: {ex.Message}");
-                    InterfaceMethods.webui_interface_set_response(window, event_number, $"Error: {ex.Message}");
+                    WebUI.InterfaceSetResponse(window, event_number, $"Error: {ex.Message}");
                 }
             });
         }
@@ -105,8 +104,8 @@ namespace QuickTools.Windows.Handlers
         // Xử lý request với ID riêng, thường dùng cho async operations cần theo dõi trạng thái.
         public static void RequestDataHandler(UIntPtr window, UIntPtr event_type, IntPtr element, UIntPtr event_number, UIntPtr bind_id)
         {
-            IntPtr requestIdPtr = InterfaceMethods.webui_interface_get_string_at(window, event_number, UIntPtr.Zero);
-            string requestId = MarshalHelper.PtrToString(requestIdPtr);
+            IntPtr requestIdPtr = WebUI.InterfaceGetStringAt(window, event_number, UIntPtr.Zero);
+            string requestId = WebUI.PtrToString(requestIdPtr);
             Console.WriteLine($"[RequestData] Request ID: {requestId}");
 
             Task.Run(async () =>
@@ -122,7 +121,7 @@ namespace QuickTools.Windows.Handlers
                         timestamp = DateTime.Now
                     };
                     string json = JsonSerializer.Serialize(response);
-                    InterfaceMethods.webui_interface_set_response(window, event_number, json);
+                    WebUI.InterfaceSetResponse(window, event_number, json);
                     Console.WriteLine($"[RequestData] Response sent for: {requestId}");
                 }
                 catch (Exception ex)
@@ -135,7 +134,7 @@ namespace QuickTools.Windows.Handlers
                         error = ex.Message
                     };
                     string json = JsonSerializer.Serialize(errorResponse);
-                    InterfaceMethods.webui_interface_set_response(window, event_number, json);
+                    WebUI.InterfaceSetResponse(window, event_number, json);
                 }
             });
         }
@@ -168,8 +167,8 @@ namespace QuickTools.Windows.Handlers
         public static async Task<object> UploadFileAsync(UIntPtr window, UIntPtr event_type, IntPtr element, UIntPtr event_number, UIntPtr bind_id)
         {
             // Lấy dữ liệu từ JavaScript
-            IntPtr dataPtr = InterfaceMethods.webui_interface_get_string_at(window, event_number, UIntPtr.Zero);
-            string jsonData = MarshalHelper.PtrToString(dataPtr);
+            IntPtr dataPtr = WebUI.InterfaceGetStringAt(window, event_number, UIntPtr.Zero);
+            string jsonData = WebUI.PtrToString(dataPtr);
             
             Console.WriteLine($"[UploadFile] Received data length: {jsonData?.Length ?? 0}");
 

@@ -9,12 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-
-        <None Include="Native\**\*">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </None>
-
         <None Include="wwwroot\**\*">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
@@ -27,6 +21,10 @@
 
     <ItemGroup>
       <Folder Include="Constants\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NewTun.WebUISharp" Version="1.0.2" />
     </ItemGroup>
     
 </Project>

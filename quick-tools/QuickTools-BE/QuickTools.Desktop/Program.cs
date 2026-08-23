@@ -1,8 +1,6 @@
 ﻿using QuickTools.Windows.Handlers.FolderHandlers;
 using QuickTools.Windows.Handlers.IloveimgHandlers;
-using QuickTools.Windows.Modules.LoaderManager;
-using QuickTools.Windows.Modules.WebUI;
-using QuickTools.Windows.Modules.WebUI.Methods;
+using WebUISharp;
 
 namespace QuickTools.Windows
 {
@@ -10,38 +8,38 @@ namespace QuickTools.Windows
     {
         private static void Main()
         {
-            NativeLibraryManager.Initialize();
+            // NativeLibraryManager.Initialize();
 
             // Tạo window
-            var window = WebUIWindow.CreateNewWindow();
+            var window = WebUI.NewWindow();
             
-            // InterfaceBinder.Bind(window, "longTask", ExampleHandlers.LongTaskHandler);
-            // InterfaceBinder.Bind(window, "getData", ExampleHandlers.GetDataHandler);
-            // InterfaceBinder.Bind(window, "sendData", ExampleHandlers.SendDataHandler);
-            // InterfaceBinder.Bind(window, "requestData", ExampleHandlers.RequestDataHandler);
-            // InterfaceBinder.BindAsyncFunction(window, "asyncFunction", ExampleHandlers.MyAsyncFunction);
+            // WebUIBinder.Bind(window, "longTask", ExampleHandlers.LongTaskHandler);
+            // WebUIBinder.Bind(window, "getData", ExampleHandlers.GetDataHandler);
+            // WebUIBinder.Bind(window, "sendData", ExampleHandlers.SendDataHandler);
+            // WebUIBinder.Bind(window, "requestData", ExampleHandlers.RequestDataHandler);
+            // WebUIBinder.BindAsyncFunction(window, "asyncFunction", ExampleHandlers.MyAsyncFunction);
             
-            InterfaceBinder.BindAsyncFunctionWithNullValue(window, "upscaleImage", UpscaleImageHandler.UpscaleImage);
-            InterfaceBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "upscaleImage", UpscaleImageHandler.UpscaleImage);
+            WebUIBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
 
             // Cấu hình async
-            WebUIWindow.SetConfig(webui_config.asynchronous_response, true);
-            WebUIWindow.SetEventBlocking(window, false);
+            WebUI.SetConfig(WebuiConfig.asynchronous_response, true);
+            WebUI.SetEventBlocking(window, false);
             
             // Set root folder (thư mục chứa file HTML và các assets)
             string rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            WebUIWindow.WebuiSetRootFolder(window, rootPath);
-            WebUIWindow.WebuiSetMinimumSize(window, 1000, 600);
-            WebUIWindow.WebuiSetSize(window, 1000, 600);
-            WebUIWindow.WebuiSetCenter(window);
+            WebUI.SetRootFolder(window, rootPath);
+            WebUI.SetMinimumSize(window, 1000, 600);
+            WebUI.SetSize(window, 1000, 600);
+            WebUI.SetCenter(window);
             Console.WriteLine($"Root folder set to: {rootPath}");
             
             // Show window
             // WebUIManager.Show(window, "/wwwroot/index.html");
-            WebUIWindow.Show(window, "index.html");
+            WebUI.Show(window, "index.html");
 
             // Wait
-            WebUIWindow.WebUIWait();
+            WebUI.Wait();
         }
     }
 }

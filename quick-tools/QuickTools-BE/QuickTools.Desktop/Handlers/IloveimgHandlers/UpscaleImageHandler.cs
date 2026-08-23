@@ -5,8 +5,7 @@ using QuickTools.Core.Notifications;
 using QuickTools.Services.Iloveimg;
 using QuickTools.Services.Models.Iloveimg;
 using QuickTools.Windows.Helpers;
-using QuickTools.Windows.Modules.WebUI;
-using QuickTools.Windows.Modules.WebUI.Methods;
+using WebUISharp;
 
 namespace QuickTools.Windows.Handlers.IloveimgHandlers
 {
@@ -14,8 +13,8 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
     {
         public static async Task<object?> UpscaleImage(UIntPtr window, UIntPtr event_type, IntPtr element, UIntPtr event_number, UIntPtr bind_id)
         {
-            IntPtr dataPtr = InterfaceMethods.webui_interface_get_string_at(window, event_number, UIntPtr.Zero);
-            string jsonData = MarshalHelper.PtrToString(dataPtr);
+            IntPtr dataPtr = WebUI.InterfaceGetStringAt(window, event_number, UIntPtr.Zero);
+            string jsonData = WebUI.PtrToString(dataPtr);
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
@@ -97,7 +96,7 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
                 Title = title,
                 Data = upscaleImageResponse
             };
-            WebUISendData.SendRaw(window, scaleNotification, noti);
+            WebUI.SendRaw(window, scaleNotification, noti);
         }
     }
 }
