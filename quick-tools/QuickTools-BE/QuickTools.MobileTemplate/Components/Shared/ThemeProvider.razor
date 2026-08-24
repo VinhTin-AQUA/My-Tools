@@ -1,0 +1,52 @@
+@using QuickTools.MobileTemplate.Components.Themes
+@implements IDisposable
+@inject IJSRuntime JS
+@inject ThemeService ThemeService
+
+@ChildContent
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private bool _firstRender = true;
+
+    protected override void OnInitialized()
+    {
+        ThemeService.ThemeChanged += OnThemeChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ApplyTheme();
+            _firstRender = false;
+        }
+    }
+
+    private async void OnThemeChanged()
+    {
+        await InvokeAsync(async () =>
+        {
+            await ApplyTheme();
+
+            StateHasChanged();
+        });
+    }
+
+    private async Task ApplyTheme()
+    {
+        var variables = ThemeService.GetCssVariables();
+
+        await JS.InvokeVoidAsync(
+            "theme.setVariables",
+            variables
+        );
+    }
+
+    public void Dispose()
+    {
+        ThemeService.ThemeChanged -= OnThemeChanged;
+    }
+}

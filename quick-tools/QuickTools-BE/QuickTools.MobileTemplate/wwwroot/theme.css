@@ -1,0 +1,41 @@
+:root {
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+
+    --color-secondary: #64748B;
+
+    --color-background: #F8FAFC;
+    --color-surface: #FFFFFF;
+
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-disabled: #94A3B8;
+
+    --color-border: #E2E8F0;
+
+    --color-success: #16A34A;
+    --color-warning: #D97706;
+    --color-error: #DC2626;
+    --color-info: #0284C7;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    background: var(--color-background);
+    color: var(--color-text-primary);
+
+    font-family:
+            Inter,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}

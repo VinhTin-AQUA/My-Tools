@@ -2,25 +2,14 @@ namespace QuickTools.MobileTemplate.Components.Pages
 {
     public partial class Home
     {
-        protected string Keyword { get; set; } = "";
-
-        protected List<Product> Products { get; set; } = [];
-
-        protected void Search()
+        private void SetLight()
         {
-            // Xử lý search
-            Products =
-            [
-                new Product { Name = "iPhone" },
-                new Product { Name = "MacBook" }
-            ];
-            
-            Console.WriteLine(Products.Count);
+            ThemeService.SetLight();
         }
 
-        protected class Product
+        private void SetDark()
         {
-            public string Name { get; set; } = "";
+            ThemeService.SetDark();
         }
     }
 }

@@ -1,10 +1,15 @@
 using QuickTools.MobileTemplate.Components;
+using QuickTools.MobileTemplate.Components.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+builder.Services.AddScoped<ThemeService>();
+
 
 var app = builder.Build();
 
