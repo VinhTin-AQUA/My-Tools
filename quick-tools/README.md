@@ -74,4 +74,46 @@ dotnet publish QuickTools/QuickTools.csproj -c Release -r linux-x64 -p:SelfConta
 private const string Library = "webui";
 ```
 
+## Prompts
 
+- UI
+
+``txt
+trong net blazor, sử dụng html tailwind và css để code giao diện responsive, đẹp, hiện đại như sau:
+
+giao diện gồm 2 phần:
+phần đầu chứa các thông tin sau: 
+
+public IP, Autonomous System, ISP, City, các dữ liệu sử dụng dữ liệu tạm thời
+
+phần thứ 2 là danh sách các menu: gồm có 1 thanh search menu tự động, bên dưới là danh sách menu ở dạng grid, mỗi menu item gồm icon và tên menu
+
+
+
+
+
+
+file css thuần thì chỉ được style màu sắc cho theme sử dụng các biến màu được định nghĩa bên dưới, 
+còn các stlye như layout, size, font,... thì phải sử dụng class tailwind inline html
+
+:root {
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+
+    --color-secondary: #64748B;
+
+    --color-background: #F8FAFC;
+    --color-surface: #FFFFFF;
+
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-disabled: #94A3B8;
+
+    --color-border: #E2E8F0;
+
+    --color-success: #16A34A;
+    --color-warning: #D97706;
+    --color-error: #DC2626;
+    --color-info: #0284C7;
+}
+```

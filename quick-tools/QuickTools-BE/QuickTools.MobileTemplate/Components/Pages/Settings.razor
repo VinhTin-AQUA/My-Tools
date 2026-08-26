@@ -1,0 +1,92 @@
+@page "/Settings"
+@using QuickTools.MobileTemplate.Components.Themes
+
+<PageTitle>Theme Demo</PageTitle>
+
+@inject ThemeService ThemeService
+
+<div class="page">  
+
+    <div class="header">
+        <div>
+            <h1>Theme Demo</h1>
+
+            <p>
+                Current theme:
+                <strong>@ThemeService.CurrentTheme.Name</strong>
+            </p>
+        </div>
+
+        <div class="actions">
+
+            <UiButton OnClick="SetLight">
+                Light
+            </UiButton>
+
+            <UiButton OnClick="SetDark">
+                Dark
+            </UiButton>
+
+        </div>
+    </div>
+
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h2>Primary</h2>
+
+            <p>
+                Đây là màu chính của application.
+            </p>
+
+            <UiButton>
+                Primary Button
+            </UiButton>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Status</h2>
+
+            <div class="status success">
+                Success
+            </div>
+
+            <div class="status warning">
+                Warning
+            </div>
+
+            <div class="status error">
+                Error
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>Typography</h2>
+
+            <div class="text-primary">
+                Primary text
+            </div>
+
+            <div class="text-secondary">
+                Secondary text
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@code {
+
+    
+}

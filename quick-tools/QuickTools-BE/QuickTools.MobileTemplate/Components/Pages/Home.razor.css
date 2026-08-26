@@ -1,105 +1,73 @@
-.page {
-    min-height: 100vh;
-
-    padding: 32px;
-
-    background: var(--color-background);
+/* Áp dụng biến màu */
+body {
+    background-color: var(--color-background);
     color: var(--color-text-primary);
-}
-
-.header {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 32px;
-}
-
-.header h1 {
-    margin: 0 0 8px;
-
-    color: var(--color-text-primary);
-}
-
-.header p {
-    margin: 0;
-
-    color: var(--color-text-secondary);
-}
-
-.actions {
-    display: flex;
-
-    gap: 8px;
-}
-
-.cards {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
-    gap: 20px;
 }
 
 .card {
-    padding: 24px;
-
-    background: var(--color-surface);
-
-    border:
-            1px solid
-            var(--color-border);
-
-    border-radius: 12px;
-}
-
-.card h2 {
-    margin-top: 0;
-
-    color: var(--color-text-primary);
-}
-
-.status {
-    padding: 10px 12px;
-
-    margin-top: 8px;
-
-    border-radius: 6px;
-}
-
-.success {
-    color: var(--color-success);
-}
-
-.warning {
-    color: var(--color-warning);
-}
-
-.error {
-    color: var(--color-error);
-}
-
-.text-primary {
-    color: var(--color-text-primary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
 }
 
 .text-secondary {
     color: var(--color-text-secondary);
 }
 
-@media (max-width: 768px) {
+.text-disabled {
+    color: var(--color-text-disabled);
+}
 
-    .header {
-        flex-direction: column;
+.border-custom {
+    border-color: var(--color-border);
+}
 
-        align-items: flex-start;
+.bg-primary {
+    background-color: var(--color-primary);
+}
+.bg-primary:hover {
+    background-color: var(--color-primary-hover);
+}
+.text-primary {
+    color: var(--color-primary);
+}
 
-        gap: 20px;
-    }
+.badge-success {
+    background-color: var(--color-success);
+    color: #fff;
+}
+.badge-warning {
+    background-color: var(--color-warning);
+    color: #fff;
+}
+.badge-error {
+    background-color: var(--color-error);
+    color: #fff;
+}
+.badge-info {
+    background-color: var(--color-info);
+    color: #fff;
+}
 
-    .cards {
-        grid-template-columns: 1fr;
-    }
+/* Custom cho thanh search */
+.search-input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Menu item hover */
+.menu-item:hover {
+    background-color: var(--color-background);
+    border-color: var(--color-primary);
+    transition: all 0.2s ease;
+}
+
+.menu-item .icon-wrapper {
+    color: var(--color-primary);
+    background-color: rgba(37, 99, 235, 0.08);
+}
+
+.menu-item:hover .icon-wrapper {
+    background-color: var(--color-primary);
+    color: #fff;
 }

@@ -1,95 +1,189 @@
-﻿@namespace QuickTools.MobileTemplate.Components.Pages
-@using QuickTools.MobileTemplate.Components.Themes
+﻿@page "/"
 
-@page "/"
+<div class="min-h-screen bg-[var(--color-background)] font-sans antialiased p-4 md:p-6">
 
+    <!-- Phần đầu: thông tin IP -->
+    <section class="max-w-7xl mx-auto mb-8">
+        <div
+            class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6 transition-all">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
-@inject ThemeService ThemeService
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+                        Public IP
+                    </span>
+                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
+                        203.0.113.42
+                    </span>
+                </div>
 
-<PageTitle>Theme Demo</PageTitle>
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+                        Autonomous System
+                    </span>
+                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
+                        ASN 15169
+                    </span>
+                </div>
 
-<div class="page">  
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+                        ISP
+                    </span>
+                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
+                        Viettel Telecom
+                    </span>
+                </div>
 
-    <div class="header">
-        <div>
-            <h1>Theme Demo</h1>
+                <div class="flex flex-col">
+                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
+                        City
+                    </span>
+                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
+                        Hà Nội
+                    </span>
+                </div>
 
-            <p>
-                Current theme:
-                <strong>@ThemeService.CurrentTheme.Name</strong>
-            </p>
+            </div>
         </div>
+    </section>
 
-        <div class="actions">
+    <!-- Phần thứ 2: Menu -->
+    <section class="max-w-7xl mx-auto">
+        <div class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6">
 
-            <UiButton OnClick="SetLight">
-                Light
-            </UiButton>
+            <!-- Thanh search -->
+            <div class="relative mb-6">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                        class="h-5 w-5 text-[var(--color-text-secondary)]"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2">
 
-            <UiButton OnClick="SetDark">
-                Dark
-            </UiButton>
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
 
-        </div>
-    </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <h2>Primary</h2>
-
-            <p>
-                Đây là màu chính của application.
-            </p>
-
-            <UiButton>
-                Primary Button
-            </UiButton>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Status</h2>
-
-            <div class="status success">
-                Success
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm menu..."
+                    class="
+                        w-full
+                        pl-10 pr-4 py-3
+                        bg-[var(--color-background)]
+                        border border-[var(--color-border)]
+                        rounded-xl
+                        text-[var(--color-text-primary)]
+                        placeholder:text-[var(--color-text-disabled)]
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-[var(--color-primary)]
+                        focus:border-[var(--color-primary)]
+                        transition-all
+                    "
+                    @bind="searchTerm"
+                    @bind:event="oninput"/>
             </div>
 
-            <div class="status warning">
-                Warning
+            <!-- Danh sách menu -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+
+                @foreach (var item in FilteredMenus)
+                {
+                    <div class="
+                        group
+                        flex flex-col items-center justify-center
+                        p-4
+                        bg-[var(--color-background)]
+                        rounded-xl
+                        border border-[var(--color-border)]
+                        hover:border-[var(--color-primary)]
+                        hover:bg-[var(--color-surface)]
+                        hover:shadow-md
+                        transition-all duration-200
+                        cursor-pointer
+                    ">
+
+                        <!-- Icon -->
+                        <div class="
+                            w-12 h-12
+                            flex items-center justify-center
+                            rounded-full
+                            text-[var(--color-primary)]
+                            transition-colors duration-200
+                        "
+                             style="background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);">
+
+                            <i class="@item.IconClass text-xl"></i>
+                        </div>
+
+                        <!-- Menu name -->
+                        <span class="
+                            mt-2
+                            text-sm
+                            font-medium
+                            text-[var(--color-text-primary)]
+                            text-center
+                            leading-tight
+                            group-hover:text-[var(--color-primary)]
+                            transition-colors
+                        ">
+                            @item.Name
+                        </span>
+
+                    </div>
+                }
+
             </div>
 
-            <div class="status error">
-                Error
-            </div>
+            <!-- Không có kết quả -->
+            @if (!FilteredMenus.Any())
+            {
+                <div class="text-center py-10">
+                    <p class="text-[var(--color-text-secondary)]">
+                        Không tìm thấy menu nào phù hợp
+                    </p>
+                </div>
+            }
 
         </div>
-
-
-        <div class="card">
-
-            <h2>Typography</h2>
-
-            <div class="text-primary">
-                Primary text
-            </div>
-
-            <div class="text-secondary">
-                Secondary text
-            </div>
-
-        </div>
-
-    </div>
+    </section>
 
 </div>
 
-
 @code {
+    private string searchTerm = string.Empty;
 
-    
+    private readonly List<MenuItem> allMenus = new()
+    {
+        new MenuItem { Name = "Dashboard", IconClass = "fas fa-chart-pie" },
+        new MenuItem { Name = "Người dùng", IconClass = "fas fa-users" },
+        new MenuItem { Name = "Sản phẩm", IconClass = "fas fa-box" },
+        new MenuItem { Name = "Đơn hàng", IconClass = "fas fa-shopping-cart" },
+        new MenuItem { Name = "Báo cáo", IconClass = "fas fa-file-alt" },
+        new MenuItem { Name = "Cài đặt", IconClass = "fas fa-cog" },
+        new MenuItem { Name = "Hồ sơ", IconClass = "fas fa-user-circle" },
+        new MenuItem { Name = "Thông báo", IconClass = "fas fa-bell" },
+        new MenuItem { Name = "Nhật ký", IconClass = "fas fa-history" },
+        new MenuItem { Name = "Hỗ trợ", IconClass = "fas fa-headset" },
+        new MenuItem { Name = "Phân quyền", IconClass = "fas fa-lock" },
+        new MenuItem { Name = "Phân tích", IconClass = "fas fa-chart-line" }
+    };
+
+    private List<MenuItem> FilteredMenus => string.IsNullOrWhiteSpace(searchTerm)
+        ? allMenus
+        : allMenus.Where(m => m.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    public class MenuItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public string IconClass { get; set; } = string.Empty;
+    }
+
 }

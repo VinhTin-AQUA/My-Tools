@@ -8,7 +8,7 @@ namespace QuickTools.MobileTemplate.Components.Themes
 
         public ThemeService()
         {
-            CurrentTheme = Themes.Light;
+            CurrentTheme = Themes.Dark;
         }
 
         public void SetTheme(AppTheme theme)

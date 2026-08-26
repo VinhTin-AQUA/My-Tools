@@ -8,20 +8,26 @@ namespace QuickTools.MobileTemplate.Components.Themes
 
             Colors = new ThemeColors
             {
-                Primary = "#2563EB",
-                PrimaryHover = "#1D4ED8",
+                // Brand
+                Primary = "#4F46E5",
+                PrimaryHover = "#4338CA",
 
+                // Neutral
                 Secondary = "#64748B",
 
+                // Background
                 Background = "#F8FAFC",
                 Surface = "#FFFFFF",
 
+                // Text
                 TextPrimary = "#0F172A",
-                TextSecondary = "#64748B",
+                TextSecondary = "#475569",
                 TextDisabled = "#94A3B8",
 
+                // Border
                 Border = "#E2E8F0",
 
+                // Semantic
                 Success = "#16A34A",
                 Warning = "#D97706",
                 Error = "#DC2626",
@@ -35,20 +41,26 @@ namespace QuickTools.MobileTemplate.Components.Themes
 
             Colors = new ThemeColors
             {
-                Primary = "#60A5FA",
-                PrimaryHover = "#3B82F6",
+                // Brand
+                Primary = "#818CF8",
+                PrimaryHover = "#A5B4FC",
 
+                // Neutral
                 Secondary = "#94A3B8",
 
-                Background = "#0F172A",
-                Surface = "#1E293B",
+                // Background
+                Background = "#0B1120",
+                Surface = "#151F32",
 
+                // Text
                 TextPrimary = "#F8FAFC",
-                TextSecondary = "#94A3B8",
+                TextSecondary = "#CBD5E1",
                 TextDisabled = "#64748B",
 
-                Border = "#334155",
+                // Border
+                Border = "#263449",
 
+                // Semantic
                 Success = "#4ADE80",
                 Warning = "#FBBF24",
                 Error = "#F87171",
