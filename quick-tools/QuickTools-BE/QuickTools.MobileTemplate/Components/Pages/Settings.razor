@@ -1,92 +1,219 @@
-@page "/Settings"
+@page "/settings"
 @using QuickTools.MobileTemplate.Components.Themes
-
-<PageTitle>Theme Demo</PageTitle>
 
 @inject ThemeService ThemeService
 
-<div class="page">  
+<div class="min-h-screen bg-[var(--color-background)]">
+    <div class="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
 
-    <div class="header">
-        <div>
-            <h1>Theme Demo</h1>
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-semibold tracking-tight text-[var(--color-text-primary)] sm:text-3xl">
+                Settings
+            </h1>
 
-            <p>
-                Current theme:
-                <strong>@ThemeService.CurrentTheme.Name</strong>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)] sm:text-base">
+                Manage your application preferences and personalize your experience.
             </p>
         </div>
 
-        <div class="actions">
+        <!-- Settings Layout -->
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
 
-            <UiButton OnClick="SetLight">
-                Light
-            </UiButton>
+            <!-- Settings Navigation -->
+            <aside class="hidden lg:block">
+                <nav class="sticky top-6 space-y-1">
+                    <button type="button"
+                            class="flex w-full items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium
+                                   text-[var(--color-primary)] bg-[var(--color-primary-soft)]
+                                   transition-colors duration-200">
+                        <svg class="mr-3 h-5 w-5 shrink-0"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8">
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M9.594 3.94c.09-.54.557-.94 1.105-.94h2.602c.548 0 1.015.4 1.105.94l.196 1.174a1.1 1.1 0 0 0 .55.76l.73.421a1.1 1.1 0 0 0 .938.06l1.095-.456a1.1 1.1 0 0 1 1.345.472l1.3 2.252c.274.475.16 1.077-.27 1.418l-.9.714a1.1 1.1 0 0 0-.387.876v.842c0 .336.154.654.418.863l.87.69c.43.341.544.943.27 1.418l-1.3 2.252a1.1 1.1 0 0 1-1.345.472l-1.095-.456a1.1 1.1 0 0 0-.938.06l-.73.421a1.1 1.1 0 0 0-.55.76l-.196 1.174c-.09.54-.557.94-1.105.94h-2.602c-.548 0-1.015-.4-1.105-.94l-.196-1.174a1.1 1.1 0 0 0-.55-.76l-.73-.421a1.1 1.1 0 0 0-.938-.06l-1.095.456a1.1 1.1 0 0 1-1.345-.472l-1.3-2.252a1.1 1.1 0 0 1 .27-1.418l.9-.714a1.1 1.1 0 0 0 .387-.876v-.842a1.1 1.1 0 0 0-.418-.863l-.87-.69a1.1 1.1 0 0 1-.27-1.418l1.3-2.252a1.1 1.1 0 0 1 1.345-.472l1.095.456a1.1 1.1 0 0 0 .938-.06l.73-.421a1.1 1.1 0 0 0 .55-.76l.196-1.174Z" />
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
 
-            <UiButton OnClick="SetDark">
-                Dark
-            </UiButton>
+                        General
+                    </button>
+                </nav>
+            </aside>
 
+            <!-- Settings Content -->
+            <main class="min-w-0 space-y-6">
+
+                <!-- Appearance Section -->
+                <section class="overflow-hidden rounded-xl border border-[var(--color-border)]
+                                bg-[var(--color-surface)] shadow-sm">
+
+                    <!-- Section Header -->
+                    <div class="border-b border-[var(--color-border)] px-5 py-5 sm:px-6">
+                        <div class="flex items-start gap-4">
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg
+                                        bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+                                <svg class="h-5 w-5"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.8">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M12 3v1.5M12 19.5V21M4.22 4.22l1.06 1.06M18.72 18.72l1.06 1.06M3 12h1.5M19.5 12H21M4.22 19.78l1.06-1.06M18.72 5.28l1.06-1.06" />
+                                    <circle cx="12" cy="12" r="4" />
+                                </svg>
+                            </div>
+
+                            <div class="min-w-0">
+                                <h2 class="text-base font-semibold text-[var(--color-text-primary)]">
+                                    Appearance
+                                </h2>
+
+                                <p class="mt-1 text-sm leading-5 text-[var(--color-text-secondary)]">
+                                    Customize how the application looks on your device.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Setting -->
+                    <div class="px-5 py-5 sm:px-6 sm:py-6">
+                        <div class="mb-4">
+                            <h3 class="text-sm font-medium text-[var(--color-text-primary)]">
+                                Theme
+                            </h3>
+
+                            <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+                                Choose your preferred color theme.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                            <!-- Light Theme -->
+                            <label class="theme-option relative flex cursor-pointer items-center gap-4
+                                          rounded-xl border border-[var(--color-border)]
+                                          bg-[var(--color-surface)] p-4
+                                          transition-all duration-200
+                                          hover:border-[var(--color-primary)] hover:shadow-sm
+                                          has-[:checked]:border-[var(--color-primary)]
+                                          has-[:checked]:ring-2
+                                          has-[:checked]:ring-[var(--color-primary-ring)]">
+
+                                <input type="radio"
+                                       name="theme"
+                                       value="light"
+                                       checked="@IsLightTheme"
+                                       @onchange="SetLight"
+                                       class="h-4 w-4 shrink-0 accent-[var(--color-primary)]" />
+
+                                <div class="flex min-w-0 flex-1 items-center gap-3">
+                                    <!-- Preview -->
+                                    <div class="hidden h-12 w-16 shrink-0 overflow-hidden rounded-lg
+                                                border border-[var(--color-border)] bg-white
+                                                sm:block">
+                                        <div class="h-2 border-b border-gray-200 bg-gray-50"></div>
+                                        <div class="flex h-10 gap-1.5 p-1.5">
+                                            <div class="w-2 rounded bg-gray-200"></div>
+                                            <div class="flex-1 rounded bg-blue-50"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="min-w-0">
+                                        <div class="text-sm font-medium text-[var(--color-text-primary)]">
+                                            Light
+                                        </div>
+                                        <div class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+                                            Use the light theme
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (IsLightTheme)
+                                {
+                                    <svg class="h-5 w-5 shrink-0 text-[var(--color-primary)]"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="m5 12 4 4L19 6" />
+                                    </svg>
+                                }
+                            </label>
+
+                            <!-- Dark Theme -->
+                            <label class="theme-option relative flex cursor-pointer items-center gap-4
+                                          rounded-xl border border-[var(--color-border)]
+                                          bg-[var(--color-surface)] p-4
+                                          transition-all duration-200
+                                          hover:border-[var(--color-primary)] hover:shadow-sm
+                                          has-[:checked]:border-[var(--color-primary)]
+                                          has-[:checked]:ring-2
+                                          has-[:checked]:ring-[var(--color-primary-ring)]">
+
+                                <input type="radio"
+                                       name="theme"
+                                       value="dark"
+                                       checked="@IsDarkTheme"
+                                       @onchange="() => SetDark()"
+                                       class="h-4 w-4 shrink-0 accent-[var(--color-primary)]" />
+
+                                <div class="flex min-w-0 flex-1 items-center gap-3">
+                                    <!-- Preview -->
+                                    <div class="hidden h-12 w-16 shrink-0 overflow-hidden rounded-lg
+                                                border border-slate-700 bg-slate-900
+                                                sm:block">
+                                        <div class="h-2 border-b border-slate-700 bg-slate-800"></div>
+                                        <div class="flex h-10 gap-1.5 p-1.5">
+                                            <div class="w-2 rounded bg-slate-700"></div>
+                                            <div class="flex-1 rounded bg-slate-800"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="min-w-0">
+                                        <div class="text-sm font-medium text-[var(--color-text-primary)]">
+                                            Dark
+                                        </div>
+                                        <div class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+                                            Use the dark theme
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (IsDarkTheme)
+                                {
+                                    <svg class="h-5 w-5 shrink-0 text-[var(--color-primary)]"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="m5 12 4 4L19 6" />
+                                    </svg>
+                                }
+                            </label>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Future settings can be added here -->
+                @* 
+                <section class="overflow-hidden rounded-xl border border-[var(--color-border)]
+                                bg-[var(--color-surface)] shadow-sm">
+                    ...
+                </section>
+                *@
+
+            </main>
         </div>
     </div>
-
-
-    <div class="cards">
-
-        <div class="card">
-
-            <h2>Primary</h2>
-
-            <p>
-                Đây là màu chính của application.
-            </p>
-
-            <UiButton>
-                Primary Button
-            </UiButton>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Status</h2>
-
-            <div class="status success">
-                Success
-            </div>
-
-            <div class="status warning">
-                Warning
-            </div>
-
-            <div class="status error">
-                Error
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <h2>Typography</h2>
-
-            <div class="text-primary">
-                Primary text
-            </div>
-
-            <div class="text-secondary">
-                Secondary text
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
-
-
-@code {
-
-    
-}

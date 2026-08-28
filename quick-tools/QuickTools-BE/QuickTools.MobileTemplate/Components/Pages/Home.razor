@@ -2,7 +2,7 @@
 
 <div class="min-h-screen bg-[var(--color-background)] font-sans antialiased p-4 md:p-6">
 
-    <!-- Phần đầu: thông tin IP -->
+    <!-- Header: IP information -->
     <section class="max-w-7xl mx-auto mb-8">
         <div
             class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6 transition-all">
@@ -40,7 +40,7 @@
                         City
                     </span>
                     <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
-                        Hà Nội
+                        Hanoi
                     </span>
                 </div>
 
@@ -48,11 +48,11 @@
         </div>
     </section>
 
-    <!-- Phần thứ 2: Menu -->
+    <!-- Menu section -->
     <section class="max-w-7xl mx-auto">
         <div class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6">
 
-            <!-- Thanh search -->
+            <!-- Search bar -->
             <div class="relative mb-6">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg
@@ -72,7 +72,7 @@
 
                 <input
                     type="text"
-                    placeholder="Tìm kiếm menu..."
+                    placeholder="Search menu..."
                     class="
                         w-full
                         pl-10 pr-4 py-3
@@ -91,33 +91,33 @@
                     @bind:event="oninput"/>
             </div>
 
-            <!-- Danh sách menu -->
+            <!-- Menu list -->
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
 
                 @foreach (var item in FilteredMenus)
                 {
-                    <div class="
-                        group
-                        flex flex-col items-center justify-center
-                        p-4
-                        bg-[var(--color-background)]
-                        rounded-xl
-                        border border-[var(--color-border)]
-                        hover:border-[var(--color-primary)]
-                        hover:bg-[var(--color-surface)]
-                        hover:shadow-md
-                        transition-all duration-200
-                        cursor-pointer
-                    ">
+                    <NavLink href="@item.Url" class="
+            group
+            flex flex-col items-center justify-center
+            p-4
+            bg-[var(--color-background)]
+            rounded-xl
+            border border-[var(--color-border)]
+            hover:border-[var(--color-primary)]
+            hover:bg-[var(--color-surface)]
+            hover:shadow-md
+            transition-all duration-200
+            no-underline
+        " ActiveClass="active-menu-item">
 
                         <!-- Icon -->
                         <div class="
-                            w-12 h-12
-                            flex items-center justify-center
-                            rounded-full
-                            text-[var(--color-primary)]
-                            transition-colors duration-200
-                        "
+                w-12 h-12
+                flex items-center justify-center
+                rounded-full
+                text-[var(--color-primary)]
+                transition-colors duration-200
+            "
                              style="background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);">
 
                             <i class="@item.IconClass text-xl"></i>
@@ -125,29 +125,29 @@
 
                         <!-- Menu name -->
                         <span class="
-                            mt-2
-                            text-sm
-                            font-medium
-                            text-[var(--color-text-primary)]
-                            text-center
-                            leading-tight
-                            group-hover:text-[var(--color-primary)]
-                            transition-colors
-                        ">
+                mt-2
+                text-sm
+                font-medium
+                text-[var(--color-text-primary)]
+                text-center
+                leading-tight
+                group-hover:text-[var(--color-primary)]
+                transition-colors
+            ">
                             @item.Name
                         </span>
 
-                    </div>
+                    </NavLink>
                 }
 
             </div>
 
-            <!-- Không có kết quả -->
+            <!-- No results -->
             @if (!FilteredMenus.Any())
             {
                 <div class="text-center py-10">
                     <p class="text-[var(--color-text-secondary)]">
-                        Không tìm thấy menu nào phù hợp
+                        No matching menu items found
                     </p>
                 </div>
             }
@@ -162,18 +162,18 @@
 
     private readonly List<MenuItem> allMenus = new()
     {
-        new MenuItem { Name = "Dashboard", IconClass = "fas fa-chart-pie" },
-        new MenuItem { Name = "Người dùng", IconClass = "fas fa-users" },
-        new MenuItem { Name = "Sản phẩm", IconClass = "fas fa-box" },
-        new MenuItem { Name = "Đơn hàng", IconClass = "fas fa-shopping-cart" },
-        new MenuItem { Name = "Báo cáo", IconClass = "fas fa-file-alt" },
-        new MenuItem { Name = "Cài đặt", IconClass = "fas fa-cog" },
-        new MenuItem { Name = "Hồ sơ", IconClass = "fas fa-user-circle" },
-        new MenuItem { Name = "Thông báo", IconClass = "fas fa-bell" },
-        new MenuItem { Name = "Nhật ký", IconClass = "fas fa-history" },
-        new MenuItem { Name = "Hỗ trợ", IconClass = "fas fa-headset" },
-        new MenuItem { Name = "Phân quyền", IconClass = "fas fa-lock" },
-        new MenuItem { Name = "Phân tích", IconClass = "fas fa-chart-line" }
+        new MenuItem { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler"},
+        new MenuItem { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image"},
+        new MenuItem { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings"},
+        new MenuItem { Name = "Orders", IconClass = "fas fa-shopping-cart" },
+        new MenuItem { Name = "Reports", IconClass = "fas fa-file-alt" },
+        new MenuItem { Name = "Settings", IconClass = "fas fa-cog" },
+        new MenuItem { Name = "Profile", IconClass = "fas fa-user-circle" },
+        new MenuItem { Name = "Notifications", IconClass = "fas fa-bell" },
+        new MenuItem { Name = "Activity Log", IconClass = "fas fa-history" },
+        new MenuItem { Name = "Support", IconClass = "fas fa-headset" },
+        new MenuItem { Name = "Permissions", IconClass = "fas fa-lock" },
+        new MenuItem { Name = "Analytics", IconClass = "fas fa-chart-line" }
     };
 
     private List<MenuItem> FilteredMenus => string.IsNullOrWhiteSpace(searchTerm)
@@ -184,6 +184,8 @@
     {
         public string Name { get; set; } = string.Empty;
         public string IconClass { get; set; } = string.Empty;
+        public string Url { get; set; } = String.Empty;
     }
 
 }
+

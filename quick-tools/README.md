@@ -79,23 +79,12 @@ private const string Library = "webui";
 - UI
 
 ``txt
-trong net blazor, sử dụng html tailwind và css để code giao diện responsive, đẹp, hiện đại như sau:
-
-giao diện gồm 2 phần:
-phần đầu chứa các thông tin sau: 
-
-public IP, Autonomous System, ISP, City, các dữ liệu sử dụng dữ liệu tạm thời
-
-phần thứ 2 là danh sách các menu: gồm có 1 thanh search menu tự động, bên dưới là danh sách menu ở dạng grid, mỗi menu item gồm icon và tên menu
-
-
-
-
-
+trong net blazor, sử dụng html tailwind và css để code giao diện responsive, đẹp, hiện đại.
 
 file css thuần thì chỉ được style màu sắc cho theme sử dụng các biến màu được định nghĩa bên dưới, 
 còn các stlye như layout, size, font,... thì phải sử dụng class tailwind inline html
 
+các biến màu css được định nghĩa sẵn
 :root {
     --color-primary: #2563EB;
     --color-primary-hover: #1D4ED8;
@@ -116,4 +105,48 @@ còn các stlye như layout, size, font,... thì phải sử dụng class tailwi
     --color-error: #DC2626;
     --color-info: #0284C7;
 }
+
+trang blazor phải tách thành 3 file, html,cs,css
+giao diện như sau:
+
+giao diện settings có 2 nút radio để chọn theme
+lưu ý, bố cục sao cho hợp lý, vì sau này tôi có thể sẽ bổ sung thêm nhiều settings hơn
+
+```
+
+- clone
+
+```txt
+cho giao diện html sau
+
+
+
+
+
+
+
+chuyển sang giao diện cho .net blazor, với 3 file được tách riêng biệt: css, cs, và html
+hãy sử dụng class tailwind css để style lại giao diện đẹp, hiện đại, sử dụng class tailwind inline html luôn
+nhưng với màu sắc thì sử dụng các biến css được định nghĩa sẵn như sau
+:root {
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+
+    --color-secondary: #64748B;
+
+    --color-background: #F8FAFC;
+    --color-surface: #FFFFFF;
+
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #64748B;
+    --color-text-disabled: #94A3B8;
+
+    --color-border: #E2E8F0;
+
+    --color-success: #16A34A;
+    --color-warning: #D97706;
+    --color-error: #DC2626;
+    --color-info: #0284C7;
+}
+và code style màu phải code trong file css
 ```
