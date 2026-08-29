@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using QuickTools.Mobile.Components.Themes;
 
 namespace QuickTools.Mobile;
 
@@ -12,6 +13,8 @@ public static class MauiProgram
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
         builder.Services.AddMauiBlazorWebView();
+        
+        builder.Services.AddScoped<ThemeService>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
