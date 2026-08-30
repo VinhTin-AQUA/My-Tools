@@ -1,191 +1,155 @@
 ﻿@page "/"
 
 <div class="min-h-screen bg-[var(--color-background)] font-sans antialiased p-4 md:p-6">
+	<!-- Header: IP information -->
+	<section class="max-w-7xl mx-auto mb-8">
+		<div
+			class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6 transition-all"
+		>
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-5 md:gap-6">
+				<div class="flex flex-col min-w-0">
+					<span
+						class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]"
+					>
+						Public IP
+					</span>
 
-    <!-- Header: IP information -->
-    <section class="max-w-7xl mx-auto mb-8">
-        <div
-            class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6 transition-all">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+					@if (isLoading) {
+					<span
+						class="text-lg font-semibold text-[var(--color-text-primary)] mt-1 truncate"
+					>
+						Loading...
+					</span>
+					} else if (!string.IsNullOrEmpty(errorMessage)) {
+					<span class="text-sm text-red-500 mt-1 break-words"> @errorMessage </span>
+					} else {
+					<span
+						class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1 truncate"
+						title="@ipInfo?.Query"
+					>
+						@ipInfo?.Query
+					</span>
+					}
+				</div>
 
-                <div class="flex flex-col">
-                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
-                        Public IP
-                    </span>
-                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
-                        203.0.113.42
-                    </span>
-                </div>
+				<div class="flex flex-col min-w-0">
+					<span
+						class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]"
+					>
+						Autonomous System
+					</span>
 
-                <div class="flex flex-col">
-                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
-                        Autonomous System
-                    </span>
-                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
-                        ASN 15169
-                    </span>
-                </div>
+					<span
+						class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1 truncate"
+						title="@ipInfo?.As"
+					>
+						@(ipInfo?.As ?? "Loading...")
+					</span>
+				</div>
 
-                <div class="flex flex-col">
-                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
-                        ISP
-                    </span>
-                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
-                        Viettel Telecom
-                    </span>
-                </div>
+				<div class="flex flex-col min-w-0">
+					<span
+						class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]"
+					>
+						ISP
+					</span>
 
-                <div class="flex flex-col">
-                    <span class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]">
-                        City
-                    </span>
-                    <span class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1">
-                        Hanoi
-                    </span>
-                </div>
+					<span
+						class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1 truncate"
+						title="@ipInfo?.Isp"
+					>
+						@(ipInfo?.Isp ?? "Loading...")
+					</span>
+				</div>
 
-            </div>
-        </div>
-    </section>
+				<div class="flex flex-col min-w-0">
+					<span
+						class="text-xs font-medium uppercase tracking-wider text-[var(--color-text-secondary)]"
+					>
+						City
+					</span>
 
-    <!-- Menu section -->
-    <section class="max-w-7xl mx-auto">
-        <div class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6">
+					<span
+						class="text-lg md:text-xl font-semibold text-[var(--color-text-primary)] mt-1 truncate"
+					>
+						@(ipInfo?.City ?? "Loading...")
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
 
-            <!-- Search bar -->
-            <div class="relative mb-6">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg
-                        class="h-5 w-5 text-[var(--color-text-secondary)]"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2">
+	<!-- Menu section -->
+	<section class="max-w-7xl mx-auto">
+		<div
+			class="bg-[var(--color-surface)] rounded-2xl shadow-sm border border-[var(--color-border)] p-5 md:p-6"
+		>
+			<!-- Search bar -->
+			<div class="relative mb-6">
+				<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+					<svg
+						class="h-5 w-5 text-[var(--color-text-secondary)]"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+						/>
+					</svg>
+				</div>
 
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
+				<input
+					type="text"
+					placeholder="Search menu..."
+					class="w-full pl-10 pr-4 py-3 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder:text-[var(--color-text-disabled)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all"
+					@bind="searchTerm"
+					@bind:event="oninput"
+				/>
+			</div>
 
-                <input
-                    type="text"
-                    placeholder="Search menu..."
-                    class="
-                        w-full
-                        pl-10 pr-4 py-3
-                        bg-[var(--color-background)]
-                        border border-[var(--color-border)]
-                        rounded-xl
-                        text-[var(--color-text-primary)]
-                        placeholder:text-[var(--color-text-disabled)]
-                        focus:outline-none
-                        focus:ring-2
-                        focus:ring-[var(--color-primary)]
-                        focus:border-[var(--color-primary)]
-                        transition-all
-                    "
-                    @bind="searchTerm"
-                    @bind:event="oninput"/>
-            </div>
+			<!-- Menu list -->
+			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+				@foreach (var item in FilteredMenus) {
+				<NavLink
+					href="@item.Url"
+					class="group flex flex-col items-center justify-center p-4 bg-[var(--color-background)] rounded-xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)] hover:shadow-md transition-all duration-200 no-underline"
+					ActiveClass="active-menu-item"
+				>
+					<!-- Icon -->
+					<div
+						class="w-12 h-12 flex items-center justify-center rounded-full text-[var(--color-primary)] transition-colors duration-200"
+						style="
+							background-color: color-mix(
+								in srgb,
+								var(--color-primary) 10%,
+								transparent
+							);
+						"
+					>
+						<i class="@item.IconClass text-xl"></i>
+					</div>
 
-            <!-- Menu list -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+					<!-- Menu name -->
+					<span
+						class="mt-2 text-sm font-medium text-[var(--color-text-primary)] text-center leading-tight group-hover:text-[var(--color-primary)] transition-colors"
+					>
+						@item.Name
+					</span>
+				</NavLink>
+				}
+			</div>
 
-                @foreach (var item in FilteredMenus)
-                {
-                    <NavLink href="@item.Url" class="
-            group
-            flex flex-col items-center justify-center
-            p-4
-            bg-[var(--color-background)]
-            rounded-xl
-            border border-[var(--color-border)]
-            hover:border-[var(--color-primary)]
-            hover:bg-[var(--color-surface)]
-            hover:shadow-md
-            transition-all duration-200
-            no-underline
-        " ActiveClass="active-menu-item">
-
-                        <!-- Icon -->
-                        <div class="
-                w-12 h-12
-                flex items-center justify-center
-                rounded-full
-                text-[var(--color-primary)]
-                transition-colors duration-200
-            "
-                             style="background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);">
-
-                            <i class="@item.IconClass text-xl"></i>
-                        </div>
-
-                        <!-- Menu name -->
-                        <span class="
-                mt-2
-                text-sm
-                font-medium
-                text-[var(--color-text-primary)]
-                text-center
-                leading-tight
-                group-hover:text-[var(--color-primary)]
-                transition-colors
-            ">
-                            @item.Name
-                        </span>
-
-                    </NavLink>
-                }
-
-            </div>
-
-            <!-- No results -->
-            @if (!FilteredMenus.Any())
-            {
-                <div class="text-center py-10">
-                    <p class="text-[var(--color-text-secondary)]">
-                        No matching menu items found
-                    </p>
-                </div>
-            }
-
-        </div>
-    </section>
-
+			<!-- No results -->
+			@if (!FilteredMenus.Any()) {
+			<div class="text-center py-10">
+				<p class="text-[var(--color-text-secondary)]">No matching menu items found</p>
+			</div>
+			}
+		</div>
+	</section>
 </div>
-
-@code {
-    private string searchTerm = string.Empty;
-
-    private readonly List<MenuItem> allMenus = new()
-    {
-        new MenuItem { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler"},
-        new MenuItem { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image"},
-        new MenuItem { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings"},
-        new MenuItem { Name = "Orders", IconClass = "fas fa-shopping-cart" },
-        new MenuItem { Name = "Reports", IconClass = "fas fa-file-alt" },
-        new MenuItem { Name = "Settings", IconClass = "fas fa-cog" },
-        new MenuItem { Name = "Profile", IconClass = "fas fa-user-circle" },
-        new MenuItem { Name = "Notifications", IconClass = "fas fa-bell" },
-        new MenuItem { Name = "Activity Log", IconClass = "fas fa-history" },
-        new MenuItem { Name = "Support", IconClass = "fas fa-headset" },
-        new MenuItem { Name = "Permissions", IconClass = "fas fa-lock" },
-        new MenuItem { Name = "Analytics", IconClass = "fas fa-chart-line" }
-    };
-
-    private List<MenuItem> FilteredMenus => string.IsNullOrWhiteSpace(searchTerm)
-        ? allMenus
-        : allMenus.Where(m => m.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-
-    public class MenuItem
-    {
-        public string Name { get; set; } = string.Empty;
-        public string IconClass { get; set; } = string.Empty;
-        public string Url { get; set; } = String.Empty;
-    }
-
-}
-
