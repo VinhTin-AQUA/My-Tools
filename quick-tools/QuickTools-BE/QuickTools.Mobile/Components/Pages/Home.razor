@@ -116,6 +116,7 @@
 			<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
 				@foreach (var item in FilteredMenus) {
 				<NavLink
+					@key="item.Url"
 					href="@item.Url"
 					class="group flex flex-col items-center justify-center p-4 bg-[var(--color-background)] rounded-xl border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)] hover:shadow-md transition-all duration-200 no-underline"
 					ActiveClass="active-menu-item"

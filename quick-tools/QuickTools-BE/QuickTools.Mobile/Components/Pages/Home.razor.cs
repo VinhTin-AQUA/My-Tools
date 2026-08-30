@@ -31,18 +31,17 @@ namespace QuickTools.Mobile.Components.Pages
 
         private readonly List<MenuItem> allMenus = new()
         {
-            new MenuItem { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler" },
-            new MenuItem { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image" },
-            new MenuItem { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings" },
-            new MenuItem { Name = "Orders", IconClass = "fas fa-shopping-cart" },
-            new MenuItem { Name = "Reports", IconClass = "fas fa-file-alt" },
-            new MenuItem { Name = "Settings", IconClass = "fas fa-cog" },
-            new MenuItem { Name = "Profile", IconClass = "fas fa-user-circle" },
-            new MenuItem { Name = "Notifications", IconClass = "fas fa-bell" },
-            new MenuItem { Name = "Activity Log", IconClass = "fas fa-history" },
-            new MenuItem { Name = "Support", IconClass = "fas fa-headset" },
-            new MenuItem { Name = "Permissions", IconClass = "fas fa-lock" },
-            new MenuItem { Name = "Analytics", IconClass = "fas fa-chart-line" }
+            new() { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler" },
+            new() { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image" },
+            new() { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings" },
+            new() { Name = "Orders", IconClass = "fas fa-shopping-cart", Url = "orders" },
+            new() { Name = "Reports", IconClass = "fas fa-file-alt", Url = "reports" },
+            new() { Name = "Profile", IconClass = "fas fa-user-circle", Url = "profile" },
+            new() { Name = "Notifications", IconClass = "fas fa-bell", Url = "notifications" },
+            new() { Name = "Activity Log", IconClass = "fas fa-history", Url = "activity-log" },
+            new() { Name = "Support", IconClass = "fas fa-headset", Url = "support" },
+            new() { Name = "Permissions", IconClass = "fas fa-lock", Url = "permissions" },
+            new() { Name = "Analytics", IconClass = "fas fa-chart-line", Url = "analytics" },
         };
 
         private List<MenuItem> FilteredMenus => string.IsNullOrWhiteSpace(searchTerm)
