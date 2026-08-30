@@ -1,6 +1,12 @@
-﻿<Router AppAssembly="@typeof(MauiProgram).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
-    </Found>
-</Router>
+﻿@using QuickTools.Mobile.Components.Shared
+
+
+<ThemeProvider>
+    <Router AppAssembly="@typeof(MauiProgram).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)"/>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        </Found>
+    </Router>
+
+</ThemeProvider>
