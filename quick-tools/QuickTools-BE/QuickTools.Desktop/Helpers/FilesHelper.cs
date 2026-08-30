@@ -72,5 +72,28 @@ namespace QuickTools.Windows.Helpers
                 Exists = true
             };
         }
+        
+        public static async Task<string> SaveFileAsync(
+            byte[] bytes,
+            string fileName,
+            params string[] folders)
+        {
+            string folderPath = CombineAndCreateFolder(folders);
+            string filePath = Path.Combine(folderPath, fileName);
+            await File.WriteAllBytesAsync(filePath, bytes);
+            return filePath;
+        }
+        
+        private static string CombineAndCreateFolder(params string[] folders)
+        {
+            if (folders == null || folders.Length == 0)
+                throw new ArgumentException("Folder không được rỗng.", nameof(folders));
+
+            string folderPath = Path.Combine(folders);
+
+            Directory.CreateDirectory(folderPath);
+
+            return folderPath;
+        }
     }
 }

@@ -7,13 +7,13 @@ namespace QuickTools.Services.Models.Iloveimg
         
     }
     
-    public class UpscaleImageRequest
+    public class IloveImgUpscaleImageRequest
     {
         public string Scale { get; set; } = "1";
-        public List<UpscaleImageRequestItem> UpscaleImageRequestItems { get; set; } = [];
+        public List<IloveImgUpscaleImageRequestItem> UpscaleImageRequestItems { get; set; } = [];
     }
     
-    public class UpscaleImageRequestItem
+    public class IloveImgUpscaleImageRequestItem
     {
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
@@ -21,7 +21,7 @@ namespace QuickTools.Services.Models.Iloveimg
         public string LocalPath { get; set; } = string.Empty;
     }
     
-    public class UpscaleImageResponseItem
+    public class IloveImgUpscaleImageResponseItem
     {
         public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;

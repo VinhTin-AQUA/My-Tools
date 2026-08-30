@@ -20,7 +20,7 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
                 PropertyNameCaseInsensitive = true,
                 WriteIndented = true 
             };
-            UpscaleImageRequest? upscaleImageRequest = JsonSerializer.Deserialize<UpscaleImageRequest>(jsonData, options);
+            IloveImgUpscaleImageRequest? upscaleImageRequest = JsonSerializer.Deserialize<IloveImgUpscaleImageRequest>(jsonData, options);
 
             if (upscaleImageRequest == null)
             {
@@ -38,26 +38,28 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
                 upscaleImageRequest.UpscaleImageRequestItems[i].LocalPath = path;
             }
             
-            (List<UploadResponse> uploadResponses, string server, string taskId) = ([], "", "");
+            (List<IloveImgUpscaleUploadResponse> uploadResponses, string server, string taskId) = ([], "", "");
             try
             {
-                (uploadResponses, server, taskId) = await UpscaleImageService.UploadServer(upscaleImageRequest);
+                (uploadResponses, server, taskId) = await IloveImgUpscaleImageService.UploadServer(upscaleImageRequest);
             }
             catch (Exception ex)
             {
                 SendNoticationToClient(window, "ILoveimg - Upscale Image", ex.Message, false);
             }
 
-            foreach (UploadResponse uploadResponse in uploadResponses)
+            foreach (IloveImgUpscaleUploadResponse uploadResponse in uploadResponses)
             {
                 try
                 {
-                    var filePath = await UpscaleImageService.Upscale(
+                    var bytes = await IloveImgUpscaleImageService.Upscale(
                         uploadResponse,
                         server, taskId,
-                        upscaleImageRequest.Scale,
-                        FolderHelper.GetSystemPath(SystemFolder.Downloads)
+                        upscaleImageRequest.Scale
                     );
+                    
+                    var filePath = await FilesHelper.SaveFileAsync(bytes, $"{uploadResponse.server_filename}", FolderHelper.GetSystemPath(SystemFolder.Downloads), "Iloveimg_Scaled");
+                    
                     var fileInfor = FilesHelper.GetInfo(filePath);
                     
                     SendNoticationToClient(window, "ILoveimg - Upscale Image", "Success", true, new()
@@ -77,9 +79,9 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
             return upscaleImageRequest;
         }
 
-        private static void SendNoticationToClient(UIntPtr window, string title, string message, bool isSuccess, UpscaleImageResponseItem? upscaleImageResponse = null)
+        private static void SendNoticationToClient(UIntPtr window, string title, string message, bool isSuccess, IloveImgUpscaleImageResponseItem? upscaleImageResponse = null)
         {
-            upscaleImageResponse = upscaleImageResponse ?? new UpscaleImageResponseItem()
+            upscaleImageResponse = upscaleImageResponse ?? new IloveImgUpscaleImageResponseItem()
             {
                 Id = "",
                 Name = "",
@@ -88,7 +90,7 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
                 Size = 0
             };
             const string scaleNotification = "scaleNotification";
-            var noti = new Notification<UpscaleImageResponseItem>
+            var noti = new Notification<IloveImgUpscaleImageResponseItem>
             {
                 Action = ActionConstants.ILoveimg_ScaleImg,
                 IsSuccess = isSuccess,

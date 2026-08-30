@@ -1,32 +1,60 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using QuickTools.Mobile.Services.Interfaces;
+using QuickTools.Services.Iloveimg;
+using QuickTools.Services.Models.Iloveimg;
 
 namespace QuickTools.Mobile.Components.Pages
 {
     public partial class UpScaleImage : ComponentBase
     {
         [Inject] protected IJSRuntime JS { get; set; } = default!;
-        protected List<UploadedImage> uploadedFiles { get; set; } = [];
-        protected List<ProcessedImage> processedImages { get; set; } = [];
-        protected List<int> sizeMultiplierOptions { get; } = [1, 2, 4];
-        protected int scale { get; set; } = 2;
-        protected bool IsUploading { get; set; }
-        protected int Progress { get; set; }
-        protected bool ShowPopupImagePreview { get; set; }
-        protected UploadedImage? SelectedImage { get; set; }
+        [Inject] protected IFileStorageService FileStorageService { get; set; } = default!;
+        [Inject] protected IExternalStoreService ExternalStoreService { get; set; } = default!;
+        
+        protected List<UploadedImage> _uploadedFiles { get; set; } = [];
+        protected List<ProcessedImage> _processedImages { get; set; } = [];
+        protected List<int> _sizeMultiplierOptions { get; } = [1, 2, 4];
+        protected int _scale { get; set; } = 2;
+        protected bool _isUploading { get; set; }
+        protected int _progress { get; set; }
+
+        private List<IloveImgUpscaleImageRequestItem> _upscaleImageRequestItems { get; set; } = [];
 
         protected double ProgressPercentage =>
-            uploadedFiles.Count == 0 ? 0 : Math.Min(100, (double)Progress / uploadedFiles.Count * 100);
+            _uploadedFiles.Count == 0 ? 0 : Math.Min(100, (double)_progress / _uploadedFiles.Count * 100);
+        
+        private bool _hasPermission { get; set; } = false;
+        
+        protected override async Task OnInitializedAsync()
+        {
+           _hasPermission = await ExternalStoreService.CheckStoragePermissionAsync();
+        
+            if (!_hasPermission)
+            {
+                _hasPermission = await ExternalStoreService.RequestStoragePermissionAsync();
 
+                if (!_hasPermission)
+                {
+                    // quay lại màng hình trước đó
+                    await JS.InvokeVoidAsync("history.back");
+                    // Navigation.NavigateTo("/");
+                    // Navigation.NavigateTo("../");
+                }
+            }
+        
+            StateHasChanged();
+        }
+        
         protected long TotalSize()
         {
-            return uploadedFiles.Sum(x => x.Size);
+            return _uploadedFiles.Sum(x => x.Size);
         }
 
         protected long TotalSizeProcessed()
         {
-            return processedImages.Sum(x => x.Size);
+            return _processedImages.Sum(x => x.Size);
         }
 
         protected async Task OnFilesSelected(InputFileChangeEventArgs e)
@@ -39,12 +67,24 @@ namespace QuickTools.Mobile.Components.Pages
                         Id = Guid.NewGuid(), Name = file.Name, Size = file.Size, ContentType = file.ContentType,
                         ProcessingStatus = FileProcessingStatus.Pending
                     }; /* * Demo preview. * * Trong production nên upload file lên server * hoặc lưu temporary file thay vì đọc file lớn * trực tiếp vào memory. */
+                    
                     await using var stream = file.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
                     using var memoryStream = new MemoryStream();
                     await stream.CopyToAsync(memoryStream);
                     var bytes = memoryStream.ToArray();
                     image.PreviewUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
-                    uploadedFiles.Add(image);
+                    _uploadedFiles.Add(image);
+                    
+                    // 2. LƯU FILE VÀO SANDBOX
+                    var filePath = await FileStorageService.SaveFileAsync(file, "images");
+                    
+                    _upscaleImageRequestItems.Add(new()
+                    {
+                        Base64 = "",
+                        Id = image.Id.ToString(),
+                        Name = image.Name,
+                        LocalPath = filePath,
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -54,105 +94,61 @@ namespace QuickTools.Mobile.Components.Pages
             await InvokeAsync(StateHasChanged);
         }
 
-        protected void OnImageClick(UploadedImage image)
-        {
-            SelectedImage = image;
-            ShowPopupImagePreview = true;
-        }
-
-        protected void ClosePopupImagePreview()
-        {
-            ShowPopupImagePreview = false;
-            SelectedImage = null;
-        }
-
         protected void RemoveImage(Guid id)
         {
-            var image = uploadedFiles.FirstOrDefault(x => x.Id == id);
+            var image = _uploadedFiles.FirstOrDefault(x => x.Id == id);
             if (image is null) return;
-            uploadedFiles.Remove(image);
-            if (SelectedImage?.Id == id) ClosePopupImagePreview();
+            _uploadedFiles.Remove(image);
             StateHasChanged();
         }
 
         protected void OnClear()
         {
-            uploadedFiles.Clear();
-            processedImages.Clear();
-            Progress = 0;
-            IsUploading = false;
-            ClosePopupImagePreview();
+            _uploadedFiles.Clear();
+            _processedImages.Clear();
+            _progress = 0;
+            _isUploading = false;
             StateHasChanged();
         }
 
         protected async Task OnSubmit()
         {
-            if (uploadedFiles.Count == 0 || IsUploading) return;
-            IsUploading = true;
-            Progress = 0;
-            processedImages.Clear();
-            foreach (var image in uploadedFiles)
+            if (_uploadedFiles.Count == 0 || _isUploading) return;
+            _isUploading = true;
+            _progress = 0;
+            _processedImages.Clear();
+
+            (var uploadResponses, var server, var taskId) = await IloveImgUpscaleImageService.UploadServer(new()
             {
-                image.ProcessingStatus = FileProcessingStatus.Processing;
-                await InvokeAsync(StateHasChanged);
+                Scale = _scale.ToString(),
+                UpscaleImageRequestItems = _upscaleImageRequestItems,
+            });
+
+            foreach (var uploadResponse in uploadResponses)
+            {
                 try
                 {
-                    /* * TODO: * * Gọi API/service xử lý ảnh thực tế tại đây. * * Ví dụ: * * var result = await ImageService.UpscaleAsync( * image, * scale); */
-                    await Task.Delay(500);
-                    image.ProcessingStatus = FileProcessingStatus.Success;
-                    processedImages.Add(new ProcessedImage
+                    var bytes = await IloveImgUpscaleImageService.Upscale(uploadResponse, server, taskId,
+                        _scale.ToString());
+                    var fileName = $"IloveImgUpscale_{uploadResponse.server_filename}";
+                    await ExternalStoreService.SaveToPicturesAsync(bytes, fileName);
+                    
+                    _processedImages.Add(new()
                     {
-                        Id = Guid.NewGuid(), Name = GetProcessedFileName(image.Name), Size = image.Size,
-                        PreviewUrl = image.PreviewUrl
+                        Id = Guid.Parse(uploadResponse.Id),
+                        Name = uploadResponse.Name,
+                        PreviewUrl = "",
+                        Size = bytes.Length
                     });
                 }
-                catch
+                catch (Exception ex)
                 {
-                    image.ProcessingStatus = FileProcessingStatus.Failed;
+                    continue;
                 }
-
-                Progress++;
-                await InvokeAsync(StateHasChanged);
             }
 
-            IsUploading = false;
+            _isUploading = false;
             await InvokeAsync(StateHasChanged);
-        }
-
-        protected async Task OpenFolder(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path))
-                return; /* * Browser không thể tự ý mở một folder local * vì security restriction. * * Nếu path là URL: */
-            if (path.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                path.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                await JS.InvokeVoidAsync("open", path,
-                    "_blank"); /* * Nếu đây là đường dẫn local trên server/desktop app, * cần xử lý bằng backend hoặc .NET Hybrid/Desktop. */
-        }
-
-        protected string GetImageItemClass(UploadedImage image)
-        {
-            var baseClass = "image-item group flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition";
-            if (image.Selected) return $"{baseClass} selected";
-            return baseClass;
-        }
-
-        protected string GetStatusBadgeClass(FileProcessingStatus status)
-        {
-            return status switch
-            {
-                FileProcessingStatus.Processing => "status-badge status-processing",
-                FileProcessingStatus.Success => "status-badge status-success",
-                FileProcessingStatus.Failed => "status-badge status-error", _ => "status-badge"
-            };
-        }
-
-        protected string GetStatusText(FileProcessingStatus status)
-        {
-            return status switch
-            {
-                FileProcessingStatus.Processing => "Processing", FileProcessingStatus.Success => "Completed",
-                FileProcessingStatus.Failed => "Failed", _ => "Waiting"
-            };
         }
 
         protected string FormatFileSize(long bytes)
@@ -168,13 +164,6 @@ namespace QuickTools.Mobile.Components.Pages
             }
 
             return $"{size:0.##} {sizes[order]}";
-        }
-
-        private static string GetProcessedFileName(string fileName)
-        {
-            var extension = Path.GetExtension(fileName);
-            var name = Path.GetFileNameWithoutExtension(fileName);
-            return $"{name}_upscaled{extension}";
         }
     }
     

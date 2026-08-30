@@ -5,7 +5,7 @@ using QuickTools.Services.Models.Iloveimg;
 
 namespace QuickTools.Services.Iloveimg
 {
-    public class UpscaleImageService
+    public class IloveImgUpscaleImageService
     {
         private static readonly string token =
             "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOiIiLCJpYXQiOjE1MjMzNjQ4MjQsIm5iZiI6MTUyMzM2NDgyNCwianRpIjoicHJvamVjdF9wdWJsaWNfYzkwNWRkMWMwMWU5ZmQ3NzY5ODNjYTQwZDBhOWQyZjNfT1Vzd2EwODA0MGI4ZDJjN2NhM2NjZGE2MGQ2MTBhMmRkY2U3NyJ9.qvHSXgCJgqpC4gd6-paUlDLFmg0o2DsOvb1EUYPYx_E";
@@ -20,12 +20,12 @@ namespace QuickTools.Services.Iloveimg
             "api2g", "api3g", "api3g", "api3g", "api11g", "api11g", "api11g"
         ];
 
-        public static async Task<(List<UploadResponse>, string, string)> UploadServer(UpscaleImageRequest request)
+        public static async Task<(List<IloveImgUpscaleUploadResponse>, string, string)> UploadServer(IloveImgUpscaleImageRequest request)
         {
             Random random = new();
             var server = servers[random.Next(0, servers.Length)];
             var taskId = await GetTaskId();
-            List<UploadResponse> uploadResponses = [];
+            List<IloveImgUpscaleUploadResponse> uploadResponses = [];
             var uploadUrl = $"https://{server}.iloveimg.com/v1/upload";
             
             using (var client = new HttpClient())
@@ -57,7 +57,7 @@ namespace QuickTools.Services.Iloveimg
                     var response = await client.PostAsync(uploadUrl, form);
                     response.EnsureSuccessStatusCode(); // Kiểm tra phản hồi có thành công không
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    var uploadResponse = JsonSerializer.Deserialize<UploadResponse>(responseContent);
+                    var uploadResponse = JsonSerializer.Deserialize<IloveImgUpscaleUploadResponse>(responseContent);
                     fileContent.Dispose();
 
                     if (uploadResponse != null)
@@ -73,20 +73,13 @@ namespace QuickTools.Services.Iloveimg
             return (uploadResponses, server, taskId ?? "");
         }
 
-        public static async Task<string> Upscale(
-            UploadResponse uploadResponse, 
+        public static async Task<byte[]> Upscale(
+            IloveImgUpscaleUploadResponse iloveImgUpscaleUploadResponse, 
             string server, 
             string taskId, 
-            string scale, 
-            string systemFolder
+            string scale
         )
         {
-            string folderToSaveImages = Path.Combine(systemFolder, "Scaled");
-            if (!Directory.Exists(folderToSaveImages))
-            {
-                Directory.CreateDirectory(folderToSaveImages);
-            }
-            
             var scaleUrl = $"https://{server}.iloveimg.com/v1/upscale";
             using (var client = new HttpClient())
             {
@@ -97,18 +90,16 @@ namespace QuickTools.Services.Iloveimg
                 var form = new MultipartFormDataContent
                 {
                     { new StringContent(taskId), "task" },
-                    { new StringContent(uploadResponse.server_filename), "server_filename" },
+                    { new StringContent(iloveImgUpscaleUploadResponse.server_filename), "server_filename" },
                     { new StringContent(scale), "scale" }
                 };
 
                 var response = await client.PostAsync(scaleUrl, form);
                 response.EnsureSuccessStatusCode();
                 var imageBytes = await response.Content.ReadAsByteArrayAsync();
-                var filePath = Path.Combine(folderToSaveImages, uploadResponse.server_filename);
 
-                await File.WriteAllBytesAsync(filePath, imageBytes);
                 await Task.Delay(1200);
-                return filePath;
+                return imageBytes;
             }
         }
 
@@ -144,7 +135,7 @@ namespace QuickTools.Services.Iloveimg
         }
     }
 
-    public class UploadResponse
+    public class IloveImgUpscaleUploadResponse
     {
         public string Id { get; set; } = string.Empty;  
         public string Name { get; set; } = string.Empty;  
