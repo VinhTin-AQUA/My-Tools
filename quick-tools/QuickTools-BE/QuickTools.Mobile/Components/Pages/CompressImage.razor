@@ -2,7 +2,7 @@
 
 <div class="min-h-screen bg-[var(--color-background)] px-4 py-6 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-7xl">
-        
+
         <!-- =====================================================
              Page Header
              ===================================================== -->
@@ -47,12 +47,13 @@
                             }
                         </select>
 
-                        <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]"
-                             viewBox="0 0 20 20"
-                             fill="currentColor">
+                        <svg
+                            class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]"
+                            viewBox="0 0 20 20"
+                            fill="currentColor">
                             <path fill-rule="evenodd"
                                   d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01.02-1.06z"
-                                  clip-rule="evenodd" />
+                                  clip-rule="evenodd"/>
                         </svg>
                     </div>
                 </div>
@@ -71,49 +72,65 @@
              Upload
              ===================================================== -->
         <section class="mb-6">
-            <div class="surface-card rounded-2xl p-5 sm:p-6">
+            <div class="surface-card rounded-2xl p-4">
 
-                <div class="mb-5 flex items-start justify-between gap-4">
-                    <div>
-                        <h2 class="text-lg font-bold text-[var(--color-text-primary)]">
-                            Upload images
-                        </h2>
+                <!-- Header -->
+                <div class="mb-4">
+                    <h2 class="text-base font-bold text-[var(--color-text-primary)]">
+                        Upload images
+                    </h2>
 
-                        <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
-                            Select one or more images to start processing.
-                        </p>
-                    </div>
-
-                    <div class="hidden rounded-lg bg-[var(--color-background)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] sm:block">
-                        Max 20 MB / image
-                    </div>
+                    <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+                        Select one or more images to start processing.
+                    </p>
                 </div>
 
+                <!-- Upload area -->
                 <label for="image-upload"
-                       class="group flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-background)] p-6 text-center transition hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)]">
+                       class="flex min-h-44 flex-col items-center justify-center rounded-2xl
+                              border-2 border-dashed border-[var(--color-border)]
+                              bg-[var(--color-background)] p-5 text-center
+                              active:bg-[var(--color-surface)]">
 
                     <InputFile id="image-upload"
                                OnChange="OnFilesSelected"
                                multiple
                                accept="image/*"
-                               class="hidden" />
+                               class="hidden"/>
 
-                    <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] text-2xl shadow-sm transition group-hover:scale-105 group-hover:border-[var(--color-primary)]">
+                    <!-- Icon -->
+                    <div class="mb-3 flex h-14 w-14 items-center justify-center
+                                rounded-2xl bg-[var(--color-surface)]
+                                border border-[var(--color-border)]
+                                text-xl shadow-sm">
                         📤
                     </div>
 
+                    <!-- CTA -->
                     <p class="text-sm font-semibold text-[var(--color-text-primary)]">
-                        Click to upload images
+                        Select images
                     </p>
 
                     <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
-                        PNG, JPG, JPEG or WEBP
+                        Tap here to choose from your device
                     </p>
 
-                    <span class="mt-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
-                        Browse files
-                    </span>
+                    <!-- Formats -->
+                    <div class="mt-4 flex items-center gap-2 text-[11px] text-[var(--color-text-secondary)]">
+                        <span>PNG</span>
+                        <span>•</span>
+                        <span>JPG</span>
+                        <span>•</span>
+                        <span>JPEG</span>
+                        <span>•</span>
+                        <span>WEBP</span>
+                    </div>
                 </label>
+
+                <!-- Limit -->
+                <p class="mt-3 text-center text-xs text-[var(--color-text-secondary)]">
+                    Up to 20 MB per image
+                </p>
             </div>
         </section>
 
@@ -132,7 +149,8 @@
                 <div class="mb-5 flex items-center justify-between gap-4">
 
                     <div class="flex items-center gap-3">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
+                        <div
+                            class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
                             📷
                         </div>
 
@@ -147,7 +165,8 @@
                         </div>
                     </div>
 
-                    <span class="min-w-8 rounded-full bg-[var(--color-primary)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
+                    <span
+                        class="min-w-8 rounded-full bg-[var(--color-primary)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
                         @uploadedFiles.Count
                     </span>
                 </div>
@@ -164,13 +183,14 @@
                                  class="@GetImageItemClass(image)">
 
                                 <!-- Thumbnail -->
-                                <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]">
+                                <div
+                                    class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]">
                                     @if (!string.IsNullOrWhiteSpace(image.PreviewUrl))
                                     {
                                         <img src="@image.PreviewUrl"
                                              alt="@image.Name"
                                              loading="lazy"
-                                             class="h-full w-full object-cover" />
+                                             class="h-full w-full object-cover"/>
                                     }
                                     else
                                     {
@@ -198,22 +218,28 @@
                                             @switch (image.ProcessingStatus)
                                             {
                                                 case CompressedFileProcessingStatus.Processing:
-                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-info)]">
-                                                        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-info)]"></span>
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-info)]">
+                                                        <span
+                                                            class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-info)]"></span>
                                                         Processing
                                                     </span>
                                                     break;
 
                                                 case CompressedFileProcessingStatus.Success:
-                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-success)]">
-                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]"></span>
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-success)]">
+                                                        <span
+                                                            class="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]"></span>
                                                         Completed
                                                     </span>
                                                     break;
 
                                                 case CompressedFileProcessingStatus.Failed:
-                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-error)]">
-                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-error)]"></span>
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-error)]">
+                                                        <span
+                                                            class="h-1.5 w-1.5 rounded-full bg-[var(--color-error)]"></span>
                                                         Failed
                                                     </span>
                                                     break;
@@ -242,7 +268,8 @@
                                         {
                                             case CompressedFileProcessingStatus.Processing:
 
-                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-info)]">
+                                                <span
+                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-info)]">
                                                     <svg class="h-5 w-5 animate-spin"
                                                          viewBox="0 0 24 24"
                                                          fill="none">
@@ -251,12 +278,12 @@
                                                                 r="9"
                                                                 stroke="currentColor"
                                                                 stroke-width="3"
-                                                                opacity=".25" />
+                                                                opacity=".25"/>
 
                                                         <path d="M21 12a9 9 0 00-9-9"
                                                               stroke="currentColor"
                                                               stroke-width="3"
-                                                              stroke-linecap="round" />
+                                                              stroke-linecap="round"/>
                                                     </svg>
                                                 </span>
 
@@ -264,7 +291,8 @@
 
                                             case CompressedFileProcessingStatus.Success:
 
-                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-success)]">
+                                                <span
+                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-success)]">
                                                     ✓
                                                 </span>
 
@@ -272,7 +300,8 @@
 
                                             case CompressedFileProcessingStatus.Failed:
 
-                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-error)]">
+                                                <span
+                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-error)]">
                                                     !
                                                 </span>
 
@@ -286,9 +315,11 @@
                 }
                 else
                 {
-                    <div class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
+                    <div
+                        class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
 
-                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
+                        <div
+                            class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
                             📭
                         </div>
 
@@ -313,7 +344,8 @@
                 <div class="mb-5 flex items-center justify-between gap-4">
 
                     <div class="flex items-center gap-3">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
+                        <div
+                            class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
                             ✨
                         </div>
 
@@ -328,7 +360,8 @@
                         </div>
                     </div>
 
-                    <span class="min-w-8 rounded-full bg-[var(--color-success)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
+                    <span
+                        class="min-w-8 rounded-full bg-[var(--color-success)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
                         @processedImages.Count
                     </span>
                 </div>
@@ -343,7 +376,8 @@
                         {
                             <div class="image-item flex items-center gap-3 rounded-xl border p-3 transition">
 
-                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg text-[var(--color-success)]">
+                                <div
+                                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg text-[var(--color-success)]">
                                     ✓
                                 </div>
 
@@ -369,9 +403,11 @@
                 }
                 else
                 {
-                    <div class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
+                    <div
+                        class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
 
-                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
+                        <div
+                            class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
                             ✨
                         </div>
 
@@ -414,12 +450,12 @@
                                         r="9"
                                         stroke="currentColor"
                                         stroke-width="3"
-                                        opacity=".3" />
+                                        opacity=".3"/>
 
                                 <path d="M21 12a9 9 0 00-9-9"
                                       stroke="currentColor"
                                       stroke-width="3"
-                                      stroke-linecap="round" />
+                                      stroke-linecap="round"/>
                             </svg>
 
                             <span>Processing...</span>
@@ -456,7 +492,8 @@
                             </div>
                         </div>
 
-                        <span class="hidden min-w-16 text-right text-sm font-bold text-[var(--color-text-primary)] sm:block">
+                        <span
+                            class="hidden min-w-16 text-right text-sm font-bold text-[var(--color-text-primary)] sm:block">
                             @Progress / @uploadedFiles.Count
                         </span>
                     </div>
@@ -470,7 +507,8 @@
              ===================================================== -->
         <section class="mt-6">
 
-            <div class="surface-card flex flex-col gap-4 rounded-2xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="surface-card flex flex-col gap-4 rounded-2xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <div class="flex items-center gap-3">
 
@@ -508,8 +546,9 @@
      ========================================================= -->
 @if (ShowPopupImagePreview && SelectedImage is not null)
 {
-    <div class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-text-primary)]/70 p-4 backdrop-blur-sm"
-         @onclick="ClosePopupImagePreview">
+    <div
+        class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-text-primary)]/70 p-4 backdrop-blur-sm"
+        @onclick="ClosePopupImagePreview">
 
         <div class="modal-content flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl"
              @onclick:stopPropagation>
@@ -536,17 +575,19 @@
 
 
             <!-- Modal Body -->
-            <div class="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[var(--color-background)] p-4 sm:p-8">
+            <div
+                class="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[var(--color-background)] p-4 sm:p-8">
 
                 <img src="@SelectedImage.PreviewUrl"
                      alt="@SelectedImage.Name"
-                     class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-lg" />
+                     class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-lg"/>
 
             </div>
 
 
             <!-- Modal Footer -->
-            <div class="flex flex-col gap-3 border-t border-[var(--color-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div
+                class="flex flex-col gap-3 border-t border-[var(--color-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <span class="text-sm text-[var(--color-text-secondary)]">
                     Size:

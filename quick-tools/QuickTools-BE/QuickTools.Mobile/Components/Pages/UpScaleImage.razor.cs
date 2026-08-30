@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using QuickTools.Mobile.Services.Implementations;
 using QuickTools.Mobile.Services.Interfaces;
 using QuickTools.Services.Iloveimg;
 using QuickTools.Services.Models.Iloveimg;
@@ -12,6 +13,7 @@ namespace QuickTools.Mobile.Components.Pages
         [Inject] protected IJSRuntime JS { get; set; } = default!;
         [Inject] protected IFileStorageService FileStorageService { get; set; } = default!;
         [Inject] protected IExternalStoreService ExternalStoreService { get; set; } = default!;
+        [Inject] protected NotificationService NotificationService { get; set; } = default!;
         
         protected List<UploadedImage> _uploadedFiles { get; set; } = [];
         protected List<ProcessedImage> _processedImages { get; set; } = [];
@@ -26,6 +28,8 @@ namespace QuickTools.Mobile.Components.Pages
             _uploadedFiles.Count == 0 ? 0 : Math.Min(100, (double)_progress / _uploadedFiles.Count * 100);
         
         private bool _hasPermission { get; set; } = false;
+        private bool permission { get; set; } = false;
+        
         
         protected override async Task OnInitializedAsync()
         {
@@ -112,7 +116,19 @@ namespace QuickTools.Mobile.Components.Pages
         }
 
         protected async Task OnSubmit()
-        {
+        { 
+            permission =
+                await NotificationService.RequestPermissionAsync();
+
+            if (!permission)
+                return;
+
+            await NotificationService.ShowAsync(
+                1,
+                "Thông báo",
+                "Hello từ .NET MAUI Blazor Hybrid!");
+            
+            return;
             if (_uploadedFiles.Count == 0 || _isUploading) return;
             _isUploading = true;
             _progress = 0;

@@ -62,10 +62,15 @@
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1"/>
+        <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\QuickTools.Services\QuickTools.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Platforms\Android\Resources\drawable\" />
     </ItemGroup>
 
 </Project>

@@ -27,6 +27,8 @@
     <!-- Quyền tạo file -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <!-- Android 10+ yêu cầu -->
     <queries>
         <intent>
