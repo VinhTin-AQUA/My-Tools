@@ -1,0 +1,92 @@
+
+/* =========================================================
+   Surface
+   ========================================================= */
+
+.surface-card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 8px 24px var(--color-border);
+}
+
+
+/* =========================================================
+   Input
+   ========================================================= */
+
+.input-control {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.input-control:hover {
+    border-color: var(--color-secondary);
+}
+
+.input-control:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-border);
+}
+
+
+/* =========================================================
+   Image Item
+   ========================================================= */
+
+.image-item {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+}
+
+.image-item:hover {
+    border-color: var(--color-primary);
+}
+
+.image-item.selected {
+    background-color: var(--color-background);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+
+/* =========================================================
+   Empty State
+   ========================================================= */
+
+.empty-state {
+    background-color: var(--color-background);
+    border: 1px dashed var(--color-border);
+}
+
+
+/* =========================================================
+   Progress
+   ========================================================= */
+
+.progress-fill {
+    background-color: var(--color-primary);
+}
+
+
+/* =========================================================
+   Modal
+   ========================================================= */
+
+.modal-content {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: 0 20px 50px var(--color-text-primary);
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 640px) {
+    .surface-card {
+        box-shadow: 0 4px 12px var(--color-border);
+    }
+}
+

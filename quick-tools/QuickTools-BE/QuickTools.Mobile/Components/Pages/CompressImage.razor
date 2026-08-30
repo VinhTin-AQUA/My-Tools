@@ -1,0 +1,566 @@
+@page "/compress-image"
+
+<div class="min-h-screen bg-[var(--color-background)] px-4 py-6 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl">
+        
+        <!-- =====================================================
+             Page Header
+             ===================================================== -->
+        <div class="mb-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight text-[var(--color-text-primary)] sm:text-3xl">
+                        Image Compressing
+                    </h1>
+
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-[var(--color-text-secondary)]">
+                        Upload your images, choose the size multiplier and compress
+                        them with just a few clicks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =====================================================
+             Controls
+             ===================================================== -->
+        <section class="surface-card mb-6 rounded-2xl p-5 sm:p-6">
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+
+                <div class="w-full max-w-sm">
+                    <label for="scale"
+                           class="mb-2 block text-sm font-semibold text-[var(--color-text-primary)]">
+                        Size multiplier
+                    </label>
+
+                    <div class="relative">
+                        <select id="scale"
+                                @bind="scale"
+                                class="input-control w-full appearance-none rounded-xl px-4 py-3 pr-10 text-sm font-medium outline-none transition">
+                            @foreach (var option in sizeMultiplierOptions)
+                            {
+                                <option value="@option">
+                                    @option x
+                                </option>
+                            }
+                        </select>
+
+                        <svg class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]"
+                             viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01.02-1.06z"
+                                  clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+
+                <button type="button"
+                        @onclick="OnClear"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3 text-sm font-semibold text-[var(--color-text-primary)] transition hover:border-[var(--color-secondary)] hover:bg-[var(--color-background)]">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- =====================================================
+             Upload
+             ===================================================== -->
+        <section class="mb-6">
+            <div class="surface-card rounded-2xl p-5 sm:p-6">
+
+                <div class="mb-5 flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-[var(--color-text-primary)]">
+                            Upload images
+                        </h2>
+
+                        <p class="mt-1 text-sm text-[var(--color-text-secondary)]">
+                            Select one or more images to start processing.
+                        </p>
+                    </div>
+
+                    <div class="hidden rounded-lg bg-[var(--color-background)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] sm:block">
+                        Max 20 MB / image
+                    </div>
+                </div>
+
+                <label for="image-upload"
+                       class="group flex min-h-48 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[var(--color-border)] bg-[var(--color-background)] p-6 text-center transition hover:border-[var(--color-primary)] hover:bg-[var(--color-surface)]">
+
+                    <InputFile id="image-upload"
+                               OnChange="OnFilesSelected"
+                               multiple
+                               accept="image/*"
+                               class="hidden" />
+
+                    <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] text-2xl shadow-sm transition group-hover:scale-105 group-hover:border-[var(--color-primary)]">
+                        📤
+                    </div>
+
+                    <p class="text-sm font-semibold text-[var(--color-text-primary)]">
+                        Click to upload images
+                    </p>
+
+                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
+                        PNG, JPG, JPEG or WEBP
+                    </p>
+
+                    <span class="mt-4 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-secondary)]">
+                        Browse files
+                    </span>
+                </label>
+            </div>
+        </section>
+
+
+        <!-- =====================================================
+             Gallery
+             ===================================================== -->
+        <section class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+
+            <!-- =================================================
+                 Original Images
+                 ================================================= -->
+            <div class="surface-card flex min-h-[480px] flex-col rounded-2xl p-5 sm:p-6">
+
+                <!-- Header -->
+                <div class="mb-5 flex items-center justify-between gap-4">
+
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
+                            📷
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-bold text-[var(--color-text-primary)]">
+                                Original images
+                            </h3>
+
+                            <p class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+                                @FormatFileSize(TotalSize())
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="min-w-8 rounded-full bg-[var(--color-primary)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
+                        @uploadedFiles.Count
+                    </span>
+                </div>
+
+
+                <!-- List -->
+                @if (uploadedFiles.Count > 0)
+                {
+                    <div class="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
+
+                        @foreach (var image in uploadedFiles)
+                        {
+                            <div @onclick="() => OnImageClick(image)"
+                                 class="@GetImageItemClass(image)">
+
+                                <!-- Thumbnail -->
+                                <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]">
+                                    @if (!string.IsNullOrWhiteSpace(image.PreviewUrl))
+                                    {
+                                        <img src="@image.PreviewUrl"
+                                             alt="@image.Name"
+                                             loading="lazy"
+                                             class="h-full w-full object-cover" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-2xl">
+                                            🖼️
+                                        </span>
+                                    }
+                                </div>
+
+
+                                <!-- Info -->
+                                <div class="min-w-0 flex-1">
+
+                                    <p class="truncate text-sm font-semibold text-[var(--color-text-primary)]">
+                                        @image.Name
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
+                                        @FormatFileSize(image.Size)
+                                    </p>
+
+                                    @if (IsUploading)
+                                    {
+                                        <div class="mt-2">
+                                            @switch (image.ProcessingStatus)
+                                            {
+                                                case CompressedFileProcessingStatus.Processing:
+                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-info)]">
+                                                        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-info)]"></span>
+                                                        Processing
+                                                    </span>
+                                                    break;
+
+                                                case CompressedFileProcessingStatus.Success:
+                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-success)]">
+                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]"></span>
+                                                        Completed
+                                                    </span>
+                                                    break;
+
+                                                case CompressedFileProcessingStatus.Failed:
+                                                    <span class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-error)]">
+                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-error)]"></span>
+                                                        Failed
+                                                    </span>
+                                                    break;
+                                            }
+                                        </div>
+                                    }
+                                </div>
+
+
+                                <!-- Action / Status -->
+                                <div class="shrink-0">
+
+                                    @if (!IsUploading)
+                                    {
+                                        <button type="button"
+                                                @onclick:stopPropagation
+                                                @onclick="() => RemoveImage(image.Id)"
+                                                title="Remove image"
+                                                class="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-sm text-[var(--color-error)] transition hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-[var(--color-surface)]">
+                                            ✕
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        @switch (image.ProcessingStatus)
+                                        {
+                                            case CompressedFileProcessingStatus.Processing:
+
+                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-info)]">
+                                                    <svg class="h-5 w-5 animate-spin"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none">
+                                                        <circle cx="12"
+                                                                cy="12"
+                                                                r="9"
+                                                                stroke="currentColor"
+                                                                stroke-width="3"
+                                                                opacity=".25" />
+
+                                                        <path d="M21 12a9 9 0 00-9-9"
+                                                              stroke="currentColor"
+                                                              stroke-width="3"
+                                                              stroke-linecap="round" />
+                                                    </svg>
+                                                </span>
+
+                                                break;
+
+                                            case CompressedFileProcessingStatus.Success:
+
+                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-success)]">
+                                                    ✓
+                                                </span>
+
+                                                break;
+
+                                            case CompressedFileProcessingStatus.Failed:
+
+                                                <span class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-error)]">
+                                                    !
+                                                </span>
+
+                                                break;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
+
+                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
+                            📭
+                        </div>
+
+                        <p class="text-sm font-semibold text-[var(--color-text-primary)]">
+                            No images yet
+                        </p>
+
+                        <p class="mt-1 max-w-xs text-xs leading-5 text-[var(--color-text-secondary)]">
+                            Upload your images using the upload area above.
+                        </p>
+                    </div>
+                }
+            </div>
+
+
+            <!-- =================================================
+                 Processed Images
+                 ================================================= -->
+            <div class="surface-card flex min-h-[480px] flex-col rounded-2xl p-5 sm:p-6">
+
+                <!-- Header -->
+                <div class="mb-5 flex items-center justify-between gap-4">
+
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg">
+                            ✨
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-bold text-[var(--color-text-primary)]">
+                                Processed images
+                            </h3>
+
+                            <p class="mt-0.5 text-xs text-[var(--color-text-secondary)]">
+                                @FormatFileSize(TotalSizeProcessed())
+                            </p>
+                        </div>
+                    </div>
+
+                    <span class="min-w-8 rounded-full bg-[var(--color-success)] px-2.5 py-1 text-center text-xs font-bold text-[var(--color-surface)]">
+                        @processedImages.Count
+                    </span>
+                </div>
+
+
+                <!-- List -->
+                @if (processedImages.Count > 0)
+                {
+                    <div class="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
+
+                        @foreach (var image in processedImages)
+                        {
+                            <div class="image-item flex items-center gap-3 rounded-xl border p-3 transition">
+
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-background)] text-lg text-[var(--color-success)]">
+                                    ✓
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-semibold text-[var(--color-text-primary)]">
+                                        @image.Name
+                                    </p>
+
+                                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
+                                        @FormatFileSize(image.Size)
+                                    </p>
+                                </div>
+
+                                <button type="button"
+                                        @onclick="() => OpenFolder(image.PreviewUrl)"
+                                        title="Open folder"
+                                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-base text-[var(--color-secondary)] transition hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-surface)]">
+                                    📁
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state flex flex-1 flex-col items-center justify-center rounded-2xl p-8 text-center">
+
+                        <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-surface)] text-3xl">
+                            ✨
+                        </div>
+
+                        <p class="text-sm font-semibold text-[var(--color-text-primary)]">
+                            No processed images
+                        </p>
+
+                        <p class="mt-1 max-w-xs text-xs leading-5 text-[var(--color-text-secondary)]">
+                            Your processed images will appear here after submitting.
+                        </p>
+                    </div>
+                }
+            </div>
+        </section>
+
+
+        <!-- =====================================================
+             Submit / Progress
+             ===================================================== -->
+        <section class="surface-card mt-6 rounded-2xl p-5 sm:p-6">
+
+            <div class="flex flex-col gap-5 lg:flex-row lg:items-center">
+
+                <!-- Submit -->
+                <div class="flex shrink-0 items-center gap-3">
+
+                    <button type="button"
+                            @onclick="OnSubmit"
+                            disabled="@(uploadedFiles.Count == 0 || IsUploading)"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--color-surface)] shadow-sm transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-text-disabled)]">
+
+                        @if (IsUploading)
+                        {
+                            <svg class="h-4 w-4 animate-spin"
+                                 viewBox="0 0 24 24"
+                                 fill="none">
+
+                                <circle cx="12"
+                                        cy="12"
+                                        r="9"
+                                        stroke="currentColor"
+                                        stroke-width="3"
+                                        opacity=".3" />
+
+                                <path d="M21 12a9 9 0 00-9-9"
+                                      stroke="currentColor"
+                                      stroke-width="3"
+                                      stroke-linecap="round" />
+                            </svg>
+
+                            <span>Processing...</span>
+                        }
+                        else
+                        {
+                            <span>✓</span>
+                            <span>Submit</span>
+                        }
+                    </button>
+                </div>
+
+
+                <!-- Progress -->
+                @if (IsUploading || Progress > 0)
+                {
+                    <div class="flex flex-1 items-center gap-4">
+
+                        <div class="flex-1">
+                            <div class="mb-2 flex items-center justify-between">
+                                <span class="text-xs font-semibold text-[var(--color-text-secondary)]">
+                                    Processing progress
+                                </span>
+
+                                <span class="text-xs font-bold text-[var(--color-text-primary)]">
+                                    @Math.Round(ProgressPercentage)%
+                                </span>
+                            </div>
+
+                            <div class="h-2.5 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+                                <div class="progress-fill h-full rounded-full transition-all duration-300"
+                                     style="width: @(ProgressPercentage)%">
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="hidden min-w-16 text-right text-sm font-bold text-[var(--color-text-primary)] sm:block">
+                            @Progress / @uploadedFiles.Count
+                        </span>
+                    </div>
+                }
+            </div>
+        </section>
+
+
+        <!-- =====================================================
+             Source
+             ===================================================== -->
+        <section class="mt-6">
+
+            <div class="surface-card flex flex-col gap-4 rounded-2xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-background)]">
+                        📁
+                    </div>
+
+                    <div>
+                        <p class="text-xs font-medium text-[var(--color-text-secondary)]">
+                            Inspired by
+                        </p>
+
+                        <p class="text-sm font-bold text-[var(--color-text-primary)]">
+                            Libcaesium
+                        </p>
+                    </div>
+                </div>
+
+                <a href="https://github.com/VinhTin-AQUA/libcaesium"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)] transition hover:text-[var(--color-primary-hover)]">
+                    <span>🔗</span>
+                    <span>Visit source</span>
+                </a>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+
+<!-- =========================================================
+     Image Preview Modal
+     ========================================================= -->
+@if (ShowPopupImagePreview && SelectedImage is not null)
+{
+    <div class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-text-primary)]/70 p-4 backdrop-blur-sm"
+         @onclick="ClosePopupImagePreview">
+
+        <div class="modal-content flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl"
+             @onclick:stopPropagation>
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-5 py-4">
+
+                <div class="min-w-0">
+                    <h3 class="truncate text-base font-bold text-[var(--color-text-primary)]">
+                        @SelectedImage.Name
+                    </h3>
+
+                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
+                        @FormatFileSize(SelectedImage.Size)
+                    </p>
+                </div>
+
+                <button type="button"
+                        @onclick="ClosePopupImagePreview"
+                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg text-[var(--color-text-secondary)] transition hover:bg-[var(--color-background)] hover:text-[var(--color-error)]">
+                    ✕
+                </button>
+            </div>
+
+
+            <!-- Modal Body -->
+            <div class="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[var(--color-background)] p-4 sm:p-8">
+
+                <img src="@SelectedImage.PreviewUrl"
+                     alt="@SelectedImage.Name"
+                     class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-lg" />
+
+            </div>
+
+
+            <!-- Modal Footer -->
+            <div class="flex flex-col gap-3 border-t border-[var(--color-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+
+                <span class="text-sm text-[var(--color-text-secondary)]">
+                    Size:
+                    <strong class="text-[var(--color-text-primary)]">
+                        @FormatFileSize(SelectedImage.Size)
+                    </strong>
+                </span>
+
+                <button type="button"
+                        @onclick="ClosePopupImagePreview"
+                        class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:border-[var(--color-secondary)] hover:bg-[var(--color-background)]">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+}
