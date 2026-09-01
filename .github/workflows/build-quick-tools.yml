@@ -29,16 +29,20 @@ env:
     WINDOWS_FILE_NAME: 'quick-tools_v1.0.0_portable'
 
 jobs:
-    publish-desktop:
+    publish:
         runs-on: ubuntu-latest
+
         permissions:
             contents: write
-        if: false
 
         steps:
-            - uses: actions/checkout@v4
+            - name: Checkout
+              uses: actions/checkout@v4
 
-            - name: setup node
+            # =========================
+            # Setup Node / Angular
+            # =========================
+            - name: Setup Node
               uses: actions/setup-node@v4
               with:
                   node-version: lts/*
@@ -46,12 +50,18 @@ jobs:
             - name: Install Angular CLI globally
               run: npm install -g @angular/cli@21
 
+            # =========================
+            # Setup .NET
+            # =========================
             - name: Setup .NET
               uses: actions/setup-dotnet@v4
               with:
                   dotnet-version: 8.0.x
 
-            - name: Build
+            # =========================
+            # Desktop
+            # =========================
+            - name: Build Desktop
               run: |
                   chmod +x ./build.sh
                   ./build.sh
@@ -64,105 +74,49 @@ jobs:
               run: |
                   zip -r ${{ env.WINDOWS_FILE_NAME }}.zip quicktools-windows
 
-            - name: Remove old tag if exists
+            # =========================
+            # Android
+            # =========================
+            - name: Install MAUI Android workload
               run: |
-                  if git ls-remote --tags origin | grep -q "refs/tags/${{ env.TAG_NAME }}"; then
-                    echo "Deleting old tag..."
-                    git push origin :refs/tags/${{ env.TAG_NAME }}
-                  else
-                    echo "No old tag found."
-                  fi
-
-            - name: Delete existing release
-              run: |
-                  gh release delete ${{ env.TAG_NAME }} --yes || echo "No release to delete"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Create Tag
-              run: |
-                  git config user.name "github-actions"
-                  git config user.email "github-actions@github.com"
-                  git tag ${{ env.TAG_NAME }}
-                  git push origin ${{ env.TAG_NAME }}
-
-            - name: Create Release
-              uses: softprops/action-gh-release@v1
-              with:
-                  draft: false
-                  name: ${{ env.RELEASE_NAME }}
-                  tag_name: ${{ env.TAG_NAME }}
-                  generate_release_notes: true
-                  files: |
-                      ${{ env.PROJECT_DIR }}/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
-                      ${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
-
-    publish-android:
-        runs-on: ubuntu-latest
-
-        permissions:
-            contents: write
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: 8.0.x
-
-
-            - name: Install MAUI Android workload for .NET 8
-              run: |
-                  # Hiển thị phiên bản hiện tại
                   echo "Current SDK before cleanup: $(dotnet --version)"
-                  
+
                   # Xóa tất cả SDK khác ngoài .NET 8
                   sudo rm -rf /usr/share/dotnet/sdk/9.*
                   sudo rm -rf /usr/share/dotnet/sdk/10.*
-                  
+
                   # Xóa runtime của các phiên bản khác
                   sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/9.*
                   sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/10.*
                   sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/9.*
                   sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/10.*
-                  
-                  # Kiểm tra lại
+
                   echo "After cleanup:"
                   dotnet --version
                   dotnet --list-sdks
-                
                   dotnet --info
-
 
                   dotnet workload install maui-android
 
-                  # dotnet workload install maui-android --version 8.0.100
-
-
-                  # Hoặc nếu muốn cài tất cả workload cho Android
-                  # dotnet workload install android --version 8.0.100
-
-            - name: Restore dependencies
+            - name: Restore Android dependencies
+              working-directory: QuickTools-BE
               run: |
-                  cd QuickTools-BE
                   dotnet restore QuickTools.Mobile/QuickTools.Mobile.csproj
 
             - name: Decode Android keystore
               env:
                   ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
               run: |
-                  echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/quicktools.keystore"
+                  echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode \
+                    > "$RUNNER_TEMP/quicktools.keystore"
 
             - name: Build signed APK
+              working-directory: QuickTools-BE/QuickTools.Mobile
               env:
                   ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
                   ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
                   ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
               run: |
-                  cd QuickTools-BE/QuickTools.Mobile
-
                   dotnet publish QuickTools.Mobile.csproj \
                     -f net8.0-android \
                     -c Release \
@@ -174,9 +128,8 @@ jobs:
                     -p:AndroidSigningStorePass="$ANDROID_KEYSTORE_PASSWORD"
 
             - name: Verify APK
+              working-directory: QuickTools-BE/QuickTools.Mobile
               run: |
-                  cd QuickTools-BE/QuickTools.Mobile
-
                   APK=$(find bin/Release/net8.0-android/publish \
                     -name "*-Signed.apk" \
                     -type f | head -n 1)
@@ -188,6 +141,9 @@ jobs:
 
                   echo "APK: $APK"
 
+            # =========================
+            # Release
+            # =========================
             - name: Remove old tag if exists
               run: |
                   if git ls-remote --tags origin | grep -q "refs/tags/${{ env.TAG_NAME }}"; then
@@ -198,15 +154,17 @@ jobs:
                   fi
 
             - name: Delete existing release
-              run: |
-                  gh release delete ${{ env.TAG_NAME }} --yes || echo "No release to delete"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  gh release delete ${{ env.TAG_NAME }} --yes \
+                    || echo "No release to delete"
 
             - name: Create Tag
               run: |
                   git config user.name "github-actions"
                   git config user.email "github-actions@github.com"
+
                   git tag ${{ env.TAG_NAME }}
                   git push origin ${{ env.TAG_NAME }}
 
@@ -221,5 +179,3 @@ jobs:
                       ${{ env.PROJECT_DIR }}/${{ env.LINUX_TARGET_DIR_TAR }}.tar.gz
                       ${{ env.PROJECT_DIR }}/${{ env.WINDOWS_FILE_NAME }}.zip
                       ${{ env.PROJECT_DIR }}/QuickTools-BE/QuickTools.Mobile/bin/Release/net8.0-android/publish/com.newtun.quicktools-Signed.apk
-
-
