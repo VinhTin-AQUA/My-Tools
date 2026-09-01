@@ -438,3 +438,6 @@ QuickTools.Desktop/Native/*
 QuickTools.Desktop/wwwroot/*
 !QuickTools.Desktop/wwwroot/.gitkeep
 
+*.keystore
+*.jks
+quicktools.keystore.txt

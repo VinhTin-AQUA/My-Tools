@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- =====================================================
              Controls
              ===================================================== -->
@@ -41,12 +41,12 @@
                                min="10"
                                max="100"
                                class="input-control w-full rounded-xl px-4 py-3 pr-16 text-sm font-medium outline-none transition [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                               placeholder="Enter quality" />
+                               placeholder="Enter quality"/>
 
                         <span
                             class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[var(--color-text-secondary)]">
-                    %
-                </span>
+                            %
+                        </span>
                     </div>
 
                     <!-- Progress indicator -->
@@ -192,7 +192,8 @@
 
                         @foreach (var image in uploadedFiles)
                         {
-                            <div>
+                            <div
+                                class="flex items-start gap-3 p-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] hover:bg-[var(--color-surface)] transition-colors">
 
                                 <!-- Thumbnail -->
                                 <div
@@ -206,34 +207,71 @@
                                     }
                                     else
                                     {
-                                        <span class="text-2xl">
-                                            🖼️
-                                        </span>
+                                        <span class="text-2xl">🖼️</span>
                                     }
                                 </div>
 
-
                                 <!-- Info -->
-                                <div class="min-w-0 flex-1">
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <div class="flex items-start justify-between gap-2">
+                                        <p class="text-sm font-semibold text-[var(--color-text-primary)] break-words leading-tight line-clamp-2">
+                                            @image.Name
+                                        </p>
 
-                                    <p class="truncate text-sm font-semibold text-[var(--color-text-primary)]">
-                                        @image.Name
-                                    </p>
+                                        <!-- Action / Status - Được đưa lên cùng hàng với tên -->
+                                        <div class="shrink-0 mt-0.5">
+                                            @if (!IsUploading)
+                                            {
+                                                <button type="button"
+                                                        @onclick:stopPropagation
+                                                        @onclick="() => RemoveImage(image.Id)"
+                                                        title="Remove image"
+                                                        class="flex h-8 w-8 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-sm text-[var(--color-error)] transition hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-[var(--color-surface)]">
+                                                    ✕
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                @switch (image.ProcessingStatus)
+                                                {
+                                                    case CompressedFileProcessingStatus.Processing:
+                                                        <span
+                                                            class="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--color-info)]">
+                                                            <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                                                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".25"/>
+                                                                <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" stroke-width="3"
+                                                                      stroke-linecap="round"/>
+                                                            </svg>
+                                                        </span>
+                                                        break;
 
-                                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
+                                                    case CompressedFileProcessingStatus.Success:
+                                                        <span
+                                                            class="flex h-8 w-8 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-success)]">✓</span>
+                                                        break;
+
+                                                    case CompressedFileProcessingStatus.Failed:
+                                                        <span
+                                                            class="flex h-8 w-8 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-error)]">!</span>
+                                                        break;
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <p class="text-xs text-[var(--color-text-secondary)]">
                                         @FormatFileSize(image.Size)
                                     </p>
 
                                     @if (IsUploading)
                                     {
-                                        <div class="mt-2">
+                                        <div class="mt-1">
                                             @switch (image.ProcessingStatus)
                                             {
                                                 case CompressedFileProcessingStatus.Processing:
                                                     <span
                                                         class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-info)]">
-                                                        <span
-                                                            class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-info)]"></span>
+                                                        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-info)]"></span>
                                                         Processing
                                                     </span>
                                                     break;
@@ -241,8 +279,7 @@
                                                 case CompressedFileProcessingStatus.Success:
                                                     <span
                                                         class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-success)]">
-                                                        <span
-                                                            class="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]"></span>
+                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-success)]"></span>
                                                         Completed
                                                     </span>
                                                     break;
@@ -250,75 +287,12 @@
                                                 case CompressedFileProcessingStatus.Failed:
                                                     <span
                                                         class="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--color-error)]">
-                                                        <span
-                                                            class="h-1.5 w-1.5 rounded-full bg-[var(--color-error)]"></span>
+                                                        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-error)]"></span>
                                                         Failed
                                                     </span>
                                                     break;
                                             }
                                         </div>
-                                    }
-                                </div>
-
-
-                                <!-- Action / Status -->
-                                <div class="shrink-0">
-
-                                    @if (!IsUploading)
-                                    {
-                                        <button type="button"
-                                                @onclick:stopPropagation
-                                                @onclick="() => RemoveImage(image.Id)"
-                                                title="Remove image"
-                                                class="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-sm text-[var(--color-error)] transition hover:border-[var(--color-error)] hover:bg-[var(--color-error)] hover:text-[var(--color-surface)]">
-                                            ✕
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        @switch (image.ProcessingStatus)
-                                        {
-                                            case CompressedFileProcessingStatus.Processing:
-
-                                                <span
-                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-[var(--color-info)]">
-                                                    <svg class="h-5 w-5 animate-spin"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none">
-                                                        <circle cx="12"
-                                                                cy="12"
-                                                                r="9"
-                                                                stroke="currentColor"
-                                                                stroke-width="3"
-                                                                opacity=".25"/>
-
-                                                        <path d="M21 12a9 9 0 00-9-9"
-                                                              stroke="currentColor"
-                                                              stroke-width="3"
-                                                              stroke-linecap="round"/>
-                                                    </svg>
-                                                </span>
-
-                                                break;
-
-                                            case CompressedFileProcessingStatus.Success:
-
-                                                <span
-                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-success)]">
-                                                    ✓
-                                                </span>
-
-                                                break;
-
-                                            case CompressedFileProcessingStatus.Failed:
-
-                                                <span
-                                                    class="flex h-9 w-9 items-center justify-center rounded-xl text-lg font-bold text-[var(--color-error)]">
-                                                    !
-                                                </span>
-
-                                                break;
-                                        }
                                     }
                                 </div>
                             </div>
@@ -541,6 +515,5 @@
                 </a>
             </div>
         </section>
-
     </div>
 </div>
