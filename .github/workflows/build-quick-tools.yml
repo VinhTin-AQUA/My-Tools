@@ -172,6 +172,8 @@ jobs:
 
             - name: Verify APK
               run: |
+                  cd QuickTools-BE/QuickTools.Mobile
+
                   APK=$(find bin/Release/net8.0-android/publish \
                     -name "*-Signed.apk" \
                     -type f | head -n 1)
@@ -182,12 +184,6 @@ jobs:
                   fi
 
                   echo "APK: $APK"
-
-            - name: Upload APK
-              uses: actions/upload-artifact@v4
-              with:
-                  name: android-release-apk
-                  path: bin/Release/net10.0-android/publish/*-Signed.apk
 
             - name: Remove old tag if exists
               run: |
