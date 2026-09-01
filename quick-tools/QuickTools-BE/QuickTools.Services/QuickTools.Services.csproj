@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="MongoDB.Driver" Version="3.11.1" />
       <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
     </ItemGroup>
 

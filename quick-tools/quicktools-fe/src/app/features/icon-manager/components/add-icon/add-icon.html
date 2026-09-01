@@ -1,0 +1,111 @@
+<p-toast />
+<div class="dialog-backdrop">
+    <div
+        class="add-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-dialog-title"
+        (click)="$event.stopPropagation()"
+    >
+        <!-- Header -->
+        <div class="dialog-header">
+            <div class="dialog-title">
+                <div class="dialog-icon">
+                    <i class="pi pi-plus"></i>
+                </div>
+
+                <div>
+                    <h2 id="add-dialog-title">Add item</h2>
+
+                    <p>Add a new icon to the library</p>
+                </div>
+            </div>
+
+            <button type="button" class="dialog-close" aria-label="Close" (click)="onClosePopup()">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <form class="add-item-form" (submit)="$event.preventDefault(); submit()">
+            <!-- Name -->
+            <div class="field">
+                <label for="name"> Name </label>
+
+                <input
+                    id="name"
+                    pInputText
+                    [value]="name()"
+                    (input)="setName($any($event.target).value)"
+                    (blur)="nameTouched.set(true)"
+                    placeholder="Enter item name"
+                />
+
+                @if (!nameValid() && nameTouched()) {
+                    <small class="error"> Name is required. </small>
+                }
+            </div>
+
+            <!-- URL -->
+            <div class="field">
+                <label for="url"> URL </label>
+
+                <input
+                    id="url"
+                    pInputText
+                    type="url"
+                    [value]="url()"
+                    (input)="setUrl($any($event.target).value)"
+                    (blur)="urlTouched.set(true)"
+                    placeholder="https://example.com"
+                />
+
+                @if (!urlValid() && urlTouched()) {
+                    <small class="error"> Please enter a valid URL. </small>
+                }
+            </div>
+
+            <!-- Icon Type -->
+            <div class="field">
+                <label> Icon type </label>
+
+                <div class="icon-types">
+                    @for (type of iconTypes; track type) {
+                        <button
+                            type="button"
+                            class="icon-type"
+                            [class.selected]="iconType() === type"
+                            (click)="selectIconType(type)"
+                        >
+                            @if (type === IconType.Gift) {
+                                <i class="pi pi-gift"></i>
+                            } @else {
+                                <i class="pi pi-image"></i>
+                            }
+
+                            <span>
+                                {{ iconTypeLabel(type) }}
+                            </span>
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button type="button" class="dialog-button cancel-button" (click)="onClosePopup()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="dialog-button add-dialog-button"
+                    [disabled]="!formValid()"
+                >
+                    <i class="pi pi-plus"></i>
+                    <span>Add</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

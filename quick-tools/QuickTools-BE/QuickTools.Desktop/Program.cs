@@ -1,4 +1,5 @@
 ﻿using QuickTools.Windows.Handlers.FolderHandlers;
+using QuickTools.Windows.Handlers.IconHandlers;
 using QuickTools.Windows.Handlers.IloveimgHandlers;
 using QuickTools.Windows.Handlers.LibcaesiumHandlers;
 using WebUISharp;
@@ -12,8 +13,6 @@ namespace QuickTools.Windows
             // Tạo window
             var window = WebUI.NewWindow();
             
-            
-            
             // WebUIBinder.Bind(window, "longTask", ExampleHandlers.LongTaskHandler);
             // WebUIBinder.Bind(window, "getData", ExampleHandlers.GetDataHandler);
             // WebUIBinder.Bind(window, "sendData", ExampleHandlers.SendDataHandler);
@@ -24,6 +23,12 @@ namespace QuickTools.Windows
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "libcaesiumCompressImage", LibcaesiumHandler.CompressImage);
             
             WebUIBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
+            
+            // icons
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "searchIcons", IconHandler.GetIcons);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "addIcon", IconHandler.AddIcon);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "deleteIcon", IconHandler.DeleteIcon);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "updateIcon", IconHandler.UpdateIcon);
 
             // Cấu hình async
             WebUI.SetConfig(WebuiConfig.asynchronous_response, true);

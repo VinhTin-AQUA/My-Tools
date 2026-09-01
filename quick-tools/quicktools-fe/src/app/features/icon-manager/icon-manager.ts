@@ -1,63 +1,186 @@
-import { Component, computed, signal } from '@angular/core';
-import { IconModel } from './icon.models';
+import { Component, inject, signal, ViewChild } from '@angular/core';
+import { DeleteIconRequest, IconModel, SearchIconRequest, SearchIconResponse } from './icon.models';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { WebuiService } from '../../services/webui-service';
+import { MenuItem, MessageService } from '@openng/optimus-ui/api';
+import { AddIcon } from './components/add-icon/add-icon';
+import { DialogModule } from '@openng/optimus-ui/dialog';
+import { InputGroupModule } from '@openng/optimus-ui/inputgroup';
+import { InputGroupAddonModule } from '@openng/optimus-ui/inputgroupaddon';
+import { TagModule } from '@openng/optimus-ui/tag';
+import { PaginatorModule } from '@openng/optimus-ui/paginator';
+import { Menu, MenuModule } from '@openng/optimus-ui/menu';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
+import { ToastModule } from '@openng/optimus-ui/toast';
 
 @Component({
     selector: 'app-icon-manager',
-    imports: [ButtonModule, FormsModule, InputTextModule],
+    imports: [
+        ButtonModule,
+        FormsModule,
+        InputTextModule,
+        AddIcon,
+        DialogModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        TagModule,
+        PaginatorModule,
+        MenuModule,
+        TooltipModule,
+        ToastModule,
+    ],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
+    providers: [MessageService],
 })
 export class IconManager {
     readonly searchTerm = signal('');
 
-    readonly icons = signal<IconModel[]>([
-        {
-            name: 'Funny Dance',
-            iconType: 'image',
-            url: 'https://media4.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5dXJ5YnU4b2FqencyZjJ4OXlvbXVzcGpjMjE0eWx2MGJ6Y2F0eW9yZSZlcD12MV9naWZzX2dpZklkJmN0PXM/9Ztp68jWLQE5DrJAZM/200.gif',
-        },
-        {
-            name: 'Cute Reaction',
-            iconType: 'image',
-            url: 'https://media0.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5OW00OWkyMXozN3V3dW15bWwzc2dxOWRiaW16N2ZpczlnOHN3OGY1dSZlcD12MV9naWZzX2dpZklkJmN0PXM/jY06F91gInHQHGvYbc/200.gif',
-        },
-        {
-            name: 'Happy',
-            iconType: 'image',
-            url: 'https://media2.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5OHo1enlvdmN1a2VjazlmZnBtbjlqdnpmM2gxaTJndDFjOGR6ejEwYiZlcD12MV9naWZzX2dpZklkJmN0PXM/6Ybo61KCsfGs8/200.gif',
-        },
-        {
-            name: 'Excited',
-            iconType: 'image',
-            url: 'https://media0.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5Z3I3YWlhemZiMDdhcnFleWRjdnI2M3d1NG4xbDQzYWozbnFhZDg3aiZlcD12MV9naWZzX2dpZklkJmN0PXM/xAd5ir9Gwo26kxbanR/200.gif',
-        },
-        {
-            name: 'Laugh',
-            iconType: 'image',
-            url: 'https://media0.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5Zmw5ZjI3YzVtbjlhdzBndDVjajZzdnFobjEya3g3eGhmNm9xbGR1cyZlcD12MV9naWZzX2dpZklkJmN0PXM/7CouuG2nJ4jL54tAXA/200.gif',
-        },
-        {
-            name: 'Love',
-            iconType: 'image',
-            url: 'https://media3.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5a2prZHMxcTM1ZTE2ZXRkcG1pdXhyeDl2YmRlYXczMXc2ZzB1OHJnZyZlcD12MV9naWZzX2dpZklkJmN0PXM/nNFRVw2ZfHQyCec7ed/200.gif',
-        },
+    showAddDialog = signal(false);
+    showUpdateDialog = signal(false);
+
+    selectedIcon = signal<IconModel | null>(null);
+    page = signal<number>(1);
+    pageSize = signal<number>(20);
+
+    icons = signal<IconModel[]>([
+        // {
+        //     id: '',
+        //     name: 'Funny Dance',
+        //     iconType: 0,
+        //     url: 'https://media4.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5dXJ5YnU4b2FqencyZjJ4OXlvbXVzcGpjMjE0eWx2MGJ6Y2F0eW9yZSZlcD12MV9naWZzX2dpZklkJmN0PXM/9Ztp68jWLQE5DrJAZM/200.gif',
+        // },
     ]);
 
-    readonly filteredIcons = computed(() => {
-        const keyword = this.searchTerm().trim().toLowerCase();
+    readonly menuIcon = signal<IconModel | null>(null);
 
-        if (!keyword) {
-            return this.icons();
+    readonly iconMenuItems: MenuItem[] = [
+        {
+            label: 'Copy link',
+            icon: 'pi pi-copy',
+            command: () => {
+                const icon = this.menuIcon();
+                if (icon) {
+                    this.copyIconLink(icon);
+                }
+            },
+        },
+        {
+            label: 'Open link',
+            icon: 'pi pi-external-link',
+            command: () => {
+                const icon = this.menuIcon();
+                if (icon) {
+                    this.openIconLink(icon);
+                }
+            },
+        },
+        {
+            separator: true,
+        },
+        {
+            label: 'Download',
+            icon: 'pi pi-download',
+            command: () => {
+                const icon = this.menuIcon();
+                if (icon) {
+                    this.downloadIcon(icon);
+                }
+            },
+        },
+        {
+            label: 'Edit',
+            icon: 'pi pi-pencil',
+            command: () => {
+                const icon = this.menuIcon();
+                if (icon) {
+                    this.openUpdateDialog(icon);
+                }
+            },
+        },
+        {
+            label: 'Delete',
+            icon: 'pi pi-trash',
+            command: () => {
+                const icon = this.menuIcon();
+                if (icon) {
+                    this.deleteIcon(icon);
+                }
+            },
+        },
+    ];
+
+    private messageService = inject(MessageService);
+
+    @ViewChild('iconMenu') iconMenu!: Menu;
+
+    constructor(private webuiService: WebuiService) {}
+
+    async ngOnInit() {
+        await this.searchicons();
+    }
+
+    /* ========================= api actions ========================= */
+
+    async searchicons() {
+        try {
+            const request: SearchIconRequest = {
+                keyword: this.searchTerm(),
+                page: this.page(),
+                pageSize: this.pageSize(),
+            };
+
+            console.log(request);
+
+            const r = await this.webuiService.callJson<SearchIconResponse>('searchIcons', request);
+
+            console.log(r);
+
+            if (r) {
+                this.icons.set(r.items);
+                console.log(this.icons());
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Get icons failed',
+                    detail: '',
+                });
+            }
+        } catch (ex) {
+            console.log(ex);
+
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Get icons failed',
+                detail: '',
+            });
         }
+    }
 
-        return this.icons().filter((icon) => icon.name.toLowerCase().includes(keyword));
-    });
+    async deleteIcon(icon: IconModel) {
+        const deleteIconRequest: DeleteIconRequest = {
+            id: icon.id,
+        };
+        const r = await this.webuiService.callJson<boolean>('deleteIcon', deleteIconRequest);
+        console.log(r);
 
-    onSearch(value: string): void {
-        this.searchTerm.set(value);
+        if (r) {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Delete icon successfully',
+                detail: icon.name,
+            });
+
+            await this.searchicons();
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Delete icon failed',
+                detail: icon.name,
+            });
+        }
     }
 
     async downloadIcon(icon: IconModel): Promise<void> {
@@ -84,5 +207,60 @@ export class IconManager {
         } catch (error) {
             console.error('Unable to download icon:', error);
         }
+    }
+
+    /* ========================= ui actions ========================= */
+    openAddDialog(): void {
+        this.showAddDialog.set(true);
+    }
+
+    async closeAddDialog() {
+        this.showAddDialog.set(false);
+        await this.searchicons();
+    }
+
+    openUpdateDialog(icon: IconModel): void {
+        this.selectedIcon.set(icon);
+        this.showUpdateDialog.set(true);
+    }
+
+    async closeUpdateDialog() {
+        this.showUpdateDialog.set(false);
+        this.selectedIcon.set(null);
+        await this.searchicons();
+    }
+
+    async onPageChange() {
+        this.page.update((x) => x + 1);
+        await this.searchicons();
+    }
+
+    openIconMenu(event: Event, icon: IconModel): void {
+        this.menuIcon.set(icon);
+        this.iconMenu.toggle(event);
+    }
+
+    async copyIconLink(icon: IconModel): Promise<void> {
+        try {
+            await navigator.clipboard.writeText(icon.url);
+
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Link copied',
+                detail: icon.name,
+            });
+        } catch (error) {
+            console.error('Unable to copy icon URL:', error);
+
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Copy failed',
+                detail: icon.name,
+            });
+        }
+    }
+
+    openIconLink(icon: IconModel): void {
+        window.open(icon.url, '_blank', 'noopener,noreferrer');
     }
 }

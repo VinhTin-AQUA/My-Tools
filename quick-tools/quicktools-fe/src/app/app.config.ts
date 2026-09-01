@@ -31,6 +31,13 @@ const Noir = definePreset(Material, {
                     activeColor: '{green.900}',
                 },
 
+                danger: {
+                    color: '{red.600}',
+                    inverseColor: '#ffffff',
+                    hoverColor: '{red.700}',
+                    activeColor: '{red.800}',
+                },
+
                 highlight: {
                     background: '{green.100}',
                     focusBackground: '{green.200}',
@@ -60,6 +67,13 @@ const Noir = definePreset(Material, {
                     inverseColor: '#000000',
                     hoverColor: '{green.300}',
                     activeColor: '{green.200}',
+                },
+
+                danger: {
+                    color: '{red.400}',
+                    inverseColor: '#ffffff',
+                    hoverColor: '{red.300}',
+                    activeColor: '{red.200}',
                 },
 
                 highlight: {

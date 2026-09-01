@@ -12,99 +12,181 @@ Toàn bộ màu phải lấy từ PrimeNG CSS variables (--p-*).
 
 Quy tắc sử dụng màu:
 
-1. Background:
-- Page background:
-  var(--p-ground-background)
+ primary: {
+    color: '{green.700}',
+    inverseColor: '#ffffff',
+    hoverColor: '{green.800}',
+    activeColor: '{green.900}',
+},
 
-- Card, panel, container:
-  var(--p-content-background)
+danger: {
+    color: '{red.600}',
+    inverseColor: '#ffffff',
+    hoverColor: '{red.700}',
+    activeColor: '{red.800}',
+},
 
-- Hover background của component:
-  var(--p-content-hover-background)
+highlight: {
+    background: '{green.100}',
+    focusBackground: '{green.200}',
+    color: '{green.950}',
+    focusColor: '#000000',
+},
 
-- Không sử dụng --p-surface-50, --p-surface-100 cho background của component vì chúng không đảm bảo đảo màu chính xác giữa light/dark mode.
+// Surface - nền đen tuyền cho light mode
+surface: {
+    background: '#000000',
+    card: '#0a0a0a',
+    border: '#1a1a1a',
+    hover: '#1a1a1a',
+},
 
-2. Text:
-- Text chính:
-  var(--p-text-color)
-
-- Text phụ, label, description:
-  var(--p-text-muted-color)
-
-- Text khi hover:
-  var(--p-text-hover-color)
-
-3. Border:
-- Border mặc định:
-  var(--p-content-border-color)
-
-4. Primary / Brand color:
-Sử dụng semantic primary token của PrimeNG:
-
-- Main:
-  var(--p-primary-color)
-
-- Hover:
-  var(--p-primary-hover-color)
-
-- Active:
-  var(--p-primary-active-color)
-
-- Text/icon trên primary background:
-  var(--p-primary-inverse-color)
-
-5. Highlight / Selection:
-Sử dụng:
-
-- Background:
-  var(--p-highlight-background)
-
-- Focus background:
-  var(--p-highlight-focus-background)
-
-- Text:
-  var(--p-highlight-color)
-
-Không tự tạo màu hover bằng rgba hoặc hex.
-
-6. Input/Form:
-Sử dụng PrimeNG form field tokens:
-
-- Background:
-  var(--p-form-field-background)
-
-- Text:
-  var(--p-form-field-color)
-
-- Border:
-  var(--p-form-field-border-color)
-
-- Placeholder:
-  var(--p-form-field-placeholder-color)
-
-- Focus:
-  var(--p-primary-color)
+// Text màu sáng trên nền đen
+text: {
+    color: '#e5e5e5',
+    hoverColor: '#ffffff',
+    mutedColor: '#a3a3a3',
+},
 
 
-Yêu cầu hỗ trợ Dark Mode:
-- Giao diện phải tự động thích nghi khi thay đổi class .dark.
-- Không hard-code màu light hoặc dark.
-- Không dùng media query prefers-color-scheme.
-- Không tạo riêng CSS cho dark mode.
-- Chỉ thông qua PrimeNG semantic tokens.
 
-Phong cách:
-- Dùng CSS thuần hoặc CSS module/scoped CSS cho layout.
-- PrimeNG quản lý toàn bộ màu sắc.
-- Layout, spacing, typography có thể tự thiết kế nhưng tuyệt đối không thay thế hệ thống màu của PrimeNG.
+đồng thời phải sử dụng tailwind class inline html về bố cục, kích thước, .... riêng với màu sắc phải sử dụng custom như đã liệt kê ở trên và code trong css riêng. Lưu ý cho cả giao diện mobile
 
-Mục tiêu:
 Một giao diện có thể đổi toàn bộ theme chỉ bằng cách thay đổi PrimeNG preset/semantic config mà không cần sửa HTML/CSS.
 
 Đồng thời phải sử dụng các control hiện đại, ví dụ @for, @if
 
 mô tả giao diện:
 
-tạo 1 component cho navigation chứa service trên và 1 nút để quay lại trang trước đó
+đã có sẵn ts và các hàm
+    readonly searchTerm = signal('');
+
+    showAddDialog = signal(false);
+    showUpdateDialog = signal(false);
+
+    selectedIcon = signal<IconModel | null>(null);
+    page = signal<number>(1);
+    pageSize = signal<number>(1);
+
+    icons = signal<IconModel[]>([
+        // {
+        //     id: '',
+        //     name: 'Funny Dance',
+        //     iconType: 0,
+        //     url: 'https://media4.giphy.com/media/v1.Y2lkPTE5NGEwMzQ5dXJ5YnU4b2FqencyZjJ4OXlvbXVzcGpjMjE0eWx2MGJ6Y2F0eW9yZSZlcD12MV9naWZzX2dpZklkJmN0PXM/9Ztp68jWLQE5DrJAZM/200.gif',
+        // },
+    ]);
+
+    private messageService = inject(MessageService);
+
+    constructor(private webuiService: WebuiService) {}
+
+    async ngOnInit() {
+        await this.searchicons();
+    }
+
+    /* ========================= api actions ========================= */
+
+    async searchicons() {
+        try {
+            const request: SearchIconRequest = {
+                keyword: this.searchTerm(),
+                page: this.page(),
+                pageSize: this.pageSize(),
+            };
+
+            const r = await this.webuiService.callJson<SearchIconResponse>('searchIcons', request);
+
+            console.log(r);
+
+            if (r) {
+                this.icons.set(r.items);
+                 console.log(this.icons());
+            } else {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: 'Get icons failed',
+                    detail: '',
+                });
+            }
+        } catch (ex) {
+            console.log(ex);
+
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Get icons failed',
+                detail: '',
+            });
+        }
+    }
+
+    async deleteIcon(icon: IconModel) {
+        const deleteIconRequest: DeleteIconRequest = {
+            id: icon.id,
+        };
+        const r = await this.webuiService.callJson<boolean>('deleteIcon', deleteIconRequest);
+        console.log(r);
+
+        if (r) {
+            this.messageService.add({
+                severity: 'success',
+                summary: 'Delete icon successfully',
+                detail: icon.name,
+            });
+        } else {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Delete icon failed',
+                detail: icon.name,
+            });
+        }
+    }
+
+    async downloadIcon(icon: IconModel): Promise<void> {
+        try {
+            const response = await fetch(icon.url);
+
+            if (!response.ok) {
+                throw new Error(`Download failed: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            const anchor = document.createElement('a');
+
+            anchor.href = blobUrl;
+            anchor.download = `${icon.name}.gif`;
+
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+
+            URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error('Unable to download icon:', error);
+        }
+    }
+
+    /* ========================= ui actions ========================= */
+    openAddDialog(): void {
+        this.showAddDialog.set(true);
+    }
+
+    closeAddDialog(): void {
+        this.showAddDialog.set(false);
+    }
+
+    openUpdateDialog(icon: IconModel): void {
+        this.selectedIcon.set(icon);
+        this.showUpdateDialog.set(true);
+    }
+
+    closeUpdateDialog(): void {
+        this.showUpdateDialog.set(false);
+        this.selectedIcon.set(null);
+    }
+
+giờ code giao diện html theo yêu cầu ở trên để liệt kê danh sách icons theo dạng grid, có pagination, có search, nói chung mọi thứ sử dụng với các hàm ts
 
 ```
