@@ -1,0 +1,136 @@
+<main class="icon-gallery">
+    <div class="gallery-container">
+
+        <!-- Header -->
+        <header class="gallery-header">
+            <div class="gallery-title">
+                <div class="title-icon">
+                    <i class="pi pi-images"></i>
+                </div>
+
+                <div>
+                    <h1>Icon Library</h1>
+                    <p>
+                        Browse and download your favorite icons
+                    </p>
+                </div>
+            </div>
+
+            <div class="gallery-stats">
+                <span>{{ filteredIcons().length }}</span>
+                <small>
+                    {{ filteredIcons().length === 1 ? 'icon' : 'icons' }}
+                </small>
+            </div>
+        </header>
+
+        <!-- Search -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="pi pi-search"></i>
+
+                <input
+                    pInputText
+                    type="search"
+                    placeholder="Search icons..."
+                    autocomplete="off"
+                    [ngModel]="searchTerm()"
+                    (ngModelChange)="onSearch($event)"
+                />
+
+                @if (searchTerm()) {
+                    <button
+                        type="button"
+                        class="clear-button"
+                        aria-label="Clear search"
+                        (click)="searchTerm.set('')"
+                    >
+                        <i class="pi pi-times"></i>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Content -->
+        @if (filteredIcons().length > 0) {
+
+            <section
+                class="icon-grid"
+                aria-label="Icon library"
+            >
+                @for (icon of filteredIcons(); track icon.name) {
+
+                    <article class="icon-item">
+
+                        <!-- Preview -->
+                        <div class="icon-preview">
+                            @if (icon.iconType === 'image') {
+                                <img
+                                    [src]="icon.url"
+                                    [alt]="icon.name"
+                                    loading="lazy"
+                                />
+                            }
+
+                            <!-- Download overlay -->
+                            <div class="icon-overlay">
+                                <p-button
+                                    icon="pi pi-download"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="primary"
+                                    [ariaLabel]="'Download ' + icon.name"
+                                    (onClick)="downloadIcon(icon)"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="icon-info">
+                            <span
+                                class="icon-name"
+                                [title]="icon.name"
+                            >
+                                {{ icon.name }}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="download-button"
+                                [attr.aria-label]="'Download ' + icon.name"
+                                (click)="downloadIcon(icon)"
+                            >
+                                <i class="pi pi-download"></i>
+                            </button>
+                        </div>
+
+                    </article>
+                }
+            </section>
+
+        } @else {
+
+            <!-- Empty state -->
+            <section class="empty-state">
+                <div class="empty-icon">
+                    <i class="pi pi-search"></i>
+                </div>
+
+                <h2>No icons found</h2>
+
+                <p>
+                    We couldn't find any icons matching
+                    <strong>"{{ searchTerm() }}"</strong>.
+                </p>
+
+                <p-button
+                    label="Clear search"
+                    icon="pi pi-times"
+                    [outlined]="true"
+                    (onClick)="searchTerm.set('')"
+                />
+            </section>
+        }
+
+    </div>
+</main>
