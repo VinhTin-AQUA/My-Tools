@@ -119,7 +119,51 @@ lưu ý, bố cục sao cho hợp lý, vì sau này tôi có thể sẽ bổ sun
 ```txt
 cho giao diện html sau
 
+- Chuyển ảnh png cho phù hợp với app icon trên thiết bị mobile
 
+```txt
+Edit the provided PNG specifically for use as a simple Android app launcher icon.
+
+DO NOT redesign or modify the original logo.
+
+Create a 1024×1024 px square PNG with a transparent background.
+
+STRICT GEOMETRY REQUIREMENTS:
+
+- The entire original logo must remain visible.
+- Do not crop any part of the original artwork.
+- Do not enlarge the logo.
+- Reduce the logo significantly and place it exactly in the center.
+- The logo must fit completely inside a centered 600×600 px safe area.
+- Leave at least 212 px of completely empty transparent space on EVERY side of the 1024×1024 canvas.
+- No important part of the logo may exist outside the 600×600 px central safe area.
+- The logo must never touch the canvas boundary.
+- Keep the original aspect ratio exactly; never stretch or distort it.
+- Keep the original colors, shapes, details, and proportions unchanged.
+
+ANDROID MASK SAFETY:
+
+- Assume that Android may apply a circular mask, rounded-square mask, squircle mask, or other aggressive launcher mask.
+- The icon must remain fully recognizable after any of these masks are applied.
+- Keep ALL artwork well inside the central safe area.
+- Prioritize preventing cropping over making the logo large.
+
+OUTPUT:
+
+- Exactly 1024×1024 px.
+- PNG.
+- RGBA.
+- Transparent background outside the logo.
+- One centered logo only.
+- No shadow.
+- No glow.
+- No border.
+- No additional background.
+- No text.
+- No decorative effects.
+
+The final icon should intentionally look slightly smaller than a typical logo because maximum compatibility and zero cropping are more important than filling the canvas.
+```
 
 
 
