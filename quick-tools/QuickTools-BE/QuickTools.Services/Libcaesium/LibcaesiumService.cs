@@ -40,5 +40,33 @@ namespace QuickTools.Services.Libcaesium
 
             return output;
         }
+
+        public static byte[]? CompressInMemory(uint quality, byte[] inputData)
+        {
+            using (var compressor = new CaesiumCompressor())
+            {
+                // var parameters = compressor.GetDefaultParameters();
+                var parameters = new CCSParameters()
+                {
+                    KeepMetadata = false,
+                    JpegQuality = quality,
+                    PngQuality = quality,
+                    GifQuality = quality,
+                    WebpQuality = quality,
+                };
+          
+                if (compressor.CompressInMemory(inputData, parameters, out byte[]? outdata, out string? error))
+                {
+                    Console.WriteLine("Compression successful!");
+                    return outdata;
+                }
+                else
+                {
+                    Console.WriteLine($"Compression failed: {error}");
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -22,10 +22,10 @@
         <Nullable>enable</Nullable>
 
         <!-- Display name -->
-        <ApplicationTitle>QuickTools.Mobile</ApplicationTitle>
+        <ApplicationTitle>QuickTools</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.quicktools.mobile</ApplicationId>
+        <ApplicationId>com.newtun.quicktools</ApplicationId>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -41,10 +41,12 @@
 
     <ItemGroup>
         <!-- App Icon -->
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
+        <!-- <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/> -->
+        <MauiIcon Include="Resources\AppIcon\app_icon.png" Color="#FCD34D"/>
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
+        <!-- <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FCD34D" BaseSize="128,128"/> -->
+        <MauiSplashScreen Include="Resources\Splash\app_icon.png" Color="#FCD34D" BaseSize="128,128"/>
 
         <!-- Images -->
         <MauiImage Include="Resources\Images\*"/>

@@ -28,8 +28,6 @@ namespace QuickTools.Mobile.Components.Pages
             _uploadedFiles.Count == 0 ? 0 : Math.Min(100, (double)_progress / _uploadedFiles.Count * 100);
         
         private bool _hasPermission { get; set; } = false;
-        private bool permission { get; set; } = false;
-        
         
         protected override async Task OnInitializedAsync()
         {
@@ -117,18 +115,6 @@ namespace QuickTools.Mobile.Components.Pages
 
         protected async Task OnSubmit()
         { 
-            permission =
-                await NotificationService.RequestPermissionAsync();
-
-            if (!permission)
-                return;
-
-            await NotificationService.ShowAsync(
-                1,
-                "Thông báo",
-                "Hello từ .NET MAUI Blazor Hybrid!");
-            
-            return;
             if (_uploadedFiles.Count == 0 || _isUploading) return;
             _isUploading = true;
             _progress = 0;
@@ -156,11 +142,24 @@ namespace QuickTools.Mobile.Components.Pages
                         PreviewUrl = "",
                         Size = bytes.Length
                     });
+                    
+                    await NotificationService.ShowAsync(
+                        1,
+                        "IloveImg Upscale Successed",
+                        uploadResponse.Name);
                 }
                 catch (Exception ex)
                 {
-                    continue;
+                    await NotificationService.ShowAsync(
+                        1,
+                        "IloveImg Upscale Error",
+                        ex.Message);
                 }
+            }
+
+            foreach (var _upscaleImageRequestItem in _upscaleImageRequestItems)
+            {
+                await FileStorageService.DeleteFileAsync(_upscaleImageRequestItem.LocalPath);
             }
 
             _isUploading = false;

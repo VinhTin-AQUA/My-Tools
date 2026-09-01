@@ -420,24 +420,7 @@
 
                 <!-- Submit -->
                 <div class="flex shrink-0 items-center gap-3">
-
                     <button type="button"
-                            @onclick="OnSubmit"
-                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--color-surface)] shadow-sm transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-text-disabled)]">
-                        
-                        Click heare
-                    </button>
-                    
-                    @if (permission)
-                    {
-                        <div>Có thể thông báo</div>
-                    }
-                    else
-                    {
-                        <div>khonog thể thông báo</div>
-                    }
-
-                        <button type="button"
                             @onclick="OnSubmit"
                             disabled="@(_uploadedFiles.Count == 0 || _isUploading)"
                             class="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3 text-sm font-bold text-[var(--color-surface)] shadow-sm transition hover:bg-[var(--color-primary-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-text-disabled)]">

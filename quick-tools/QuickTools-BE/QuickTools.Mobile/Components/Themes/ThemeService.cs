@@ -2,19 +2,35 @@ namespace QuickTools.Mobile.Components.Themes
 {
     public class ThemeService
     {
+        private string _themKey = "theme";
         public AppTheme CurrentTheme { get; private set; }
 
         public event Action? ThemeChanged;
 
         public ThemeService()
         {
-            CurrentTheme = Themes.Dark;
+            var theme = Preferences.Default.Get(_themKey, Themes.Dark.Name);
+
+            switch (theme)
+            {
+                case var t when t == Themes.Dark.Name:
+                    CurrentTheme = Themes.Dark;
+                    break;
+
+                case var t when t == Themes.Light.Name:
+                    CurrentTheme = Themes.Light;
+                    break;
+
+                default:
+                    CurrentTheme = Themes.Dark;
+                    break;
+            }
         }
 
         public void SetTheme(AppTheme theme)
         {
             CurrentTheme = theme;
-
+            Preferences.Default.Set(_themKey, theme.Name);
             ThemeChanged?.Invoke();
         }
 

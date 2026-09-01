@@ -21,8 +21,7 @@
                 </div>
             </div>
         </div>
-
-
+        
         <!-- =====================================================
              Controls
              ===================================================== -->
@@ -30,43 +29,57 @@
             <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
                 <div class="w-full max-w-sm">
-                    <label for="scale"
-                           class="mb-2 block text-sm font-semibold text-[var(--color-text-primary)]">
-                        Size multiplier
+                    <label for="quality" class="mb-2 block text-sm font-semibold text-[var(--color-text-primary)]">
+                        Quality percentage
                     </label>
 
                     <div class="relative">
-                        <select id="scale"
-                                @bind="scale"
-                                class="input-control w-full appearance-none rounded-xl px-4 py-3 pr-10 text-sm font-medium outline-none transition">
-                            @foreach (var option in sizeMultiplierOptions)
-                            {
-                                <option value="@option">
-                                    @option x
-                                </option>
-                            }
-                        </select>
+                        <input type="number"
+                               id="quality"
+                               value="@quality"
+                               @oninput="OnQualityInput"
+                               min="10"
+                               max="100"
+                               class="input-control w-full rounded-xl px-4 py-3 pr-16 text-sm font-medium outline-none transition [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                               placeholder="Enter quality" />
 
-                        <svg
-                            class="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]"
-                            viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.51a.75.75 0 01.02-1.06z"
-                                  clip-rule="evenodd"/>
+                        <span
+                            class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-[var(--color-text-secondary)]">
+                    %
+                </span>
+                    </div>
+
+                    <!-- Progress indicator -->
+                    <div class="mt-3 flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
+                        <span>Low quality</span>
+                        <div class="flex-1 mx-3">
+                            <div class="h-1.5 w-full rounded-full bg-[var(--color-border)] overflow-hidden">
+                                <div class="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+                                     style="width: @((quality - 10) / 90 * 100)%">
+                                </div>
+                            </div>
+                        </div>
+                        <span>High quality</span>
+                    </div>
+
+                    <!-- Quality information -->
+                    <div class="mt-2 flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
+                        <span>Value: <strong class="text-[var(--color-text-primary)]">@quality%</strong> of original image quality will be preserved</span>
                     </div>
                 </div>
 
                 <button type="button"
                         @onclick="OnClear"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3 text-sm font-semibold text-[var(--color-text-primary)] transition hover:border-[var(--color-secondary)] hover:bg-[var(--color-background)]">
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3 text-sm font-semibold text-[var(--color-text-primary)] transition hover:border-[var(--color-secondary)] hover:bg-[var(--color-background)] lg:mt-0 mt-2">
                     <span>🗑️</span>
                     <span>Clear</span>
                 </button>
             </div>
         </section>
-
 
         <!-- =====================================================
              Upload
@@ -179,8 +192,7 @@
 
                         @foreach (var image in uploadedFiles)
                         {
-                            <div @onclick="() => OnImageClick(image)"
-                                 class="@GetImageItemClass(image)">
+                            <div>
 
                                 <!-- Thumbnail -->
                                 <div
@@ -390,13 +402,6 @@
                                         @FormatFileSize(image.Size)
                                     </p>
                                 </div>
-
-                                <button type="button"
-                                        @onclick="() => OpenFolder(image.PreviewUrl)"
-                                        title="Open folder"
-                                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] text-base text-[var(--color-secondary)] transition hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-surface)]">
-                                    📁
-                                </button>
                             </div>
                         }
                     </div>
@@ -539,69 +544,3 @@
 
     </div>
 </div>
-
-
-<!-- =========================================================
-     Image Preview Modal
-     ========================================================= -->
-@if (ShowPopupImagePreview && SelectedImage is not null)
-{
-    <div
-        class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-text-primary)]/70 p-4 backdrop-blur-sm"
-        @onclick="ClosePopupImagePreview">
-
-        <div class="modal-content flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl"
-             @onclick:stopPropagation>
-
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between gap-4 border-b border-[var(--color-border)] px-5 py-4">
-
-                <div class="min-w-0">
-                    <h3 class="truncate text-base font-bold text-[var(--color-text-primary)]">
-                        @SelectedImage.Name
-                    </h3>
-
-                    <p class="mt-1 text-xs text-[var(--color-text-secondary)]">
-                        @FormatFileSize(SelectedImage.Size)
-                    </p>
-                </div>
-
-                <button type="button"
-                        @onclick="ClosePopupImagePreview"
-                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg text-[var(--color-text-secondary)] transition hover:bg-[var(--color-background)] hover:text-[var(--color-error)]">
-                    ✕
-                </button>
-            </div>
-
-
-            <!-- Modal Body -->
-            <div
-                class="flex min-h-0 flex-1 items-center justify-center overflow-auto bg-[var(--color-background)] p-4 sm:p-8">
-
-                <img src="@SelectedImage.PreviewUrl"
-                     alt="@SelectedImage.Name"
-                     class="max-h-[70vh] max-w-full rounded-xl object-contain shadow-lg"/>
-
-            </div>
-
-
-            <!-- Modal Footer -->
-            <div
-                class="flex flex-col gap-3 border-t border-[var(--color-border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-
-                <span class="text-sm text-[var(--color-text-secondary)]">
-                    Size:
-                    <strong class="text-[var(--color-text-primary)]">
-                        @FormatFileSize(SelectedImage.Size)
-                    </strong>
-                </span>
-
-                <button type="button"
-                        @onclick="ClosePopupImagePreview"
-                        class="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:border-[var(--color-secondary)] hover:bg-[var(--color-background)]">
-                    Close
-                </button>
-            </div>
-        </div>
-    </div>
-}

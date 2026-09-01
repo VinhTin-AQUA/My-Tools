@@ -16,6 +16,12 @@ namespace QuickTools.Mobile.Services.Implementations
             string title,
             string message)
         {
+            var permission =
+                await RequestPermissionAsync();
+
+            if (!permission)
+                return;
+            
             var request = new NotificationRequest
             {
                 NotificationId = id,
