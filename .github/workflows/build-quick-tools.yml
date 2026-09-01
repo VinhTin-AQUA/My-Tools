@@ -108,10 +108,11 @@ jobs:
               uses: actions/setup-dotnet@v4
               with:
                   dotnet-version: '8.0.x'
+                  include-prerelease: false
 
-            - name: Install MAUI Android workload
+            - name: Install MAUI Android workload for .NET 8
               run: |
-                  
+                  dotnet --info
                   dotnet workload install maui-android
 
                   # dotnet workload install maui-android --version 8.0.100
