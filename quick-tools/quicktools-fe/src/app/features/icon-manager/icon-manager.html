@@ -248,12 +248,12 @@
 <p-dialog
     header="Add multi icons"
     [visible]="showAddMultiIconsDialog()"
-    (visibleChange)="showAddMultiIconsDialog.set($event)"
+    (visibleChange)="closeAddMultiIconDialog()"
     [modal]="true"
     [draggable]="false"
     [resizable]="false"
     [style]="{
-        width: 'min(32rem, calc(100vw - 2rem))',
+        width: '100%',
     }"
 >
     <app-add-multi-icons></app-add-multi-icons>

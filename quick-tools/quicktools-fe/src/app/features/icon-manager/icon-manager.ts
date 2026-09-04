@@ -14,37 +14,33 @@ import { PaginatorModule } from '@openng/optimus-ui/paginator';
 import { Menu, MenuModule } from '@openng/optimus-ui/menu';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { ToastModule } from '@openng/optimus-ui/toast';
-import { AddMultiIcons } from "./components/add-multi-icons/add-multi-icons";
+import { AddMultiIcons } from './components/add-multi-icons/add-multi-icons';
 
 @Component({
     selector: 'app-icon-manager',
     imports: [
-    ButtonModule,
-    FormsModule,
-    InputTextModule,
-    AddIcon,
-    DialogModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    TagModule,
-    PaginatorModule,
-    MenuModule,
-    TooltipModule,
-    ToastModule,
-    AddMultiIcons
-],
+        ButtonModule,
+        FormsModule,
+        InputTextModule,
+        AddIcon,
+        DialogModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        TagModule,
+        PaginatorModule,
+        MenuModule,
+        TooltipModule,
+        ToastModule,
+        AddMultiIcons,
+    ],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
     providers: [MessageService],
 })
 export class IconManager {
     readonly searchTerm = signal('');
-
     showAddDialog = signal(false);
-    // showUpdateDialog = signal(false);
-
     showAddMultiIconsDialog = signal(false);
-
     selectedIcon = signal<IconModel | null>(null);
     page = signal<number>(1);
     pageSize = signal<number>(20);
@@ -217,20 +213,10 @@ export class IconManager {
         this.showAddMultiIconsDialog.set(true);
     }
 
-    closeAddMultiIconDialog(): void {
+    async closeAddMultiIconDialog() {
         this.showAddMultiIconsDialog.set(false);
+        await this.searchicons();
     }
-
-    // openUpdateDialog(icon: IconModel): void {
-    //     this.selectedIcon.set(icon);
-    //     this.showUpdateDialog.set(true);
-    // }
-
-    // async closeUpdateDialog() {
-    //     this.showUpdateDialog.set(false);
-    //     this.selectedIcon.set(null);
-    //     await this.searchicons();
-    // }
 
     async onPageChange() {
         this.page.update((x) => x + 1);

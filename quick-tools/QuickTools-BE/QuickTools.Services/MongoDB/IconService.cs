@@ -13,6 +13,7 @@ namespace QuickTools.Services.MongoDB
         Task<List<IconModel>> GetAllAsync();
         Task<List<IconModel>> SearchAsync(string keyword);
         Task<IconModel> CreateAsync(IconModel icon);
+        Task<List<IconModel>> CreateManyAsync(List<IconModel> icons);
         Task<bool> UpdateAsync(string id, IconModel icon);
         Task<bool> DeleteAsync(string id);
 
@@ -42,6 +43,25 @@ namespace QuickTools.Services.MongoDB
 
             await _collection.InsertOneAsync(icon);
             return icon;
+        }
+        
+        public async Task<List<IconModel>> CreateManyAsync(List<IconModel> icons)
+        {
+            if (icons == null || icons.Count == 0)
+                return new List<IconModel>();
+
+            // Chuẩn bị dữ liệu cho từng icon
+            foreach (var icon in icons)
+            {
+                icon.Id = string.Empty; // Để MongoDB tự tạo Id
+                icon.CreatedAt = DateTime.UtcNow;
+                icon.UpdatedAt = DateTime.UtcNow;
+            }
+
+            // Thêm nhiều document cùng lúc
+            await _collection.InsertManyAsync(icons);
+        
+            return icons;
         }
 
         public async Task<IconModel?> GetByIdAsync(string id)

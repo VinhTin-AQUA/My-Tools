@@ -98,6 +98,9 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                 Url = addIconRequest.Url,
                 IconType = addIconRequest.IconType
             });
+            
+            string json = JsonSerializer.Serialize(icon, options);
+            WebUI.InterfaceSetResponse(window, event_number, json);
 
             return icon;
         }
@@ -119,7 +122,8 @@ namespace QuickTools.Windows.Handlers.IconHandlers
 
             var iconService = IconServiceSingleton.Instance;
             var r = await iconService.DeleteAsync(deleteIconRequest.Id);
-
+            string json = JsonSerializer.Serialize(r, options);
+            WebUI.InterfaceSetResponse(window, event_number, json);
             return r;
         }
 
@@ -144,8 +148,39 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                 Url = updateIconRequest.Url,
                 Name = updateIconRequest.Name
             });
-
+            string json = JsonSerializer.Serialize(r, options);
+            WebUI.InterfaceSetResponse(window, event_number, json);
             return r;
+        }
+        
+        public static async Task<object?> AddMultiIcons(UIntPtr window, UIntPtr event_type, IntPtr element,
+            UIntPtr event_number, UIntPtr bind_id)
+        {
+            var dataPtr = WebUI.InterfaceGetStringAt(window, event_number, UIntPtr.Zero);
+            var jsonData = WebUI.PtrToString(dataPtr);
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true
+            };
+            var addIconsRequest = JsonSerializer.Deserialize<List<AddIconRequest>>(jsonData, options);
+
+            if (addIconsRequest == null || addIconsRequest.Count == 0) return null;
+
+            var iconService = IconServiceSingleton.Instance;
+            var icons = addIconsRequest.Select(r => new IconModel
+            {
+                Name = r.Name,
+                Url = r.Url,
+                IconType = r.IconType,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }).ToList();
+            var icon = await iconService.CreateManyAsync(icons);
+            string json = JsonSerializer.Serialize(icon, options);
+            WebUI.InterfaceSetResponse(window, event_number, json);
+            return icon;
         }
     }
 

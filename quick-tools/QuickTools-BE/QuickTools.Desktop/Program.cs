@@ -29,7 +29,8 @@ namespace QuickTools.Windows
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "addIcon", IconHandler.AddIcon);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "deleteIcon", IconHandler.DeleteIcon);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "updateIcon", IconHandler.UpdateIcon);
-
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "addMultiIcons", IconHandler.AddMultiIcons);
+            
             // Cấu hình async
             WebUI.SetConfig(WebuiConfig.asynchronous_response, true);
             WebUI.SetEventBlocking(window, false);

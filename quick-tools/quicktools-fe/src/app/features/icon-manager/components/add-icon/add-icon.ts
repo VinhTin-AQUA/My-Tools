@@ -94,7 +94,7 @@ export class AddIcon {
             });
         } else {
             this.messageService.add({
-                severity: 'success',
+                severity: 'error',
                 summary: 'Add icon failed',
                 detail: this.name().trim(),
             });
