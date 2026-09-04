@@ -1,23 +1,39 @@
 <div class="icons-page min-h-screen">
     <p-toast />
-    <div class="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
+
+    <div class="mx-auto w-full p-4 sm:p-6 lg:p-8">
         <!-- =====================================================
              HEADER
         ====================================================== -->
         <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <!-- Title -->
             <div class="min-w-0">
                 <h1 class="truncate text-2xl font-semibold tracking-tight sm:text-3xl">Icons</h1>
 
                 <p class="icons-text-muted mt-1 text-sm">Manage and browse your icon collection</p>
             </div>
 
-            <p-button
-                label="Add icon"
-                icon="pi pi-plus"
-                severity="primary"
-                (onClick)="openAddDialog()"
-                styleClass="w-full lg:w-auto"
-            />
+            <!-- Actions -->
+            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
+                <!-- Add multi icon -->
+                <p-button
+                    label="Add multi icon"
+                    icon="pi pi-images"
+                    severity="primary"
+                    [outlined]="true"
+                    (onClick)="openAddMultiIconDialog()"
+                    styleClass="w-full sm:w-auto"
+                />
+
+                <!-- Add single icon -->
+                <p-button
+                    label="Add icon"
+                    icon="pi pi-plus"
+                    severity="primary"
+                    (onClick)="openAddDialog()"
+                    styleClass="w-full sm:w-auto"
+                />
+            </div>
         </header>
 
         <!-- =====================================================
@@ -26,7 +42,7 @@
         <section
             class="icons-surface mb-6 flex flex-col gap-3 rounded-xl border p-3 sm:flex-row sm:items-center"
         >
-            <!-- Search input -->
+            <!-- Search -->
             <div class="min-w-0 flex-1">
                 <p-inputgroup>
                     <p-inputgroup-addon>
@@ -45,7 +61,7 @@
                 </p-inputgroup>
             </div>
 
-            <!-- Search -->
+            <!-- Search button -->
             <p-button
                 label="Search"
                 icon="pi pi-search"
@@ -68,7 +84,7 @@
         </section>
 
         <!-- =====================================================
-             ICON CONTENT
+             CONTENT
         ====================================================== -->
         @if (icons().length > 0) {
             <!-- =================================================
@@ -78,8 +94,8 @@
                 class="grid grid-cols-[repeat(auto-fill,minmax(140px,150px))] justify-start gap-3 sm:gap-4"
             >
                 @for (icon of icons(); track icon.id) {
-                    <div
-                        class="icons-card relative flex h-[150px] w-[150px] flex-col overflow-hidden rounded-lg border"
+                    <article
+                        class="icons-card relative flex h-37.5 w-37.5 flex-col overflow-hidden rounded-lg border"
                     >
                         <!-- Image -->
                         <div class="flex min-h-0 flex-1 items-center justify-center p-2">
@@ -92,6 +108,7 @@
 
                         <!-- Footer -->
                         <div class="flex h-9 shrink-0 items-center gap-1 px-2">
+                            <!-- Name -->
                             <span
                                 class="icons-text min-w-0 flex-1 truncate text-xs"
                                 [pTooltip]="icon.name"
@@ -99,6 +116,7 @@
                                 {{ icon.name }}
                             </span>
 
+                            <!-- Actions -->
                             <p-button
                                 icon="pi pi-ellipsis-v"
                                 [text]="true"
@@ -108,34 +126,38 @@
                                 (onClick)="openIconMenu($event, icon)"
                             />
                         </div>
-                    </div>
+                    </article>
                 }
 
-                <!-- Chỉ có 1 menu, nằm ngoài grid/card -->
-                <p-menu #iconMenu [popup]="true" [model]="iconMenuItems" appendTo="body"></p-menu>
+                <!-- Single popup menu -->
+                <p-menu #iconMenu [popup]="true" [model]="iconMenuItems" appendTo="body" />
             </section>
 
-            <!-- =====================================================
+            <!-- =================================================
                  PAGINATION
-            ====================================================== -->
+            ================================================== -->
             <section
                 class="icons-surface mt-6 flex flex-col gap-3 rounded-xl border p-3 sm:flex-row sm:items-center sm:justify-between"
             >
+                <!-- Current page -->
                 <div class="icons-text-muted text-sm">Page {{ page() }}</div>
 
-                <p-paginator
-                    [first]="(page() - 1) * pageSize()"
-                    [rows]="pageSize()"
-                    [totalRecords]="icons().length"
-                    [showCurrentPageReport]="true"
-                    currentPageReportTemplate="Page {currentPage}"
-                    (onPageChange)="onPageChange()"
-                />
+                <!-- Paginator -->
+                <div class="w-full overflow-x-auto sm:w-auto">
+                    <p-paginator
+                        [first]="(page() - 1) * pageSize()"
+                        [rows]="pageSize()"
+                        [totalRecords]="icons().length"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Page {currentPage}"
+                        (onPageChange)="onPageChange()"
+                    />
+                </div>
             </section>
         } @else {
-            <!-- =====================================================
+            <!-- =================================================
                  EMPTY STATE
-            ====================================================== -->
+            ================================================== -->
             <section
                 class="icons-surface flex min-h-96 flex-col items-center justify-center rounded-xl border border-dashed px-6 py-12 text-center"
             >
@@ -163,7 +185,7 @@
                         icon="pi pi-times"
                         severity="secondary"
                         [outlined]="true"
-                        class="mt-5"
+                        styleClass="mt-5"
                         (onClick)="searchTerm.set(''); page.set(1); searchicons()"
                     />
                 } @else {
@@ -176,13 +198,25 @@
                         Start building your icon collection by adding your first icon.
                     </p>
 
-                    <p-button
-                        label="Add icon"
-                        icon="pi pi-plus"
-                        severity="primary"
-                        class="mt-5"
-                        (onClick)="openAddDialog()"
-                    />
+                    <!-- Empty state actions -->
+                    <div class="mt-5 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                        <p-button
+                            label="Add multi icon"
+                            icon="pi pi-images"
+                            severity="primary"
+                            [outlined]="true"
+                            (onClick)="openAddMultiIconDialog()"
+                            styleClass="w-full sm:w-auto"
+                        />
+
+                        <p-button
+                            label="Add icon"
+                            icon="pi pi-plus"
+                            severity="primary"
+                            (onClick)="openAddDialog()"
+                            styleClass="w-full sm:w-auto"
+                        />
+                    </div>
                 }
             </section>
         }
@@ -209,12 +243,12 @@
 </p-dialog>
 
 <!-- =============================================================
-     UPDATE ICON DIALOG
+     ADD MULTI ICONS DIALOG
 ============================================================== -->
 <p-dialog
-    header="Update icon"
-    [visible]="showUpdateDialog()"
-    (visibleChange)="showUpdateDialog.set($event)"
+    header="Add multi icons"
+    [visible]="showAddMultiIconsDialog()"
+    (visibleChange)="showAddMultiIconsDialog.set($event)"
     [modal]="true"
     [draggable]="false"
     [resizable]="false"
@@ -222,36 +256,5 @@
         width: 'min(32rem, calc(100vw - 2rem))',
     }"
 >
-    @if (selectedIcon(); as icon) {
-        <div class="flex flex-col gap-5">
-            <!-- Current icon -->
-            <div class="icons-surface flex min-w-0 items-center gap-4 rounded-lg border p-4">
-                <div
-                    class="icons-background flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg"
-                >
-                    <img
-                        [src]="icon.url"
-                        [alt]="icon.name"
-                        class="h-full w-full object-contain p-2"
-                    />
-                </div>
-
-                <div class="min-w-0 flex-1">
-                    <h3 class="icons-text truncate font-semibold">
-                        {{ icon.name }}
-                    </h3>
-
-                    <p class="icons-text-muted mt-1 truncate text-xs" [title]="icon.url">
-                        {{ icon.url }}
-                    </p>
-                </div>
-            </div>
-
-            <!--
-                Update icon form
-
-                Đặt form/component hiện tại của bạn vào đây.
-            -->
-        </div>
-    }
+    <app-add-multi-icons></app-add-multi-icons>
 </p-dialog>

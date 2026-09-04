@@ -1,0 +1,22 @@
+<div class="flex w-full flex-col">
+    <!-- Header -->
+
+    <!-- Content -->
+    <div class="flex flex-col gap-4 p-4">
+        <div class="flex flex-col gap-2">
+            <textarea
+                pTextarea
+                id="links-input"
+                [(ngModel)]="inputText"
+                rows="10"
+                class="w-full resize-y"
+                placeholder="name1&#10;https://example1.com&#10;name2&#10;https://example2.com"
+            ></textarea>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-col-reverse gap-2 border-t p-4 sm:flex-row sm:justify-end">
+        <p-button label="Submit" icon="pi pi-check" severity="primary" (onClick)="submit()" />
+    </div>
+</div>

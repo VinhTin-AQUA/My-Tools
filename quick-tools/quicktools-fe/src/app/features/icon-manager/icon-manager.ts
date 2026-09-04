@@ -14,23 +14,25 @@ import { PaginatorModule } from '@openng/optimus-ui/paginator';
 import { Menu, MenuModule } from '@openng/optimus-ui/menu';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { ToastModule } from '@openng/optimus-ui/toast';
+import { AddMultiIcons } from "./components/add-multi-icons/add-multi-icons";
 
 @Component({
     selector: 'app-icon-manager',
     imports: [
-        ButtonModule,
-        FormsModule,
-        InputTextModule,
-        AddIcon,
-        DialogModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        TagModule,
-        PaginatorModule,
-        MenuModule,
-        TooltipModule,
-        ToastModule,
-    ],
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    AddIcon,
+    DialogModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TagModule,
+    PaginatorModule,
+    MenuModule,
+    TooltipModule,
+    ToastModule,
+    AddMultiIcons
+],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
     providers: [MessageService],
@@ -39,7 +41,9 @@ export class IconManager {
     readonly searchTerm = signal('');
 
     showAddDialog = signal(false);
-    showUpdateDialog = signal(false);
+    // showUpdateDialog = signal(false);
+
+    showAddMultiIconsDialog = signal(false);
 
     selectedIcon = signal<IconModel | null>(null);
     page = signal<number>(1);
@@ -87,16 +91,6 @@ export class IconManager {
                 const icon = this.menuIcon();
                 if (icon) {
                     this.downloadIcon(icon);
-                }
-            },
-        },
-        {
-            label: 'Edit',
-            icon: 'pi pi-pencil',
-            command: () => {
-                const icon = this.menuIcon();
-                if (icon) {
-                    this.openUpdateDialog(icon);
                 }
             },
         },
@@ -219,16 +213,24 @@ export class IconManager {
         await this.searchicons();
     }
 
-    openUpdateDialog(icon: IconModel): void {
-        this.selectedIcon.set(icon);
-        this.showUpdateDialog.set(true);
+    openAddMultiIconDialog(): void {
+        this.showAddMultiIconsDialog.set(true);
     }
 
-    async closeUpdateDialog() {
-        this.showUpdateDialog.set(false);
-        this.selectedIcon.set(null);
-        await this.searchicons();
+    closeAddMultiIconDialog(): void {
+        this.showAddMultiIconsDialog.set(false);
     }
+
+    // openUpdateDialog(icon: IconModel): void {
+    //     this.selectedIcon.set(icon);
+    //     this.showUpdateDialog.set(true);
+    // }
+
+    // async closeUpdateDialog() {
+    //     this.showUpdateDialog.set(false);
+    //     this.selectedIcon.set(null);
+    //     await this.searchicons();
+    // }
 
     async onPageChange() {
         this.page.update((x) => x + 1);

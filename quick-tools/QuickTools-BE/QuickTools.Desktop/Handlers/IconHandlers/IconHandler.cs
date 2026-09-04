@@ -159,8 +159,8 @@ namespace QuickTools.Windows.Handlers.IconHandlers
             // var databaseName = Environment.GetEnvironmentVariable("MONGODB_DATABASE") 
             //                    ?? "QuickTools";
 
-            var connectionString = "";
-            var databaseName = "";
+            var connectionString = "mongodb+srv://tinhovinh_db_user:FBFEDtBwoDoL6Byg@cluster0.v0h03ni.mongodb.net/";
+            var databaseName = "QuickTools";
 
             var context = new MongoDbContext(connectionString, databaseName);
             Instance = new IconService(context);

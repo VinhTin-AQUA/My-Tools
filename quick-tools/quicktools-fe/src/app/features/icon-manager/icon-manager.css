@@ -1,6 +1,5 @@
 /* =========================================================
-   ICON PAGE THEME
-   PrimeNG semantic tokens are the only color source.
+   PAGE
    ========================================================= */
 
 .icons-page {
@@ -8,14 +7,26 @@
     color: var(--p-text-color);
 }
 
+/* =========================================================
+   SURFACE
+   ========================================================= */
+
 .icons-surface {
     background: var(--p-surface-card);
     border-color: var(--p-surface-border);
 }
 
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
 .icons-background {
     background: var(--p-surface-background);
 }
+
+/* =========================================================
+   TEXT
+   ========================================================= */
 
 .icons-text {
     color: var(--p-text-color);
@@ -25,26 +36,70 @@
     color: var(--p-text-muted-color);
 }
 
+.icons-text-hover {
+    transition: color var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease);
+}
+
 .icons-text-hover:hover {
     color: var(--p-text-hover-color);
 }
+
+/* =========================================================
+   PRIMARY
+   ========================================================= */
+
+.icons-primary {
+    color: var(--p-primary-color);
+}
+
+/* =========================================================
+   DANGER
+   ========================================================= */
+
+.icons-danger {
+    color: var(--p-danger-color);
+}
+
+/* =========================================================
+   HIGHLIGHT
+   ========================================================= */
 
 .icons-highlight {
     background: var(--p-highlight-background);
     color: var(--p-highlight-color);
 }
 
-.icons-primary {
-    color: var(--p-primary-color);
+.icons-highlight:focus,
+.icons-highlight:focus-visible {
+    background: var(--p-highlight-focus-background);
+    color: var(--p-highlight-focus-color);
 }
 
-.icons-danger {
-    color: var(--p-danger-color);
-}
+/* =========================================================
+   ICON CARD
+   ========================================================= */
 
-/* Card hover */
 .icons-card {
-    &:hover {
-        border-color: var(--p-primary-color);
+    background: var(--p-surface-card);
+    border-color: var(--p-surface-border);
+
+    transition:
+        border-color var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease),
+        background var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease);
+}
+
+.icons-card:hover {
+    background: var(--p-surface-hover);
+    border-color: var(--p-primary-color);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+    .icons-card {
+        width: 100%;
+        max-width: 150px;
     }
 }
