@@ -1,23 +1,56 @@
-/* // Active state cho nav item */
+/* =====================
+   Active Nav Item
+===================== */
+
 .active-nav {
-    background: var(--p-primary-color) !important;
+    background: color-mix(
+        in srgb,
+        var(--p-primary-color),
+        var(--p-content-background) 85%
+    ) !important;
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--p-primary-color),
+        transparent 60%
+    );
 
     .nav-icon {
-        background: var(--p-highlight-background) !important;
-        color: var(--p-highlight-color) !important;
+        color: var(--p-primary-color) !important;
     }
 
     .nav-label {
-        color: var(--p-primary-inverse-color) !important;
+        color: var(--p-primary-color) !important;
     }
 
     .nav-description {
-        color: var(--p-primary-inverse-color) !important;
-        opacity: 0.8 !important;
+        color: var(--p-text-color) !important;
+        opacity: 0.85 !important;
     }
 }
 
-/* // Responsive scrollbar */
+
+/* =====================
+   Hover Nav Item
+===================== */
+
+.nav-item:not(.active-nav):hover {
+    background: var(--p-content-hover-background) !important;
+
+    .nav-label {
+        color: var(--p-text-hover-color) !important;
+    }
+
+    .nav-icon {
+        color: var(--p-primary-color) !important;
+    }
+}
+
+
+/* =====================
+   Responsive Scrollbar
+===================== */
+
 @media (max-width: 768px) {
     nav::-webkit-scrollbar {
         height: 2px;
@@ -26,14 +59,5 @@
     nav::-webkit-scrollbar-thumb {
         background: var(--p-primary-color);
         border-radius: 1px;
-    }
-}
-
-/* // Hover effect cho nav item không active */
-.nav-item:not(.active-nav):hover {
-    background: var(--p-surface-hover) !important;
-
-    .nav-label {
-        color: var(--p-text-hover-color) !important;
     }
 }

@@ -1,1 +1,47 @@
-<p>themes works!</p>
+<section class="theme-selector">
+    <!-- Header -->
+    <header class="theme-selector-header">
+        <div class="theme-icon">
+            <i class="pi pi-palette"></i>
+        </div>
+    </header>
+
+    <!-- Dropdown -->
+    <div class="theme-selector-wrapper">
+        <!-- p-select component -->
+    </div>
+
+    <!-- Current Theme -->
+    <div class="theme-current">
+        <div class="theme-current-content">
+            <div>
+                <p>Current theme</p>
+            </div>
+            <span class="theme-badge">Dracula</span>
+        </div>
+    </div>
+
+    <!-- Theme Cards -->
+    <div class="theme-grid">
+        @for (preset of presets; track preset.presetKey; let i = $index) {
+            <button
+                class="theme-card"
+                [class.theme-card-active]="preset.presetKey === selectedPreset"
+                [style.--index]="i"
+                (click)="onPresetChange(preset.presetKey)"
+            >
+                <div class="theme-card-header">
+                    <span class="theme-card-name">{{ preset.name }}</span>
+                    @if (preset.presetKey === selectedPreset) {
+                        <i class="pi pi-check theme-check"></i>
+                    }
+                </div>
+                <div class="theme-card-footer">
+                    <span class="theme-preview-dot theme-preview-primary"></span>
+                    <span class="theme-preview-dot theme-preview-surface"></span>
+                    <span class="theme-preview-dot theme-preview-danger"></span>
+                </div>
+            </button>
+        }
+    </div>
+</section>

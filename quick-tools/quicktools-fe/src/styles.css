@@ -17,6 +17,9 @@ body {
     margin: 0;
     box-sizing: border-box;
     overflow-x: hidden;
+    background: var(--p-background-color); 
+    color: var(--p-text-color);
+    font-family: var(--p-font-family, inherit);
 }
 
 /* Scrollbar */

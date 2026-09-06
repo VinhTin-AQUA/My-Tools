@@ -1,9 +1,12 @@
 <div class="wrapper">
-    <div class="info-grid">
+    <!-- =====================
+         Info Cards
+    ====================== -->
+    <section class="info-grid" aria-label="Information">
         @for (item of infoItems(); track $index) {
-            <div class="info-card">
+            <article class="info-card">
                 <div class="info-card-content">
-                    <div class="info-icon">
+                    <div class="info-icon" aria-hidden="true">
                         {{ item.icon }}
                     </div>
 
@@ -12,89 +15,107 @@
                             {{ item.label }}
                         </p>
 
-                        <p class="info-value" [pTooltip]="item.value" >
+                        <p class="info-value" [pTooltip]="item.value" tooltipPosition="top">
                             {{ item.value }}
                         </p>
                     </div>
                 </div>
-            </div>
+            </article>
         }
-    </div>
+    </section>
 
-    <!-- Menu Container -->
+    <!-- =====================
+         Menu Container
+    ====================== -->
     <section class="menu-container">
         <!-- Header -->
-        <div class="menu-header">
-            <h2 class="menu-title">
-                <span>📋</span>
+        <header class="menu-header">
+            <div class="menu-heading">
+                <h2 class="menu-title">
+                    <span class="menu-title-icon" aria-hidden="true"> 📋 </span>
 
-                Menu List
+                    <span>Menu List</span>
 
-                <span class="menu-count"> ({{ filteredMenuItems.length }} items) </span>
-            </h2>
+                    <span class="menu-count"> ({{ filteredMenuItems.length }} items) </span>
+                </h2>
+            </div>
 
             <!-- Search -->
             <div class="search-wrapper">
-                <div class="search-icon">
-                    <svg viewBox="0 0 20 20" fill="currentColor">
+                <span class="search-icon" aria-hidden="true">
+                    <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
                         <path
                             fill-rule="evenodd"
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                             clip-rule="evenodd"
                         />
                     </svg>
-                </div>
+                </span>
 
                 <input
-                    type="text"
                     pInputText
+                    type="text"
+                    class="search-input"
                     placeholder="Search menu..."
                     [(ngModel)]="searchTerm"
-                    class="search-input"
+                    aria-label="Search menu"
                 />
             </div>
-        </div>
+        </header>
 
-        <!-- Menu List -->
+        <!-- =====================
+             Menu Content
+        ====================== -->
         <div class="menu-content">
             @if (filteredMenuItems.length > 0) {
-                <div class="menu-grid">
+                <nav class="menu-grid" aria-label="Menu">
                     @for (menu of filteredMenuItems; track menu.name) {
-                        <div [routerLink]="menu.route" class="menu-item">
-                            <div class="menu-item-icon">
+                        <a
+                            class="menu-item"
+                            [routerLink]="menu.route"
+                            [pTooltip]="menu.name"
+                            tooltipPosition="top"
+                        >
+                            <span class="menu-item-icon" aria-hidden="true">
                                 {{ menu.icon }}
-                            </div>
+                            </span>
 
-                            <div class="menu-item-name" [pTooltip]="menu.name">
+                            <span class="menu-item-name">
                                 {{ menu.name }}
-                            </div>
+                            </span>
 
-                            <div class="menu-item-arrow">
-                                <svg viewBox="0 0 20 20" fill="currentColor">
+                            <span class="menu-item-arrow" aria-hidden="true">
+                                <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
                                     <path
                                         fill-rule="evenodd"
                                         d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                         clip-rule="evenodd"
                                     />
                                 </svg>
-                            </div>
-                        </div>
+                            </span>
+                        </a>
                     }
-                </div>
+                </nav>
             } @else {
+                <!-- Empty State -->
                 <div class="empty-state">
-                    <div class="empty-icon">🔍</div>
+                    <div class="empty-icon" aria-hidden="true">🔍</div>
 
-                    <p>
-                        No menu found matching
+                    <p class="empty-title">No menu found</p>
+
+                    <p class="empty-description">
+                        No menu matches
                         <strong>{{ searchTerm }}</strong>
                     </p>
 
                     <p-button
                         label="Clear search"
+                        icon="pi pi-times"
+                        severity="secondary"
+                        [text]="true"
                         class="clear-search"
                         (click)="searchTerm = ''"
-                    ></p-button>
+                    />
                 </div>
             }
         </div>
