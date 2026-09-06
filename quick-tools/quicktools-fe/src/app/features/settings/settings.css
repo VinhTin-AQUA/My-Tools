@@ -1,0 +1,39 @@
+/* // Active state cho nav item */
+.active-nav {
+    background: var(--p-primary-color) !important;
+
+    .nav-icon {
+        background: var(--p-highlight-background) !important;
+        color: var(--p-highlight-color) !important;
+    }
+
+    .nav-label {
+        color: var(--p-primary-inverse-color) !important;
+    }
+
+    .nav-description {
+        color: var(--p-primary-inverse-color) !important;
+        opacity: 0.8 !important;
+    }
+}
+
+/* // Responsive scrollbar */
+@media (max-width: 768px) {
+    nav::-webkit-scrollbar {
+        height: 2px;
+    }
+
+    nav::-webkit-scrollbar-thumb {
+        background: var(--p-primary-color);
+        border-radius: 1px;
+    }
+}
+
+/* // Hover effect cho nav item không active */
+.nav-item:not(.active-nav):hover {
+    background: var(--p-surface-hover) !important;
+
+    .nav-label {
+        color: var(--p-text-hover-color) !important;
+    }
+}

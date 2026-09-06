@@ -4,8 +4,9 @@ using MongoDB.Driver;
 using QuickTools.Core.DTOs;
 using QuickTools.Core.DTOs.Icons;
 using QuickTools.Core.Models;
+using QuickTools.Services.MongoDB;
 
-namespace QuickTools.Services.MongoDB
+namespace QuickTools.Services.Icons
 {
     public interface IIconService
     {

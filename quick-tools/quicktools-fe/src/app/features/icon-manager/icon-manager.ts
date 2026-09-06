@@ -15,24 +15,26 @@ import { Menu, MenuModule } from '@openng/optimus-ui/menu';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { ToastModule } from '@openng/optimus-ui/toast';
 import { AddMultiIcons } from './components/add-multi-icons/add-multi-icons';
+import { NavigationComponent } from "../../components/navigation.component/navigation.component";
 
 @Component({
     selector: 'app-icon-manager',
     imports: [
-        ButtonModule,
-        FormsModule,
-        InputTextModule,
-        AddIcon,
-        DialogModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        TagModule,
-        PaginatorModule,
-        MenuModule,
-        TooltipModule,
-        ToastModule,
-        AddMultiIcons,
-    ],
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    AddIcon,
+    DialogModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TagModule,
+    PaginatorModule,
+    MenuModule,
+    TooltipModule,
+    ToastModule,
+    AddMultiIcons,
+    NavigationComponent
+],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
     providers: [MessageService],

@@ -2,6 +2,7 @@
 using QuickTools.Windows.Handlers.IconHandlers;
 using QuickTools.Windows.Handlers.IloveimgHandlers;
 using QuickTools.Windows.Handlers.LibcaesiumHandlers;
+using QuickTools.Windows.Handlers.MongoSettingHandlers;
 using WebUISharp;
 
 namespace QuickTools.Windows
@@ -30,6 +31,11 @@ namespace QuickTools.Windows
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "deleteIcon", IconHandler.DeleteIcon);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "updateIcon", IconHandler.UpdateIcon);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "addMultiIcons", IconHandler.AddMultiIcons);
+            
+            // mongoDB setting
+            WebUIBinder.BindAsyncAction(window, "getMongoDBSetting", MongoSettingHandler.GetMongoDBSetting);
+            WebUIBinder.BindAsyncAction(window, "setMongoDBSetting", MongoSettingHandler.SetMongoDBSetting);
+            
             
             // Cấu hình async
             WebUI.SetConfig(WebuiConfig.asynchronous_response, true);

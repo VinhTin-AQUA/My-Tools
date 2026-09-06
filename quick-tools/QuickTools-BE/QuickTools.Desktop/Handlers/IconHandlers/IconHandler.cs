@@ -1,6 +1,7 @@
 using System.Text.Json;
 using QuickTools.Core.DTOs.Icons;
 using QuickTools.Core.Models;
+using QuickTools.Services.Icons;
 using QuickTools.Services.MongoDB;
 using WebUISharp;
 
