@@ -1,9 +1,10 @@
+
 /* =========================================================
    PAGE
    ========================================================= */
 
 .icons-page {
-    background: var(--p-surface-background);
+    background: var(--p-background);
     color: var(--p-text-color);
 }
 
@@ -12,8 +13,8 @@
    ========================================================= */
 
 .icons-surface {
-    background: var(--p-surface-card);
-    border-color: var(--p-surface-border);
+    background: var(--p-content-background);
+    border-color: var(--p-content-border-color);
 }
 
 /* =========================================================
@@ -21,7 +22,7 @@
    ========================================================= */
 
 .icons-background {
-    background: var(--p-surface-background);
+    background: var(--p-background);
 }
 
 /* =========================================================
@@ -33,14 +34,16 @@
 }
 
 .icons-text-muted {
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 }
 
 .icons-text-hover {
-    transition: color var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease);
+    transition:
+        color var(--p-transition-duration, 150ms)
+        var(--p-transition-timing-function, ease);
 }
 
-.icons-text-hover:hover {
+.icons-text-hover\:hover:hover {
     color: var(--p-text-hover-color);
 }
 
@@ -69,8 +72,8 @@
     color: var(--p-highlight-color);
 }
 
-.icons-highlight:focus,
-.icons-highlight:focus-visible {
+.icons-highlight\:focus:focus,
+.icons-highlight\:focus-visible:focus-visible {
     background: var(--p-highlight-focus-background);
     color: var(--p-highlight-focus-color);
 }
@@ -80,16 +83,18 @@
    ========================================================= */
 
 .icons-card {
-    background: var(--p-surface-card);
-    border-color: var(--p-surface-border);
+    background: var(--p-content-background);
+    border-color: var(--p-content-border-color);
 
     transition:
-        border-color var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease),
-        background var(--p-transition-duration, 150ms) var(--p-transition-timing-function, ease);
+        border-color var(--p-transition-duration, 150ms)
+            var(--p-transition-timing-function, ease),
+        background var(--p-transition-duration, 150ms)
+            var(--p-transition-timing-function, ease);
 }
 
-.icons-card:hover {
-    background: var(--p-surface-hover);
+.icons-card\:hover:hover {
+    background: var(--p-content-hover-background);
     border-color: var(--p-primary-color);
 }
 
@@ -103,3 +108,4 @@
         max-width: 150px;
     }
 }
+

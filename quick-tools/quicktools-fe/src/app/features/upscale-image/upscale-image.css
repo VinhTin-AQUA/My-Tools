@@ -1,6 +1,7 @@
+
 /* =========================================================
    Image Upload
-   Theme-aware SCSS
+   Catppuccin / PrimeNG Theme-aware SCSS
    ========================================================= */
 
 .image-upload-container {
@@ -9,7 +10,7 @@
     margin: 0 auto;
     padding: 1.5rem;
 
-    background: var(--p-surface-background);
+    background: var(--p-background);
     color: var(--p-text-color);
 }
 
@@ -23,8 +24,8 @@
 .action-section,
 .upload-file-card,
 .file-upload-item {
-    background: var(--p-surface-card);
-    border: 1px solid var(--p-surface-border);
+    background: var(--p-content-background);
+    border: 1px solid var(--p-content-border-color);
     border-radius: var(--p-content-border-radius, 0.75rem);
 }
 
@@ -66,7 +67,7 @@
 .upload-file-card__size,
 .upload-empty__text,
 .file-upload-size {
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 }
 
 /* =========================================================
@@ -85,7 +86,7 @@
 }
 
 .source-value {
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 }
 
 .source-link {
@@ -128,16 +129,10 @@
     font-size: 1rem;
     font-family: inherit;
 
-    color: var(--p-form-field-color, var(--p-text-color));
-    background-color: var(
-        --p-form-field-background,
-        var(--p-surface-card)
-    );
+    color: var(--p-form-field-color);
+    background-color: var(--p-form-field-background);
 
-    border: 1px solid var(
-        --p-form-field-border-color,
-        var(--p-surface-border)
-    );
+    border: 1px solid var(--p-form-field-border-color);
 
     border-radius: var(--p-form-field-border-radius, 0.75rem);
 
@@ -150,34 +145,36 @@
 }
 
 .custom-select:hover {
-    border-color: var(--p-form-field-hover-border-color, var(--p-primary-color));
+    border-color: var(--p-form-field-hover-border-color);
 }
 
 .custom-select:focus {
     outline: none;
 
-    border-color: var(
-        --p-form-field-focus-border-color,
-        var(--p-primary-color)
-    );
+    border-color: var(--p-form-field-focus-border-color);
 
-    box-shadow: 0 0 0 3px color-mix(
-        in srgb,
-        var(--p-primary-color) 20%,
-        transparent
-    );
+    box-shadow:
+        0 0 0 2px color-mix(
+            in srgb,
+            var(--p-focus-ring-color) 20%,
+            transparent
+        );
 }
 
 /* Native select arrow */
 .custom-select {
-    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    background-image:
+        linear-gradient(45deg, transparent 50%, currentColor 50%),
         linear-gradient(135deg, currentColor 50%, transparent 50%);
+
     background-position:
         calc(100% - 18px) 50%,
         calc(100% - 12px) 50%;
+
     background-size:
         6px 6px,
         6px 6px;
+
     background-repeat: no-repeat;
 }
 
@@ -217,18 +214,18 @@
 
 .btn-clear {
     color: var(--p-text-color);
-    background: var(--p-surface-card);
-    border: 1px solid var(--p-surface-border);
+    background: var(--p-content-background);
+    border: 1px solid var(--p-content-border-color);
 }
 
 .btn-clear:hover {
     color: var(--p-text-hover-color);
-    background: var(--p-surface-hover);
-    border-color: var(--p-surface-border);
+    background: var(--p-content-hover-background);
+    border-color: var(--p-content-border-color);
 }
 
 .btn-upload {
-    color: var(--p-primary-inverse-color);
+    color: var(--p-primary-contrast-color);
     background: var(--p-primary-color);
     border: 1px solid var(--p-primary-color);
 }
@@ -275,7 +272,7 @@
     font-size: 1.1rem;
     font-weight: 600;
 
-    border-bottom: 2px solid var(--p-surface-border);
+    border-bottom: 2px solid var(--p-content-border-color);
 }
 
 .image-list {
@@ -293,7 +290,7 @@
     padding: 0.75rem;
 
     color: var(--p-text-color);
-    background: var(--p-surface-background);
+    background: var(--p-background);
 
     border: 1px solid transparent;
     border-radius: var(--p-content-border-radius, 0.75rem);
@@ -306,7 +303,7 @@
 }
 
 .image-item:hover {
-    background: var(--p-surface-hover);
+    background: var(--p-content-hover-background);
 }
 
 .image-item.selected {
@@ -331,8 +328,8 @@
 
     overflow: hidden;
 
-    background: var(--p-surface-background);
-    border: 1px solid var(--p-surface-border);
+    background: var(--p-background);
+    border: 1px solid var(--p-content-border-color);
     border-radius: var(--p-content-border-radius, 0.75rem);
 }
 
@@ -361,6 +358,7 @@
 }
 
 .image-size {
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
     font-size: 0.8rem;
 }
 
@@ -378,6 +376,8 @@
     justify-content: center;
 
     padding: 3rem 0;
+
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 }
 
 /* =========================================================
@@ -406,8 +406,8 @@
 
     overflow: hidden;
 
-    background: var(--p-surface-background);
-    border: 1px solid var(--p-surface-border);
+    background: var(--p-form-field-background);
+    border: 1px solid var(--p-form-field-border-color);
     border-radius: 999px;
 }
 
@@ -422,6 +422,8 @@
 
 .progress-label {
     min-width: 40px;
+
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 
     font-size: 0.9rem;
     font-weight: 500;
@@ -442,13 +444,13 @@
     z-index: 1000;
 
     /*
-     * Không dùng màu cố định cho content.
-     * Overlay đen có opacity nên vẫn hoạt động tốt
-     * cho cả Light và Dark.
+     * Dùng neutral.0 thông qua surface.0.
+     * Trong Catppuccin preset của bạn:
+     * surface.0 = neutral.0 = #1E1E2E
      */
     background: color-mix(
         in srgb,
-        var(--p-surface-950, #000) 75%,
+        var(--p-surface-0) 75%,
         transparent
     );
 
@@ -461,14 +463,14 @@
 
     overflow: hidden;
 
-    background: var(--p-surface-card);
-    border: 1px solid var(--p-surface-border);
+    background: var(--p-content-background);
+    border: 1px solid var(--p-content-border-color);
     border-radius: var(--p-content-border-radius, 0.75rem);
 
     box-shadow:
         0 20px 60px color-mix(
             in srgb,
-            var(--p-surface-950, #000) 30%,
+            var(--p-surface-0) 60%,
             transparent
         );
 
@@ -482,7 +484,7 @@
 
     padding: 1rem 1.5rem;
 
-    border-bottom: 1px solid var(--p-surface-border);
+    border-bottom: 1px solid var(--p-content-border-color);
 }
 
 .popup-header h3 {
@@ -497,7 +499,7 @@
 
     padding: 0 0.5rem;
 
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
     background: transparent;
     border: none;
 
@@ -534,12 +536,12 @@
     margin-top: 1rem;
     padding-top: 0.75rem;
 
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 
     font-size: 0.9rem;
     text-align: center;
 
-    border-top: 1px solid var(--p-surface-border);
+    border-top: 1px solid var(--p-content-border-color);
 }
 
 /* =========================================================
@@ -582,7 +584,7 @@
 }
 
 .upload-file-card:hover {
-    background: var(--p-surface-hover);
+    background: var(--p-content-hover-background);
 }
 
 .upload-file-card__preview {
@@ -618,6 +620,7 @@
 }
 
 .upload-file-card__size {
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
     font-size: 0.875rem;
 }
 
@@ -633,7 +636,7 @@
 
     padding: 2rem;
 
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 
     text-align: center;
 }
@@ -646,16 +649,18 @@
     width: 4rem;
     height: 4rem;
 
-    color: var(--p-text-muted-color);
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 
     font-size: 2.5rem;
 
-    border: 2px solid var(--p-surface-border);
+    border: 2px solid var(--p-content-border-color);
     border-radius: 50%;
 }
 
 .upload-empty__text {
     margin: 1.5rem 0 0;
+
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
 }
 
 /* =========================================================
@@ -703,7 +708,7 @@
 }
 
 .file-upload-item:hover {
-    background: var(--p-surface-hover);
+    background: var(--p-content-hover-background);
 }
 
 .file-upload-item--completed {
@@ -745,6 +750,7 @@
 }
 
 .file-upload-size {
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
     font-size: 0.875rem;
 }
 
@@ -805,3 +811,4 @@
         max-width: 95vw;
     }
 }
+
