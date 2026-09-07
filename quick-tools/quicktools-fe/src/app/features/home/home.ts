@@ -72,8 +72,6 @@ export class Home {
     getIpInformation(): void {
         this.ipService.getIpInformation().subscribe({
             next: (result: IpApiResponse) => {
-                console.log(result);
-
                 const values: Record<string, string> = {
                     publicIp: result.query || '-',
                     as: `${result.as}`,

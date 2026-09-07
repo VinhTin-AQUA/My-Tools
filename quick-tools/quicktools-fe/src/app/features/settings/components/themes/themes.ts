@@ -17,6 +17,11 @@ export class Themes {
 
     selectedPreset: PresetKey = this.themeService.preset;
 
+    get preset() {
+        const student = this.presets.find(s => s.presetKey === this.selectedPreset);
+        return student?.name ?? "";
+    }
+
     onPresetChange(preset: PresetKey | null): void {
         if (!preset) {
             return;

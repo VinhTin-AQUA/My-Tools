@@ -12,6 +12,7 @@ import CyberpunkPreset from './presets/cyberpunk.preset';
 import PastelPreset from './presets/pastel.preset';
 import RetroTerminalPreset from './presets/retro.preset';
 import SunsetPreset from './presets/sunset.preset';
+import { APP_PRESETS, PresetKey } from './presets/theme-presets';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -20,17 +21,7 @@ export const appConfig: ApplicationConfig = {
 
         provideOptimus({
             theme: {
-                // preset: LightPreset,
-                // preset: DarkPreset,
-                preset: DraculaPreset,
-                // preset: NordPreset,
-                // preset: CatppuccinPreset,
-                // preset: TokyoNightPreset,
-                // preset: CyberpunkPreset,
-                // preset: PastelPreset,
-                // preset: RetroTerminalPreset,
-                // preset: SunsetPreset,
-
+                preset: getSavedPreset(),
                 options: {
                     prefix: 'p',
                     cssLayer: false,
@@ -42,3 +33,11 @@ export const appConfig: ApplicationConfig = {
         }),
     ],
 };
+
+function getSavedPreset() {
+    const savedPreset = localStorage.getItem('themeKey') as PresetKey | null;
+
+    return savedPreset && APP_PRESETS[savedPreset]
+        ? APP_PRESETS[savedPreset]
+        : DraculaPreset;
+}

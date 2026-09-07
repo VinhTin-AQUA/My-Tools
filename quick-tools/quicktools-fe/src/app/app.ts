@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { WebuiService } from './services/webui-service';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from './services/theme-service';
 
 @Component({
     selector: 'app-root',
@@ -11,11 +12,14 @@ import { RouterOutlet } from '@angular/router';
 export class App {
     protected readonly title = signal('quicktools-fe');
 
-    constructor(private webuiService: WebuiService) {}
+    constructor(
+        private webuiService: WebuiService,
+        private themeService: ThemeService,
+    ) {
+        this.themeService.init();
+    }
 
     ngOnInit() {}
-
-    //
 
     async longTask() {
         const r = await this.webuiService.call<string>('longTask', 2);
