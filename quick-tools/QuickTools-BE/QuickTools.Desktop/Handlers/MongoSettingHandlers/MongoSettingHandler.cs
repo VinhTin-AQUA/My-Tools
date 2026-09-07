@@ -1,6 +1,7 @@
 
 
 using System.Text.Json;
+using QuickTools.Core.Constants;
 using QuickTools.Core.DTOs.Icons;
 using QuickTools.Core.Models;
 using QuickTools.Core.Responses;
@@ -12,7 +13,6 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
 {
     public static class MongoSettingHandler
     {
-        private static readonly string mongoDBSettingKey = "mongoDBSetting";
         
         public static async Task GetMongoDBSetting(UIntPtr window, UIntPtr event_type, IntPtr element,
             UIntPtr event_number, UIntPtr bind_id)
@@ -27,7 +27,7 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 };
    
                 var jsonStorageService = JsonStorageSingleton.Instance;
-                var mongoDBSetting = await jsonStorageService.GetItemAsync<MongoDBSetting>(mongoDBSettingKey);
+                var mongoDBSetting = await jsonStorageService.GetItemAsync<MongoDBSetting>(MongoDBSettingConstants.MongoDBSettingKey);
                 
                 string json = JsonSerializer.Serialize(mongoDBSetting, options);
                 WebUI.InterfaceSetResponse(window, event_number, json);
@@ -62,7 +62,7 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 { 
                     WebUI.InterfaceSetResponse(window, event_number, JsonSerializer.Serialize(new WebUIResponse<MongoDBSetting>
                     {
-                        Action = "SetMongoDBSetting",
+                        Action = ActionConstants.SetMongoDBSetting,
                         Data = null,
                         Description = "setMongoDBSettingRequest is null",
                         Success = false,
@@ -72,7 +72,7 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 }
    
                 var jsonStorageService = JsonStorageSingleton.Instance;
-                var r = await jsonStorageService.ReplaceItemAsync<MongoDBSetting>(mongoDBSettingKey, new()
+                var r = await jsonStorageService.ReplaceItemAsync<MongoDBSetting>(MongoDBSettingConstants.MongoDBSettingKey, new()
                 {
                     ConnectionString = setMongoDBSettingRequest.ConnectionString,
                     DatabaseName = setMongoDBSettingRequest.DatabaseName,

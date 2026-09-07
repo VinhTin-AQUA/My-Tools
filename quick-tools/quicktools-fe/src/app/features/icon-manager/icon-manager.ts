@@ -15,26 +15,29 @@ import { Menu, MenuModule } from '@openng/optimus-ui/menu';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { ToastModule } from '@openng/optimus-ui/toast';
 import { AddMultiIcons } from './components/add-multi-icons/add-multi-icons';
-import { NavigationComponent } from "../../components/navigation.component/navigation.component";
+import { NavigationComponent } from '../../components/navigation.component/navigation.component';
+import { WebUIResponse } from '../../models/webui.response';
+import { StatusPopup } from '../../components/status-popup/status-popup';
 
 @Component({
     selector: 'app-icon-manager',
     imports: [
-    ButtonModule,
-    FormsModule,
-    InputTextModule,
-    AddIcon,
-    DialogModule,
-    InputGroupModule,
-    InputGroupAddonModule,
-    TagModule,
-    PaginatorModule,
-    MenuModule,
-    TooltipModule,
-    ToastModule,
-    AddMultiIcons,
-    NavigationComponent
-],
+        ButtonModule,
+        FormsModule,
+        InputTextModule,
+        AddIcon,
+        DialogModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        TagModule,
+        PaginatorModule,
+        MenuModule,
+        TooltipModule,
+        ToastModule,
+        AddMultiIcons,
+        NavigationComponent,
+        StatusPopup,
+    ],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
     providers: [MessageService],
@@ -104,6 +107,8 @@ export class IconManager {
         },
     ];
 
+    connected = signal<boolean>(true);
+
     private messageService = inject(MessageService);
 
     @ViewChild('iconMenu') iconMenu!: Menu;
@@ -111,10 +116,26 @@ export class IconManager {
     constructor(private webuiService: WebuiService) {}
 
     async ngOnInit() {
+        await this.checkConnection();
+
+        if (!this.connected()) {
+            return;
+        }
         await this.searchicons();
     }
 
     /* ========================= api actions ========================= */
+
+    async checkConnection() {
+        const r = await this.webuiService.callJson<WebUIResponse<any>>(
+            'iconHandlerCheckConnection',
+            {},
+        );
+
+        if (!r.success) {
+            this.connected.set(false);
+        }
+    }
 
     async searchicons() {
         try {

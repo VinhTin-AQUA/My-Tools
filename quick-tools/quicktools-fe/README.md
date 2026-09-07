@@ -5,12 +5,10 @@
 ## Prompt
 
 ```txt
+
 Trong angular,
-Sử dụng PrimeNG Theme (styled mode) làm nguồn màu duy nhất cho toàn bộ giao diện.
 
-Toàn bộ màu phải lấy từ PrimeNG CSS variables (--p-*).
-
-Quy tắc sử dụng màu tôi định nghĩa thành nhiều preset, có mẫu như sau
+cho preset màu như sau
 
 
 export const CatppuccinPreset = definePreset(Material, {
@@ -261,67 +259,13 @@ export const CatppuccinPreset = definePreset(Material, {
     },
 });
 
-
-và giao diện html đồng thời phải sử dụng tailwind class inline html về bố cục, kích thước, .... riêng với màu sắc phải sử dụng trong preset trên và code trong css riêng. Lưu ý cho cả giao diện mobile
+Toàn bộ màu phải lấy từ PrimeNG CSS variables (--p-*).
+giao diện html đồng thời phải sử dụng tailwind class inline html về bố cục, kích thước, .... riêng với màu sắc phải sử dụng trong preset trên và code trong css riêng. Lưu ý cho cả giao diện mobile
 
 Đồng thời phải sử dụng các control hiện đại, ví dụ @for, @if
 
-code giao diện theo mô tả giao diện sau:
+code giao diện theo mô tả giao diện sau: giao diện là 1 popup hiển thị thông báo không thể kết nối đến máy chủ
 
-tôi đã định nghĩa sẵn các theme như sau
-import { NoirDark } from './noir-dark.preset';
-import { NoirLight } from './noir-light.preset';
-
-export const APP_PRESETS = {
-    noirLight: NoirLight,
-    noirDark: NoirDark,
-} as const;
-
-export type PresetKey = keyof typeof APP_PRESETS;
-
-interface PresetItem {
-    presetKey: PresetKey;
-    name: string;
-}
-
-export const presets: PresetItem[] = [
-    {
-        name: 'Light',
-        presetKey: 'noirLight',
-    },
-    {
-        name: 'Dark',
-        presetKey: 'noirDark',
-    },
-];
-
-và service
-
-export class ThemeService {
-    private currentPreset: PresetKey = 'noirLight';
-
-    get preset(): PresetKey {
-        return this.currentPreset;
-    }
-
-    setPreset(preset: PresetKey): void {
-        if (preset === this.currentPreset) {
-            return;
-        }
-
-        const presetConfig = APP_PRESETS[preset];
-
-        if (!presetConfig) {
-            return;
-        }
-        usePreset(presetConfig);
-
-        this.currentPreset = preset;
-    }
-}
-
-không cần định nghĩa lại preset
-giao diện phải load danh sách presets, chọn 1 preset và sử dụng service để set preset
 
 
 ```

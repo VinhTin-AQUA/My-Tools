@@ -13,34 +13,89 @@ namespace QuickTools.Services.MongoDB
 
         public MongoDbContext(string connectionString, string databaseName)
         {
-            // Đăng ký mapping cho Icon entity
-            RegisterClassMaps();
+            try
+            {
+                // Validate connection string trước
+                if (string.IsNullOrWhiteSpace(connectionString))
+                {
+                    throw new ArgumentException(
+                        "MongoDB connection string is empty.",
+                        nameof(connectionString));
+                }
 
-            var client = new MongoClient(connectionString);
-            _database = client.GetDatabase(databaseName);
+                if (string.IsNullOrWhiteSpace(databaseName))
+                {
+                    throw new ArgumentException(
+                        "MongoDB database name is empty.",
+                        nameof(databaseName));
+                }
+
+                // Register mapping chỉ một lần
+                RegisterClassMaps();
+
+                // Nếu connection string sai format,
+                // MongoClient sẽ throw exception ở đây
+                var client = new MongoClient(connectionString);
+
+                _database = client.GetDatabase(databaseName);
+            }
+            catch (MongoConfigurationException ex)
+            {
+                throw new InvalidOperationException(
+                    $"MongoDB connection string is invalid: {ex.Message}",
+                    ex);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new InvalidOperationException(
+                    $"MongoDB configuration is invalid: {ex.Message}",
+                    ex);
+            }
         }
 
         private static void RegisterClassMaps()
         {
-            // Đăng ký map cho Entity base class
-            BsonClassMap.RegisterClassMap<Entity>(cm =>
+            if (!BsonClassMap.IsClassMapRegistered(typeof(Entity)))
             {
-                cm.AutoMap();
-                cm.SetIsRootClass(true); // Quan trọng: Đánh dấu là root class
-                cm.MapMember(c => c.Id)
-                    .SetIdGenerator(StringObjectIdGenerator.Instance)
-                    .SetSerializer(new StringSerializer(BsonType.ObjectId))
-                    .SetElementName("_id"); // Map thành _id trong MongoDB
-            });
+                BsonClassMap.RegisterClassMap<Entity>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIsRootClass(true);
 
-            // Đăng ký map cho IconModel (kế thừa từ Entity)
-            BsonClassMap.RegisterClassMap<IconModel>(cm =>
+                    cm.MapMember(c => c.Id)
+                        .SetIdGenerator(StringObjectIdGenerator.Instance)
+                        .SetSerializer(new StringSerializer(BsonType.ObjectId))
+                        .SetElementName("_id");
+                });
+            }
+
+            if (!BsonClassMap.IsClassMapRegistered(typeof(IconModel)))
             {
-                cm.AutoMap();
-                cm.SetIsRootClass(false); // Kế thừa từ Entity
-            });
+                BsonClassMap.RegisterClassMap<IconModel>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIsRootClass(false);
+                });
+            }
         }
 
-        public IMongoCollection<IconModel> Icons => _database.GetCollection<IconModel>("Icons");
+        public IMongoCollection<IconModel> Icons =>
+            _database.GetCollection<IconModel>("Icons");
+
+        public async Task<bool> CheckConnectionAsync()
+        {
+            try
+            {
+                await _database.RunCommandAsync<BsonDocument>(
+                    new BsonDocument("ping", 1)
+                );
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ MongoDB connection failed: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

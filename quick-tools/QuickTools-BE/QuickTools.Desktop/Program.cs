@@ -26,6 +26,7 @@ namespace QuickTools.Windows
             WebUIBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
             
             // icons
+            WebUIBinder.BindAsyncAction(window, "iconHandlerCheckConnection", IconHandler.IconHandlerCheckConnection);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "searchIcons", IconHandler.GetIcons);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "addIcon", IconHandler.AddIcon);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "deleteIcon", IconHandler.DeleteIcon);
@@ -35,7 +36,6 @@ namespace QuickTools.Windows
             // mongoDB setting
             WebUIBinder.BindAsyncAction(window, "getMongoDBSetting", MongoSettingHandler.GetMongoDBSetting);
             WebUIBinder.BindAsyncAction(window, "setMongoDBSetting", MongoSettingHandler.SetMongoDBSetting);
-            
             
             // Cấu hình async
             WebUI.SetConfig(WebuiConfig.asynchronous_response, true);

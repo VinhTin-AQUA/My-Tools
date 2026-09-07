@@ -1,14 +1,68 @@
 using System.Text.Json;
+using QuickTools.Core.Constants;
 using QuickTools.Core.DTOs.Icons;
 using QuickTools.Core.Models;
+using QuickTools.Core.Responses;
 using QuickTools.Services.Icons;
-using QuickTools.Services.MongoDB;
+using QuickTools.Windows.AppSingletons;
 using WebUISharp;
 
 namespace QuickTools.Windows.Handlers.IconHandlers
 {
     public static class IconHandler
     {
+        public static async Task IconHandlerCheckConnection(UIntPtr window, UIntPtr event_type, IntPtr element,
+            UIntPtr event_number, UIntPtr bind_id)
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            try
+            {
+                var iconService = await IconServiceSingleton.GetInstance();
+                if (iconService == null)
+                {
+                    var json = JsonSerializer.Serialize(new WebUIResponse<object>
+                    {
+                        Title = "DisConnected",
+                        Action = ActionConstants.CheckConnection,
+                        Data = null,
+                        Description = "",
+                        Success = false
+                    }, options);
+                    WebUI.InterfaceSetResponse(window, event_number, json);
+                    return;
+                }
+                var jsonSuccess = JsonSerializer.Serialize(new WebUIResponse<object>
+                {
+                    Title = "Connected",
+                    Action = ActionConstants.CheckConnection,
+                    Data = null,
+                    Description = "",
+                    Success = true
+                }, options);
+                WebUI.InterfaceSetResponse(window, event_number, jsonSuccess);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ HandleGetIconsEvent error: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                var json = JsonSerializer.Serialize(new WebUIResponse<object>
+                {
+                    Title = "Connected",
+                    Action = ActionConstants.CheckConnection,
+                    Data = null,
+                    Description = "",
+                    Success = false
+                }, options);
+                WebUI.InterfaceSetResponse(window, event_number, json);
+            }
+        }
+
         public static async Task<object?> GetIcons(UIntPtr window, UIntPtr event_type, IntPtr element,
             UIntPtr event_number, UIntPtr bind_id)
         {
@@ -51,12 +105,12 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                     $"📊 Request: Page={searchIconRequest.Page}, PageSize={searchIconRequest.PageSize}, Keyword='{searchIconRequest.Keyword ?? "(null)"}'");
 
                 // 3. Lấy dữ liệu từ service
-                var iconService = IconServiceSingleton.Instance;
+                var iconService = await IconServiceSingleton.GetInstance();
                 var icons = await iconService.SearchPaginationAsync(searchIconRequest);
                 
                 Console.WriteLine($"✅ Icons retrieved: {icons.Items.Count} items, Total: {icons.TotalCount}");
-                
-                string json = JsonSerializer.Serialize(icons, options);
+
+                var json = JsonSerializer.Serialize(icons, options);
                 WebUI.InterfaceSetResponse(window, event_number, json);
                 return icons;
             }
@@ -73,7 +127,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                     PageSize = 10,
                     TotalPages = 0
                 }));
-                return null;    
+                return null;
             }
         }
 
@@ -93,15 +147,15 @@ namespace QuickTools.Windows.Handlers.IconHandlers
 
             if (addIconRequest == null) return null;
 
-            var iconService = IconServiceSingleton.Instance;
+            var iconService = await IconServiceSingleton.GetInstance();
             var icon = await iconService.CreateAsync(new IconModel
             {
                 Name = addIconRequest.Name,
                 Url = addIconRequest.Url,
                 IconType = addIconRequest.IconType
             });
-            
-            string json = JsonSerializer.Serialize(icon, options);
+
+            var json = JsonSerializer.Serialize(icon, options);
             WebUI.InterfaceSetResponse(window, event_number, json);
 
             return icon;
@@ -123,9 +177,9 @@ namespace QuickTools.Windows.Handlers.IconHandlers
 
             if (deleteIconRequest == null) return null;
 
-            var iconService = IconServiceSingleton.Instance;
+            var iconService = await IconServiceSingleton.GetInstance();
             var r = await iconService.DeleteAsync(deleteIconRequest.Id);
-            string json = JsonSerializer.Serialize(r, options);
+            var json = JsonSerializer.Serialize(r, options);
             WebUI.InterfaceSetResponse(window, event_number, json);
             return r;
         }
@@ -146,17 +200,17 @@ namespace QuickTools.Windows.Handlers.IconHandlers
 
             if (updateIconRequest == null) return null;
 
-            var iconService = IconServiceSingleton.Instance;
+            var iconService = await IconServiceSingleton.GetInstance();
             var r = await iconService.UpdateAsync(updateIconRequest.Id, new IconModel
             {
                 Url = updateIconRequest.Url,
                 Name = updateIconRequest.Name
             });
-            string json = JsonSerializer.Serialize(r, options);
+            var json = JsonSerializer.Serialize(r, options);
             WebUI.InterfaceSetResponse(window, event_number, json);
             return r;
         }
-        
+
         public static async Task<object?> AddMultiIcons(UIntPtr window, UIntPtr event_type, IntPtr element,
             UIntPtr event_number, UIntPtr bind_id)
         {
@@ -173,7 +227,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
 
             if (addIconsRequest == null || addIconsRequest.Count == 0) return null;
 
-            var iconService = IconServiceSingleton.Instance;
+            var iconService = await IconServiceSingleton.GetInstance();
             var icons = addIconsRequest.Select(r => new IconModel
             {
                 Name = r.Name,
@@ -183,29 +237,9 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                 UpdatedAt = DateTime.UtcNow
             }).ToList();
             var icon = await iconService.CreateManyAsync(icons);
-            string json = JsonSerializer.Serialize(icon, options);
+            var json = JsonSerializer.Serialize(icon, options);
             WebUI.InterfaceSetResponse(window, event_number, json);
             return icon;
         }
-    }
-
-    public static class IconServiceSingleton
-    {
-        // Static constructor - tự động chạy 1 lần duy nhất
-        static IconServiceSingleton()
-        {
-            // var connectionString = Environment.GetEnvironmentVariable("MONGODB_CONNECTION") 
-            //                        ?? "mongodb+srv://your-connection-string";
-            // var databaseName = Environment.GetEnvironmentVariable("MONGODB_DATABASE") 
-            //                    ?? "QuickTools";
-
-            var connectionString = "mongodb+srv://tinhovinh_db_user:FBFEDtBwoDoL6Byg@cluster0.v0h03ni.mongodb.net/";
-            var databaseName = "QuickTools";
-
-            var context = new MongoDbContext(connectionString, databaseName);
-            Instance = new IconService(context);
-        }
-
-        public static IIconService Instance { get; }
     }
 }

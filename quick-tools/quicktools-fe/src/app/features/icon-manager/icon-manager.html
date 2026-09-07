@@ -262,3 +262,13 @@
 >
     <app-add-multi-icons></app-add-multi-icons>
 </p-dialog>
+
+@if (!connected()) {
+    <app-status-popup
+        title="Cannot connected"
+        message="Mongo Config is not correct"
+        [success]="false"
+    ></app-status-popup>
+}
+
+    
