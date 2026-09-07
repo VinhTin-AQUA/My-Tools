@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { ThemeService } from '../../../../services/theme-service';
 import { FormsModule } from '@angular/forms';
-import { Select } from '@openng/optimus-ui/select';
 import { LIST_PRESETS, PresetKey } from '../../../../presets/theme-presets';
 
 @Component({
     selector: 'app-themes',
-    imports: [FormsModule, Select],
+    imports: [FormsModule],
     templateUrl: './themes.html',
     styleUrl: './themes.css',
 })

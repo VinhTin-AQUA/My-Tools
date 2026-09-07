@@ -1,1 +1,35 @@
-<p>mongodb-config works!</p>
+<p-toast />
+
+<div class="mx-auto">
+    <h2 class="text-xl font-bold mb-4">MongoDB Configuration</h2>
+
+    <form (ngSubmit)="onSubmit()" #form="ngForm">
+        <div class="mb-4">
+            <label class="block mb-2">Connection String</label>
+            <input
+                type="text"
+                name="connectionString"
+                [(ngModel)]="connectionString"
+                placeholder="mongodb://localhost:27017"
+                class="w-full p-2 border rounded"
+                required
+            />
+            <small class="text-gray-500">Example: mongodb://localhost:27017</small>
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-2">Database Name</label>
+            <input
+                type="text"
+                name="databaseName"
+                [(ngModel)]="databaseName"
+                placeholder="my_database"
+                class="w-full p-2 border rounded"
+                required
+            />
+            <small class="text-gray-500">Example: my_database</small>
+        </div>
+
+        <button type="submit" class="w-full p-2 rounded">Save Configuration</button>
+    </form>
+</div>

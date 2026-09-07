@@ -22,6 +22,7 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     WriteIndented = true
                 };
    
@@ -51,7 +52,8 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
-                    WriteIndented = true
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 };
                 
                 var setMongoDBSettingRequest = JsonSerializer.Deserialize<MongoDBSetting>(jsonData, options);
@@ -70,19 +72,19 @@ namespace QuickTools.Windows.Handlers.MongoSettingHandlers
                 }
    
                 var jsonStorageService = JsonStorageSingleton.Instance;
-                var r = await jsonStorageService.InsertItemAsync<MongoDBSetting>(mongoDBSettingKey, new()
+                var r = await jsonStorageService.ReplaceItemAsync<MongoDBSetting>(mongoDBSettingKey, new()
                 {
                     ConnectionString = setMongoDBSettingRequest.ConnectionString,
                     DatabaseName = setMongoDBSettingRequest.DatabaseName,
-                });
+                }, true);
                 
                 string json = JsonSerializer.Serialize(new WebUIResponse<MongoDBSetting>
                 {
                     Action = "SetMongoDBSetting",
                     Data = setMongoDBSettingRequest,
-                    Description = "setMongoDBSettingRequest is null",
-                    Success = false,
-                    Title = "Cannot set MongoDBSetting"
+                    Description = "",
+                    Success = true,
+                    Title = "Save MongoDBSetting success"
                 }, options);
                 WebUI.InterfaceSetResponse(window, event_number, json);
             }

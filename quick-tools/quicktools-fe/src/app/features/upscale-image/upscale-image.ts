@@ -11,7 +11,6 @@ import { FileSizePipe } from '../../pipes/file-size-pipe';
 import { WebuiService } from '../../services/webui-service';
 
 import { ToastModule } from '@openng/optimus-ui/toast';
-// import { RippleModule } from '@openng/optimus-ui/ripple';
 import { MessageService } from '@openng/optimus-ui/api';
 
 import {

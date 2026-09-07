@@ -14,7 +14,7 @@ namespace QuickTools.Services.LocalStorages
         Task<T> GetItemAsync<T>(string key);
         Task<bool> InsertItemAsync<T>(string key, T item);
         Task<bool> ReplaceItemAsync<T>(string key, T item, bool upsert = false);
-        Task<bool> UpdateItemAsync<T>(string key, object updates);
+        Task<bool> UpdateItemAsync<T>(string key, T updates);
         Task<bool> DeleteItemAsync(string key);
         
         // Query helpers
@@ -175,7 +175,7 @@ namespace QuickTools.Services.LocalStorages
             return await _dataStore.ReplaceItemAsync(key, item, upsert);
         }
 
-        public async Task<bool> UpdateItemAsync<T>(string key, object updates)
+        public async Task<bool> UpdateItemAsync<T>(string key, T updates)
         {
             if (_disposed)
                 throw new ObjectDisposedException(nameof(JsonStorage));

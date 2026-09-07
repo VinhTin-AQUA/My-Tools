@@ -86,6 +86,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
             var addIconRequest = JsonSerializer.Deserialize<AddIconRequest>(jsonData, options);
@@ -115,6 +116,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
             var deleteIconRequest = JsonSerializer.Deserialize<DeleteIconRequest>(jsonData, options);
@@ -137,6 +139,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
             var updateIconRequest = JsonSerializer.Deserialize<UpdateIconRequest>(jsonData, options);
@@ -163,6 +166,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             };
             var addIconsRequest = JsonSerializer.Deserialize<List<AddIconRequest>>(jsonData, options);

@@ -1,0 +1,24 @@
+/* Sử dụng PrimeNG CSS variables cho màu sắc */
+input {
+    background-color: var(--p-form-field-background);
+    color: var(--p-form-field-color);
+    border-color: var(--p-form-field-border-color);
+}
+
+input:focus {
+    border-color: var(--p-primary-color);
+    outline: none;
+}
+
+button {
+    background-color: var(--p-primary-color);
+    color: var(--p-primary-contrast-color);
+}
+
+button:hover {
+    background-color: var(--p-primary-hover-color);
+}
+
+label {
+    color: var(--p-text-color);
+}

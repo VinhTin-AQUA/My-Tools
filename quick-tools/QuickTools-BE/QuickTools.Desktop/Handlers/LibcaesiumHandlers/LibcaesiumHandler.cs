@@ -21,6 +21,7 @@ namespace QuickTools.Windows.Handlers.LibcaesiumHandlers
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     WriteIndented = true
                 };
 

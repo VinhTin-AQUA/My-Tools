@@ -18,6 +18,7 @@ namespace QuickTools.Windows.Handlers.IloveimgHandlers
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true 
             };
             IloveImgUpscaleImageRequest? upscaleImageRequest = JsonSerializer.Deserialize<IloveImgUpscaleImageRequest>(jsonData, options);
