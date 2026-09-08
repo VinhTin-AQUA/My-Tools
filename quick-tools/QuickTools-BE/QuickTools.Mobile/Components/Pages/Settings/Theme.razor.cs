@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 
-namespace QuickTools.Mobile.Components.Pages
+namespace QuickTools.Mobile.Components.Pages.Settings
 {
-    public partial class Settings : ComponentBase
+    public partial class Theme : ComponentBase
     {
         private void SetLight()
         {
