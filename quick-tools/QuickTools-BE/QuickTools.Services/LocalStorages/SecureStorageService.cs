@@ -1,3 +1,6 @@
+//=====================
+
+#if HAS_MAUI
 using System.Runtime.Versioning;
 using System.Text.Json;
 using Microsoft.Maui.Storage;
@@ -175,3 +178,71 @@ namespace QuickTools.Services.LocalStorages
         }
     }
 }
+#else
+using System.Text.Json;
+
+namespace QuickTools.Services.LocalStorages
+{
+    // Fallback stub so project builds on non-MAUI targets.
+    public class SecureStorageService
+    {
+        private readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true
+        };
+
+        public Task<bool> SaveAsync<T>(string key, T data) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+
+        public Task<T?> LoadAsync<T>(string key) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+
+        public Task<T> LoadOrDefaultAsync<T>(string key) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+
+        public Task<bool> ExistsAsync(string key)
+        {
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> DeleteAsync(string key)
+        {
+            return Task.FromResult(false);
+        }
+
+        public Task<string?> GetRawJsonAsync(string key)
+        {
+            return Task.FromResult<string?>(null);
+        }
+
+        public Task<bool> SaveListAsync<T>(string key, List<T> data) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+
+        public Task<List<T>> LoadListAsync<T>(string key) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+
+        public Task<bool> UpdateAsync<T>(string key, Action<T> updateAction) where T : class, new()
+        {
+            throw new PlatformNotSupportedException(
+                "SecureStorageService requires MAUI; build with net8.0-android or provide a non-MAUI implementation.");
+        }
+    }
+}
+#endif

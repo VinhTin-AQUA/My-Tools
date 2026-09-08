@@ -16,16 +16,11 @@
       <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="Microsoft.Maui.Essentials">
-        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.maui.essentials\8.0.100\lib\net8.0-android34.0\Microsoft.Maui.Essentials.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-    
+
     <!-- Only reference MAUI when targeting android; define HAS_MAUI to conditionally compile code -->
     <ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
         <FrameworkReference Include="Microsoft.Maui" />
         <DefineConstants>HAS_MAUI</DefineConstants>
     </ItemGroup>
-    
+
 </Project>
