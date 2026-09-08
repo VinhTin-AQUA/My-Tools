@@ -20,7 +20,10 @@
     <!-- Only reference MAUI when targeting android; define HAS_MAUI to conditionally compile code -->
     <ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
         <FrameworkReference Include="Microsoft.Maui" />
-        <DefineConstants>HAS_MAUI</DefineConstants>
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-android'">
+        <DefineConstants>$(DefineConstants);HAS_MAUI</DefineConstants>
+    </PropertyGroup>
 
 </Project>
