@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-
-
 @Injectable({
     providedIn: 'root',
 })
@@ -14,13 +12,25 @@ export class WebuiService {
      * @param args Các tham số truyền vào
      * @returns Promise với kết quả từ C#
      */
+
     call<T = any>(functionName: string, ...args: any[]): Promise<T> {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                // Gọi webui.call với function name và các tham số
-                // Nếu có nhiều tham số, truyền vào dạng array
-                const result = webui.call(functionName, ...args);
-                resolve(result);
+                // Gọi webui.call và await kết quả
+                const result = await webui.call(functionName, ...args);
+
+                // Nếu result là string, thử parse JSON
+                if (typeof result === 'string') {
+                    try {
+                        const parsedResult = JSON.parse(result);
+                        resolve(parsedResult as T);
+                    } catch (parseError) {
+                        // Nếu không parse được JSON, trả về nguyên string
+                        resolve(result as unknown as T);
+                    }
+                } else {
+                    resolve(result as T);
+                }
             } catch (error) {
                 reject(error);
             }

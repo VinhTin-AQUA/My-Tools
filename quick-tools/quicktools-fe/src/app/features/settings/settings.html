@@ -1,0 +1,63 @@
+<div
+    class="flex flex-col md:flex-row"
+    style="background: var(--p-ground-background); color: var(--p-text-color)"
+>
+    <!-- Sidebar -->
+    <div
+        class="flex-none w-full md:w-72 border-b md:border-b-0 md:border-r p-4 md:p-6 sticky top-16 md:top-16 z-10"
+        style="background: var(--p-ground-background); border-color: var(--p-surface-border)"
+    >
+        <div
+            class="pb-4 md:pb-6 mb-4 md:mb-6 border-b"
+            style="border-color: var(--p-surface-border)"
+        >
+            <app-navigation-component></app-navigation-component>
+            <h2 class="text-lg md:text-xl font-semibold m-0" style="color: var(--p-text-color)">
+                Settings
+            </h2>
+            <p class="text-sm m-0" style="color: var(--p-text-muted-color)">
+                Manage your preferences
+            </p>
+        </div>
+
+        <nav class="flex flex-row md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
+            @for (group of settingsGroups; track group.id) {
+                <a
+                    (click)="navigateTo(group.route)"
+                    [class.active]="isActive(group)"
+                    class="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 rounded-lg cursor-pointer transition-all duration-200 flex-none md:flex-auto min-w-20 md:min-w-0 flex-col md:flex-row text-center md:text-left"
+                    [class]="isActive(group) ? 'active-nav' : ''"
+                    style="color: var(--p-text-color)"
+                >
+                    <div
+                        class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-md flex-none"
+                        style="
+                            background: var(--p-ground-background);
+                            color: var(--p-text-muted-color);
+                        "
+                    >
+                        <i [class]="'pi ' + group.icon" class="text-base md:text-lg"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <span class="block text-xs md:text-sm font-medium">{{ group.label }}</span>
+                        <span
+                            class="hidden md:block text-xs"
+                            style="color: var(--p-text-muted-color)"
+                            >{{ group.description }}</span
+                        >
+                    </div>
+                    <div
+                        class="hidden md:block w-0.5 h-6 rounded-sm flex-none"
+                        [class]="isActive(group) ? 'block' : 'hidden'"
+                        style="background: var(--p-primary-inverse-color)"
+                    ></div>
+                </a>
+            }
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 p-4 md:p-8 overflow-y-auto" style="background: var(--p-ground-background)">
+        <router-outlet></router-outlet>
+    </div>
+</div>

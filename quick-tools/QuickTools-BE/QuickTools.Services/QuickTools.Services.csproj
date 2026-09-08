@@ -11,7 +11,15 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="JsonFlatFileDataStore" Version="2.4.3" />
+      <PackageReference Include="MongoDB.Driver" Version="3.11.1" />
       <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Maui.Essentials">
+        <HintPath>..\..\..\..\..\.nuget\packages\microsoft.maui.essentials\8.0.100\lib\net8.0-android34.0\Microsoft.Maui.Essentials.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

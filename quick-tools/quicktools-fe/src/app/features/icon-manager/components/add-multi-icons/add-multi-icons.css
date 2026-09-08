@@ -1,0 +1,39 @@
+:host {
+    display: block;
+
+    background: var(--p-surface-background);
+    color: var(--p-text-color);
+}
+
+:host h2 {
+    color: var(--p-text-color);
+}
+
+:host p {
+    color: var(--p-text-muted-color);
+}
+
+:host pre {
+    background: var(--p-surface-card);
+    color: var(--p-text-color);
+    border: 1px solid var(--p-surface-border);
+}
+
+:host textarea {
+    background: var(--p-surface-card);
+    color: var(--p-text-color);
+    border-color: var(--p-surface-border);
+}
+
+:host textarea::placeholder {
+    color: var(--p-text-muted-color);
+}
+
+:host textarea:hover {
+    border-color: var(--p-primary-color);
+}
+
+:host textarea:focus {
+    border-color: var(--p-primary-color);
+    box-shadow: 0 0 0 1px var(--p-primary-color);
+}

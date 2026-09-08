@@ -1,0 +1,32 @@
+import { Component, inject } from '@angular/core';
+import { ThemeService } from '../../../../services/theme-service';
+import { FormsModule } from '@angular/forms';
+import { LIST_PRESETS, PresetKey } from '../../../../presets/theme-presets';
+
+@Component({
+    selector: 'app-themes',
+    imports: [FormsModule],
+    templateUrl: './themes.html',
+    styleUrl: './themes.css',
+})
+export class Themes {
+    private readonly themeService = inject(ThemeService);
+
+    readonly presets = LIST_PRESETS;
+
+    selectedPreset: PresetKey = this.themeService.preset;
+
+    get preset() {
+        const student = this.presets.find(s => s.presetKey === this.selectedPreset);
+        return student?.name ?? "";
+    }
+
+    onPresetChange(preset: PresetKey | null): void {
+        if (!preset) {
+            return;
+        }
+
+        this.themeService.setPreset(preset);
+        this.selectedPreset = preset;
+    }
+}

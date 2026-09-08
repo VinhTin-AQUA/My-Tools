@@ -1,0 +1,274 @@
+<div class="icons-page min-h-screen">
+    <p-toast />
+
+    <div style="margin-bottom: 10px">
+        <app-navigation-component></app-navigation-component>
+    </div>
+
+    <div class="mx-auto w-full p-4 sm:p-6 lg:p-8">
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+        <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <!-- Title -->
+            <div class="min-w-0">
+                <h1 class="truncate text-2xl font-semibold tracking-tight sm:text-3xl">Icons</h1>
+
+                <p class="icons-text-muted mt-1 text-sm">Manage and browse your icon collection</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
+                <!-- Add multi icon -->
+                <p-button
+                    label="Add multi icon"
+                    icon="pi pi-images"
+                    severity="primary"
+                    [outlined]="true"
+                    (onClick)="openAddMultiIconDialog()"
+                    styleClass="w-full sm:w-auto"
+                />
+
+                <!-- Add single icon -->
+                <p-button
+                    label="Add icon"
+                    icon="pi pi-plus"
+                    severity="primary"
+                    (onClick)="openAddDialog()"
+                    styleClass="w-full sm:w-auto"
+                />
+            </div>
+        </header>
+
+        <!-- =====================================================
+             SEARCH TOOLBAR
+        ====================================================== -->
+        <section
+            class="icons-surface mb-6 flex flex-col gap-3 rounded-xl sm:flex-row sm:items-center"
+        >
+            <!-- Search -->
+            <div class="min-w-0 flex-1">
+                <p-inputgroup>
+                    <p-inputgroup-addon>
+                        <i class="pi pi-search"></i>
+                    </p-inputgroup-addon>
+
+                    <input
+                        pInputText
+                        type="text"
+                        class="w-full"
+                        placeholder="Search icons..."
+                        [value]="searchTerm()"
+                        (input)="searchTerm.set($any($event.target).value)"
+                        (keyup.enter)="page.set(1); searchicons()"
+                    />
+                </p-inputgroup>
+            </div>
+
+            <!-- Search button -->
+            <p-button
+                label="Search"
+                icon="pi pi-search"
+                severity="primary"
+                (onClick)="page.set(1); searchicons()"
+                styleClass="w-full sm:w-auto"
+            />
+
+            <!-- Clear search -->
+            @if (searchTerm()) {
+                <p-button
+                    icon="pi pi-times"
+                    severity="secondary"
+                    [text]="true"
+                    [rounded]="true"
+                    ariaLabel="Clear search"
+                    (onClick)="searchTerm.set(''); page.set(1); searchicons()"
+                />
+            }
+        </section>
+
+        <!-- =====================================================
+             CONTENT
+        ====================================================== -->
+        @if (icons().length > 0) {
+            <!-- =================================================
+                 ICON GRID
+            ================================================== -->
+            <section
+                class="grid grid-cols-[repeat(auto-fill,minmax(140px,150px))] justify-start gap-3 sm:gap-4"
+            >
+                @for (icon of icons(); track icon.id) {
+                    <article
+                        class="icons-card relative flex h-37.5 w-37.5 flex-col overflow-hidden rounded-lg border"
+                    >
+                        <!-- Image -->
+                        <div class="flex min-h-0 flex-1 items-center justify-center p-2">
+                            <img
+                                [src]="icon.url"
+                                [alt]="icon.name"
+                                class="max-h-full max-w-full object-contain"
+                            />
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="flex h-9 shrink-0 items-center gap-1 px-2">
+                            <!-- Name -->
+                            <span
+                                class="icons-text min-w-0 flex-1 truncate text-xs"
+                                [pTooltip]="icon.name"
+                            >
+                                {{ icon.name }}
+                            </span>
+
+                            <!-- Actions -->
+                            <p-button
+                                icon="pi pi-ellipsis-v"
+                                [text]="true"
+                                [rounded]="true"
+                                size="small"
+                                ariaLabel="More actions"
+                                (onClick)="openIconMenu($event, icon)"
+                            />
+                        </div>
+                    </article>
+                }
+
+                <!-- Single popup menu -->
+                <p-menu #iconMenu [popup]="true" [model]="iconMenuItems" appendTo="body" />
+            </section>
+
+            <!-- =================================================
+                 PAGINATION
+            ================================================== -->
+            <section
+                class="icons-surface mt-6 flex flex-col gap-3 rounded-xl border p-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+                <!-- Current page -->
+                <div class="icons-text-muted text-sm">Page {{ page() }}</div>
+
+                <!-- Paginator -->
+                <div class="w-full overflow-x-auto sm:w-auto">
+                    <p-paginator
+                        [first]="(page() - 1) * pageSize()"
+                        [rows]="pageSize()"
+                        [totalRecords]="icons().length"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Page {currentPage}"
+                        (onPageChange)="onPageChange()"
+                    />
+                </div>
+            </section>
+        } @else {
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================== -->
+            <section
+                class="icons-surface flex min-h-96 flex-col items-center justify-center rounded-xl border border-dashed px-6 py-12 text-center"
+            >
+                <!-- Empty icon -->
+                <div
+                    class="icons-highlight mb-4 flex h-16 w-16 shrink-0 items-center justify-center rounded-full"
+                >
+                    <i class="pi pi-images text-2xl"></i>
+                </div>
+
+                <!-- =================================================
+                     SEARCH EMPTY STATE
+                ================================================== -->
+                @if (searchTerm()) {
+                    <h2 class="text-lg font-semibold">No icons found</h2>
+
+                    <p class="icons-text-muted mt-1 max-w-md text-sm">
+                        No icons match
+                        <span class="icons-text font-medium"> "{{ searchTerm() }}" </span>. Try
+                        another search term.
+                    </p>
+
+                    <p-button
+                        label="Clear search"
+                        icon="pi pi-times"
+                        severity="secondary"
+                        [outlined]="true"
+                        styleClass="mt-5"
+                        (onClick)="searchTerm.set(''); page.set(1); searchicons()"
+                    />
+                } @else {
+                    <!-- =================================================
+                         NO DATA STATE
+                    ================================================== -->
+                    <h2 class="text-lg font-semibold">No icons yet</h2>
+
+                    <p class="icons-text-muted mt-1 max-w-md text-sm">
+                        Start building your icon collection by adding your first icon.
+                    </p>
+
+                    <!-- Empty state actions -->
+                    <div class="mt-5 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                        <p-button
+                            label="Add multi icon"
+                            icon="pi pi-images"
+                            severity="primary"
+                            [outlined]="true"
+                            (onClick)="openAddMultiIconDialog()"
+                            styleClass="w-full sm:w-auto"
+                        />
+
+                        <p-button
+                            label="Add icon"
+                            icon="pi pi-plus"
+                            severity="primary"
+                            (onClick)="openAddDialog()"
+                            styleClass="w-full sm:w-auto"
+                        />
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</div>
+
+<!-- =============================================================
+     ADD ICON DIALOG
+============================================================== -->
+<p-dialog
+    header="Add icon"
+    [visible]="showAddDialog()"
+    (visibleChange)="showAddDialog.set($event)"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{
+        width: 'min(32rem, calc(100vw - 2rem))',
+    }"
+>
+    <div class="flex flex-col gap-5">
+        <app-add-icon (closePopup)="closeAddDialog()"></app-add-icon>
+    </div>
+</p-dialog>
+
+<!-- =============================================================
+     ADD MULTI ICONS DIALOG
+============================================================== -->
+<p-dialog
+    header="Add multi icons"
+    [visible]="showAddMultiIconsDialog()"
+    (visibleChange)="closeAddMultiIconDialog()"
+    [modal]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{
+        width: '100%',
+    }"
+>
+    <app-add-multi-icons></app-add-multi-icons>
+</p-dialog>
+
+@if (!connected()) {
+    <app-status-popup
+        title="Cannot connected"
+        message="Mongo Config is not correct"
+        [success]="false"
+    ></app-status-popup>
+}
+
+    

@@ -1,0 +1,111 @@
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.icons-page {
+    background: var(--p-background);
+    color: var(--p-text-color);
+}
+
+/* =========================================================
+   SURFACE
+   ========================================================= */
+
+.icons-surface {
+    background: var(--p-content-background);
+    border-color: var(--p-content-border-color);
+}
+
+/* =========================================================
+   BACKGROUND
+   ========================================================= */
+
+.icons-background {
+    background: var(--p-background);
+}
+
+/* =========================================================
+   TEXT
+   ========================================================= */
+
+.icons-text {
+    color: var(--p-text-color);
+}
+
+.icons-text-muted {
+    color: var(--p-text-muted-color, var(--p-text-secondary-color));
+}
+
+.icons-text-hover {
+    transition:
+        color var(--p-transition-duration, 150ms)
+        var(--p-transition-timing-function, ease);
+}
+
+.icons-text-hover\:hover:hover {
+    color: var(--p-text-hover-color);
+}
+
+/* =========================================================
+   PRIMARY
+   ========================================================= */
+
+.icons-primary {
+    color: var(--p-primary-color);
+}
+
+/* =========================================================
+   DANGER
+   ========================================================= */
+
+.icons-danger {
+    color: var(--p-danger-color);
+}
+
+/* =========================================================
+   HIGHLIGHT
+   ========================================================= */
+
+.icons-highlight {
+    background: var(--p-highlight-background);
+    color: var(--p-highlight-color);
+}
+
+.icons-highlight\:focus:focus,
+.icons-highlight\:focus-visible:focus-visible {
+    background: var(--p-highlight-focus-background);
+    color: var(--p-highlight-focus-color);
+}
+
+/* =========================================================
+   ICON CARD
+   ========================================================= */
+
+.icons-card {
+    background: var(--p-content-background);
+    border-color: var(--p-content-border-color);
+
+    transition:
+        border-color var(--p-transition-duration, 150ms)
+            var(--p-transition-timing-function, ease),
+        background var(--p-transition-duration, 150ms)
+            var(--p-transition-timing-function, ease);
+}
+
+.icons-card\:hover:hover {
+    background: var(--p-content-hover-background);
+    border-color: var(--p-primary-color);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+    .icons-card {
+        width: 100%;
+        max-width: 150px;
+    }
+}
+

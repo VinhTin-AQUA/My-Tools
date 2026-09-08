@@ -1,0 +1,10 @@
+/* Theme option selected state */
+.theme-option:has(input:checked) {
+    background-color: var(--color-primary-soft);
+}
+
+/* Keyboard accessibility */
+.theme-option:has(input:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}

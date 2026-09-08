@@ -1,0 +1,179 @@
+@page "/settings/mongoconfig"
+
+<section class="overflow-hidden rounded-xl border border-[var(--color-border)]
+                bg-[var(--color-surface)] shadow-sm">
+
+    <!-- Section Header -->
+    <div class="border-b border-[var(--color-border)] px-5 py-5 sm:px-6">
+        <div class="flex items-start gap-4">
+
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg
+                        bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+
+                <svg class="h-5 w-5"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+
+                    <ellipse cx="12" cy="5" rx="7" ry="3"/>
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M5 5v7c0 1.657 3.134 3 7 3s7-1.343 7-3V5"/>
+
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M5 12v7c0 1.657 3.134 3 7 3s7-1.343 7-3v-7"/>
+                </svg>
+            </div>
+
+            <div class="min-w-0">
+                <h2 class="text-base font-semibold text-[var(--color-text-primary)]">
+                    MongoDB
+                </h2>
+
+                <p class="mt-1 text-sm leading-5 text-[var(--color-text-secondary)]">
+                    Configure the MongoDB database connection used by the application.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MongoDB Form -->
+    <div class="px-5 py-5 sm:px-6 sm:py-6">
+
+        <div class="space-y-5">
+
+            <!-- Connection String -->
+            <div>
+                <label class="mb-2 block text-sm font-medium
+                              text-[var(--color-text-primary)]">
+                    Connection String
+                </label>
+
+                <input type="text"
+                       @bind="MongoConnectionString"
+                       placeholder="mongodb://localhost:27017"
+                       class="w-full rounded-lg border border-[var(--color-border)]
+                              bg-[var(--color-surface)]
+                              px-3 py-2.5 text-sm
+                              text-[var(--color-text-primary)]
+                              placeholder:text-[var(--color-text-disabled)]
+                              outline-none transition-all duration-200
+                              focus:border-[var(--color-primary)]
+                              focus:ring-2
+                              focus:ring-[var(--color-primary-ring)]"/>
+
+                <p class="mt-1.5 text-xs text-[var(--color-text-secondary)]">
+                    Example:
+                    <code class="rounded bg-[var(--color-background)]
+                                 px-1.5 py-0.5">
+                        mongodb://localhost:27017
+                    </code>
+                </p>
+            </div>
+
+            <!-- Database Name -->
+            <div>
+                <label class="mb-2 block text-sm font-medium
+                              text-[var(--color-text-primary)]">
+                    Database Name
+                </label>
+
+                <input type="text"
+                       @bind="MongoDatabaseName"
+                       placeholder="my_database"
+                       class="w-full rounded-lg border border-[var(--color-border)]
+                              bg-[var(--color-surface)]
+                              px-3 py-2.5 text-sm
+                              text-[var(--color-text-primary)]
+                              placeholder:text-[var(--color-text-disabled)]
+                              outline-none transition-all duration-200
+                              focus:border-[var(--color-primary)]
+                              focus:ring-2
+                              focus:ring-[var(--color-primary-ring)]"/>
+
+                <p class="mt-1.5 text-xs text-[var(--color-text-secondary)]">
+                    Example:
+                    <code class="rounded bg-[var(--color-background)]
+                                 px-1.5 py-0.5">
+                        my_database
+                    </code>
+                </p>
+            </div>
+
+            <!-- Save -->
+            <div class="flex justify-end pt-2">
+
+                <button type="button"
+                        @onclick="SaveMongoDb"
+                        disabled="@IsSavingMongoDb"
+                        class="inline-flex items-center gap-2 rounded-lg
+                               bg-[var(--color-primary)]
+                               px-4 py-2.5 text-sm font-medium
+                               text-white
+                               transition-all duration-200
+                               hover:bg-[var(--color-primary-hover)]
+                               disabled:cursor-not-allowed
+                               disabled:opacity-50">
+
+                    @if (IsSavingMongoDb)
+                    {
+                        <svg class="h-4 w-4 animate-spin"
+                             viewBox="0 0 24 24"
+                             fill="none">
+
+                            <circle cx="12"
+                                    cy="12"
+                                    r="9"
+                                    stroke="currentColor"
+                                    stroke-width="3"
+                                    class="opacity-25"/>
+
+                            <path d="M21 12a9 9 0 0 0-9-9"
+                                  stroke="currentColor"
+                                  stroke-width="3"
+                                  stroke-linecap="round"/>
+                        </svg>
+
+                        <span>Saving...</span>
+                    }
+                    else
+                    {
+                        <svg class="h-4 w-4"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="m5 12 4 4L19 6"/>
+                        </svg>
+
+                        <span>Save Configuration</span>
+                    }
+
+                </button>
+
+            </div>
+
+            @if (!string.IsNullOrEmpty(MongoStatusMessage))
+            {
+                <div class="rounded-lg border px-4 py-3
+                            text-sm
+                            @(MongoSaveSucceeded
+                                                            ? "border-[var(--color-success)]/20 bg-[var(--color-success)]/5 text-[var(--color-success)]"
+                                                            : "border-[var(--color-error)]/20 bg-[var(--color-error)]/5 text-[var(--color-error)]")">
+
+                    @MongoStatusMessage
+                </div>
+            }
+
+        </div>
+
+    </div>
+</section>
+

@@ -3,6 +3,7 @@ using QuickTools.Mobile.Components.Themes;
 using QuickTools.Mobile.Services.Implementations;
 using QuickTools.Mobile.Services.Interfaces;
 using Plugin.LocalNotification;
+using QuickTools.Services.LocalStorages;
 
 namespace QuickTools.Mobile;
 
@@ -23,6 +24,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IFileStorageService, FileStorageService>();
         builder.Services.AddScoped<IExternalStoreService, ExternalStoreService>();
         builder.Services.AddSingleton<NotificationService>();
+        builder.Services.AddSingleton<SecureStorageService>();
         
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

@@ -1,5 +1,80 @@
-:host {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+/* =========================================================
+   Back Button
+   Catppuccin / PrimeNG
+   ========================================================= */
+
+.back-button {
+    min-width: 2.75rem;
+    height: 2.75rem;
+
+    padding: 0;
+
+    color: var(--p-secondary-color);
+    background: var(--p-background-color);
+
+    border: 1px solid var(--p-secondary-color);
+    border-radius: var(--p-button-border-radius, 0.75rem);
+
+    transition:
+        color 150ms ease,
+        background-color 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease,
+        transform 150ms ease;
+}
+
+/* Icon */
+.back-button .p-button-icon {
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+/* Hover */
+.back-button:hover {
+    color: var(--p-secondary-contrast-color);
+    background: var(--p-secondary-color);
+    border-color: var(--p-secondary-color);
+
+    transform: translateX(-2px);
+}
+
+/* Active */
+.back-button:active {
+    color: var(--p-secondary-contrast-color);
+    background: var(--p-secondary-active-color);
+    border-color: var(--p-secondary-active-color);
+
+    transform: translateX(-1px);
+}
+
+/* Focus */
+.back-button:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 var(--p-focus-ring-width, 2px)
+            color-mix(
+                in srgb,
+                var(--p-focus-ring-color, var(--p-primary-color)) 30%,
+                transparent
+            );
+}
+
+/* Disabled */
+.back-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 640px) {
+    .back-button {
+        min-width: 2.5rem;
+        height: 2.5rem;
+    }
 }

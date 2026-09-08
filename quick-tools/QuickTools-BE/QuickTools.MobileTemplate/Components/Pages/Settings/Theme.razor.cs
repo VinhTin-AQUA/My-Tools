@@ -1,9 +1,9 @@
-using QuickTools.MobileTemplate.Components.Themes;
+using Microsoft.AspNetCore.Components;
 
-namespace QuickTools.MobileTemplate.Components.Pages
+namespace QuickTools.MobileTemplate.Components.Pages.Settings
 {
-    public partial class Settings
-    {
+    public partial class Theme : ComponentBase
+    {  
         private void SetLight()
         {
             ThemeService.SetLight();
@@ -17,5 +17,6 @@ namespace QuickTools.MobileTemplate.Components.Pages
         // private string SelectedTheme { get; set; } = "light";
         private bool IsLightTheme => ThemeService.CurrentTheme.Name == Themes.Themes.Light.Name;
         private bool IsDarkTheme => ThemeService.CurrentTheme.Name == Themes.Themes.Dark.Name;
+
     }
 }

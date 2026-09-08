@@ -6,213 +6,204 @@
     align-items: center;
     justify-content: center;
 
+    box-sizing: border-box;
+    width: 100%;
+
     padding: 2rem;
     margin-bottom: 10px;
 
-    box-sizing: border-box;
     text-align: center;
 
-    background-color: color-mix(in srgb, var(--p-content-background) 95%, transparent);
+    background: var(--p-surface-background);
+    color: var(--p-text-color);
 
-    border: 1px solid var(--p-content-border-color);
-    border-radius: 12px;
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-content-border-radius, 12px);
 
-    /* tạo cảm giác nổi */
     box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.12),
-        0 2px 8px rgba(0, 0, 0, 0.08);
+        0 10px 30px color-mix(in srgb, var(--p-text-color) 10%, transparent),
+        0 2px 8px color-mix(in srgb, var(--p-text-color) 6%, transparent);
 
-    /* tách nhẹ khỏi background */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
+/* =========================================================
+   File List
+   ========================================================= */
+
 .file-list {
-    margin-top: 10px;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+
     width: 100%;
+    margin-top: 10px;
 }
+
+/* =========================================================
+   File Card
+   ========================================================= */
 
 .file-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    width: 100%;
+    box-sizing: border-box;
+
     gap: 1rem;
+    padding: 0.5rem 0.75rem;
 
-    padding: 0.2rem 0.5rem;
+    background: var(--p-surface-card);
+    color: var(--p-text-color);
 
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.2s ease;
-
-    &:hover {
-        border-color: #93c5fd;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-        transform: translateY(-1px);
-    }
-}
-
-.file-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    min-width: 0;
-    flex: 1;
-}
-
-.file-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 36px;
-    height: 36px;
-
-    flex-shrink: 0;
-
-    color: #3b82f6;
-    background: #eff6ff;
-    border-radius: 8px;
-
-    font-size: 1rem;
-}
-
-.file-name {
-    min-width: 0;
-    flex: 1;
-    text-align: left;
-    span {
-        display: block;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        color: #374151;
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
-}
-
-.file-size {
-    flex-shrink: 0;
-}
-
-/* Drag & Drop */
-.file-upload-container.dragging {
-    border-color: #3b82f6;
-    background-color: #eff6ff;
-
-    box-shadow:
-        0 0 0 3px rgba(59, 130, 246, 0.12),
-        0 10px 30px rgba(59, 130, 246, 0.12);
+    border: 1px solid var(--p-surface-border);
+    border-radius: var(--p-content-border-radius, 10px);
 
     transition:
-        border-color 0.2s ease,
         background-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-/* Text khi đang kéo file vào */
-.file-upload-container.dragging .file-upload-container-text {
-    color: #3b82f6;
-}
-
-.file-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-
-    padding: 0.2rem 0.5rem;
-
-    background: var(--p-content-background);
-    border: 1px solid var(--p-content-border-color);
-    border-radius: 10px;
-
-    transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
         transform 0.2s ease;
-
-    &:hover {
-        border-color: var(--p-primary-color);
-        background: var(--p-content-hover-background);
-        box-shadow: 0 4px 12px var(--p-content-border-color);
-        transform: translateY(-1px);
-    }
 }
+
+.file-card:hover {
+    background: var(--p-surface-hover);
+    border-color: var(--p-primary-color);
+
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--p-text-color) 8%, transparent);
+
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   File Info
+   ========================================================= */
 
 .file-info {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    min-width: 0;
+
     flex: 1;
+    min-width: 0;
+
+    gap: 0.75rem;
 }
+
+/* =========================================================
+   File Icon
+   ========================================================= */
 
 .file-icon {
     display: flex;
     align-items: center;
     justify-content: center;
 
+    flex-shrink: 0;
+
     width: 36px;
     height: 36px;
-
-    flex-shrink: 0;
 
     color: var(--p-primary-color);
     background: var(--p-highlight-background);
+
     border-radius: 8px;
 
     font-size: 1rem;
 }
 
+/* =========================================================
+   File Name
+   ========================================================= */
+
 .file-name {
-    min-width: 0;
     flex: 1;
+    min-width: 0;
+
     text-align: left;
-
-    span {
-        display: block;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        color: var(--p-text-color);
-        font-size: 0.95rem;
-        font-weight: 500;
-    }
 }
+
+.file-name span {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--p-text-color);
+
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   File Size
+   ========================================================= */
 
 .file-size {
     flex-shrink: 0;
+
+    color: var(--p-text-muted-color);
+    font-size: 0.875rem;
 }
 
-/* Drag & Drop */
+/* =========================================================
+   Drag & Drop
+   ========================================================= */
+
 .file-upload-container.dragging {
+    background: var(--p-highlight-background);
+    color: var(--p-highlight-color);
+
     border-color: var(--p-primary-color);
-    background-color: var(--p-highlight-focus-background);
 
     box-shadow:
-        0 0 0 3px var(--p-highlight-focus-background),
-        0 10px 30px var(--p-highlight-focus-background);
-
-    transition:
-        border-color 0.2s ease,
-        background-color 0.2s ease,
-        box-shadow 0.2s ease;
+        0 0 0 3px color-mix(in srgb, var(--p-primary-color) 15%, transparent),
+        0 10px 30px color-mix(in srgb, var(--p-primary-color) 12%, transparent);
 }
 
-/* Text khi đang kéo file vào */
 .file-upload-container.dragging .file-upload-container-text {
     color: var(--p-primary-color);
+}
+
+.file-upload-container.dragging .file-icon {
+    color: var(--p-primary-color);
+    background: var(--p-highlight-focus-background);
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .file-upload-container {
+        padding: 1.25rem;
+    }
+
+    .file-card {
+        gap: 0.75rem;
+    }
+
+    .file-size {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .file-upload-container {
+        padding: 1rem;
+    }
+
+    .file-card {
+        align-items: flex-start;
+    }
+
+    .file-size {
+        display: none;
+    }
 }

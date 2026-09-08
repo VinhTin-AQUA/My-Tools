@@ -48,6 +48,8 @@ export class Home {
         { icon: '🖼️', name: 'Split Img', route: '/profile' },
         { icon: '🖼️', name: 'Canvas Compress Image', route: '/canvas-compress-image' },
         { icon: '⬇', name: 'Libcaesium Compress', route: '/libcaesium-compress' },
+        { icon: '😀', name: 'Icon Manager', route: '/icon-manager' },
+        { icon: '⚙️', name: 'Settings', route: '/settings' },
     ];
 
     searchTerm: string = '';
@@ -70,8 +72,6 @@ export class Home {
     getIpInformation(): void {
         this.ipService.getIpInformation().subscribe({
             next: (result: IpApiResponse) => {
-                console.log(result);
-
                 const values: Record<string, string> = {
                     publicIp: result.query || '-',
                     as: `${result.as}`,

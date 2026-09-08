@@ -1,0 +1,30 @@
+
+/* Settings.razor.css */
+
+.settings-icon {
+    background: color-mix(
+            in srgb,
+            var(--color-primary) 10%,
+            transparent
+    );
+
+    color: var(--color-primary);
+}
+
+.settings-success {
+    color: var(--color-success);
+    background-color: color-mix(
+            in srgb,
+            var(--color-success) 6%,
+            var(--color-surface)
+    );
+}
+
+.settings-error {
+    color: var(--color-error);
+    background-color: color-mix(
+            in srgb,
+            var(--color-error) 6%,
+            var(--color-surface)
+    );
+}

@@ -19,10 +19,6 @@ export class FileUploadComponent {
         const fileList = event.currentFiles || [];
         const filesArray = Array.isArray(fileList) ? fileList : [];
         this.handleSelectFiles(filesArray);
-
-        // filesArray.forEach((file, index) => {
-        //     console.log(`File ${index + 1}: ${file.name} (${file.size} bytes)`);
-        // });
     }
 
     onDragOver(event: DragEvent) {
