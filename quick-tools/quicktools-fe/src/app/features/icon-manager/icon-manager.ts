@@ -145,15 +145,10 @@ export class IconManager {
                 pageSize: this.pageSize(),
             };
 
-            console.log(request);
-
             const r = await this.webuiService.callJson<SearchIconResponse>('searchIcons', request);
-
-            console.log(r);
 
             if (r) {
                 this.icons.set(r.items);
-                console.log(this.icons());
             } else {
                 this.messageService.add({
                     severity: 'error',
@@ -177,7 +172,6 @@ export class IconManager {
             id: icon.id,
         };
         const r = await this.webuiService.callJson<boolean>('deleteIcon', deleteIconRequest);
-        console.log(r);
 
         if (r) {
             this.messageService.add({

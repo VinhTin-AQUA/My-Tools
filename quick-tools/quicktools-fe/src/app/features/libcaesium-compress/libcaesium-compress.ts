@@ -119,8 +119,6 @@ export class LibcaesiumCompress {
             quality: this.quality,
             compressImageRequestItems: updatedFiles,
         };
-
-        console.log(data);
         
         await this.webuiService.callJson('libcaesiumCompressImage', data);
     }

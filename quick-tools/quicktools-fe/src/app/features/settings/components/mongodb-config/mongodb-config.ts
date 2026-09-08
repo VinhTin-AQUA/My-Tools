@@ -22,9 +22,6 @@ export class MongodbConfig {
     constructor(private webUIService: WebuiService) {}
 
     async onSubmit() {
-        console.log('Connection String:', this.connectionString);
-        console.log('Database Name:', this.databaseName);
-
         const r = await this.webUIService.callJson<WebUIResponse<MongoDBSetting>>(
             'setMongoDBSetting',
             {
@@ -32,9 +29,6 @@ export class MongodbConfig {
                 databaseName: this.databaseName,
             },
         );
-
-        console.log(r);
-        
 
         this.messageService.add({
             severity: 'success',

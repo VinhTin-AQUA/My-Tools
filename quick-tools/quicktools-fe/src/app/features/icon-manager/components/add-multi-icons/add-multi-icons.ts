@@ -47,8 +47,6 @@ export class AddMultiIcons {
             });
         }
 
-        console.log(items);
-
         const r = await this.webuiService.callJson('addMultiIcons', items);
 
         if (r) {
