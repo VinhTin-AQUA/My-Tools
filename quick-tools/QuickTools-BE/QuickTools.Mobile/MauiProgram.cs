@@ -24,7 +24,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IFileStorageService, FileStorageService>();
         builder.Services.AddScoped<IExternalStoreService, ExternalStoreService>();
         builder.Services.AddSingleton<NotificationService>();
-        builder.Services.AddSingleton<SecureStorageService>();
+        builder.Services.AddSingleton<ISecureStorageService, SecureStorageService>();
         
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

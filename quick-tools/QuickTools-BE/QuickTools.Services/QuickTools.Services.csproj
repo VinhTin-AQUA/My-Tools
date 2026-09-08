@@ -16,14 +16,4 @@
       <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
     </ItemGroup>
 
-
-    <!-- Only reference MAUI when targeting android; define HAS_MAUI to conditionally compile code -->
-    <ItemGroup Condition="'$(TargetFramework)'=='net8.0-android'">
-        <FrameworkReference Include="Microsoft.Maui" />
-    </ItemGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-android'">
-        <DefineConstants>$(DefineConstants);HAS_MAUI</DefineConstants>
-    </PropertyGroup>
-
 </Project>

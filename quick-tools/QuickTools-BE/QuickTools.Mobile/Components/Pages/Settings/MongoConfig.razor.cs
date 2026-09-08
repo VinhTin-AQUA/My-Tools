@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Components;
-using QuickTools.Services.LocalStorages;
+using QuickTools.Mobile.Services.Interfaces;
 
 namespace QuickTools.Mobile.Components.Pages.Settings
 {
     public partial class MongoConfig : ComponentBase
     {
-        [Inject] protected SecureStorageService SecureStorageService { get; set; } = default!;
+        [Inject] protected ISecureStorageService SecureStorageService { get; set; } = default!;
         
         private readonly string _mongoConfigKey = "MongoConfigKey";
         
