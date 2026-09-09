@@ -1,0 +1,191 @@
+@page "/icon-memes"
+
+<div class="icons-page min-h-screen">
+    <div style="margin-bottom:10px">
+        <div class="bg-surface p-4 shadow-sm">
+            <span class="icons-text font-medium">Navigation</span>
+        </div>
+    </div>
+
+    <div class="mx-auto w-full p-4 sm:p-6 lg:p-8">
+        <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="min-w-0">
+                <h1 class="truncate text-2xl font-semibold tracking-tight sm:text-3xl icons-text">
+                    Icons
+                </h1>
+                <p class="icons-text-muted mt-1 text-sm">
+                    Manage and browse your icon collection
+                </p>
+            </div>
+
+            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
+                <button type="button"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] w-full sm:w-auto"
+                        @onclick="OpenAddMultiIconDialog">
+                    <i class="pi pi-images"></i>
+                    Add multi icon
+                </button>
+
+                <button type="button"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white w-full sm:w-auto"
+                        @onclick="OpenAddDialog">
+                    <i class="pi pi-plus"></i>
+                    Add icon
+                </button>
+            </div>
+        </header>
+
+        <section class="icons-surface mb-6 rounded-xl border p-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center rounded-lg border border-[var(--color-border)] bg-white">
+                    <span class="flex items-center px-3 text-gray-500">
+                        <i class="pi pi-search"></i>
+                    </span>
+
+                    <input type="text"
+                           class="w-full border-0 bg-white px-0 py-2 text-sm text-gray-900 outline-none focus:outline-none focus:ring-0"
+                           placeholder="Search icons..."
+                           value="@searchTerm"
+                           @oninput="OnSearchInput" />
+                </div>
+            </div>
+
+            <button type="button"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white w-full sm:w-auto"
+                    @onclick="SearchFromButton">
+                <i class="pi pi-search"></i>
+                Search
+            </button>
+
+            @if (!string.IsNullOrEmpty(searchTerm))
+            {
+                <button type="button"
+                        class="inline-flex items-center justify-center rounded-full p-2 text-gray-600 w-full sm:w-auto"
+                        @onclick="ClearSearch">
+                    <i class="pi pi-times"></i>
+                </button>
+            }
+        </section>
+
+        @if (icons.Count > 0)
+        {
+            <section class="grid grid-cols-[repeat(auto-fill,minmax(140px,150px))] justify-start gap-3 sm:gap-4">
+                @foreach (var icon in icons)
+                {
+                    <article class="icons-card relative flex h-[150px] w-[150px] flex-col overflow-hidden rounded-lg border">
+                        <div class="flex min-h-0 flex-1 items-center justify-center p-2">
+                            <img src="@icon.Url"
+                                 alt="@icon.Name"
+                                 class="max-h-full max-w-full object-contain" />
+                        </div>
+
+                        <div class="flex h-9 shrink-0 items-center gap-1 px-2">
+                            <span class="icons-text min-w-0 flex-1 truncate text-xs">
+                                @icon.Name
+                            </span>
+
+                            <button type="button"
+                                    class="inline-flex items-center justify-center rounded-full p-1 text-gray-600"
+                                    @onclick="() => OpenIconMenu(icon)">
+                                <i class="pi pi-ellipsis-v text-sm"></i>
+                            </button>
+                        </div>
+                    </article>
+                }
+            </section>
+
+            <section class="icons-surface mt-6 rounded-xl border p-3 flex items-center justify-between">
+                <span class="icons-text-muted text-sm">Page @pageIndex</span>
+
+                <div class="flex items-center gap-2">
+                    <button type="button"
+                            class="rounded-lg border px-3 py-1 text-sm disabled:opacity-50"
+                            disabled="@(pageIndex <= 1)"
+                            @onclick="PreviousPage">
+                        Previous
+                    </button>
+
+                    <span class="text-sm icons-text">@pageIndex</span>
+
+                    <button type="button"
+                            class="rounded-lg border px-3 py-1 text-sm"
+                            @onclick="NextPage">
+                        Next
+                    </button>
+                </div>
+            </section>
+        }
+        else
+        {
+            <section class="icons-surface flex min-h-96 flex-col items-center justify-center rounded-xl border border-dashed px-6 py-12 text-center">
+                <div class="icons-highlight mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+                    <i class="pi pi-images text-2xl"></i>
+                </div>
+
+                @if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    <h2 class="text-lg font-semibold icons-text">No icons found</h2>
+                    <p class="icons-text-muted mt-1 text-sm">
+                        No icons match "@searchTerm".
+                    </p>
+
+                    <button type="button"
+                            class="mt-5 rounded-lg border px-4 py-2"
+                            @onclick="ClearSearch">
+                        Clear search
+                    </button>
+                }
+                else
+                {
+                    <h2 class="text-lg font-semibold icons-text">No icons yet</h2>
+
+                    <p class="icons-text-muted mt-1 text-sm">
+                        Start building your icon collection by adding your first icon.
+                    </p>
+
+                    <div class="mt-5 flex gap-2">
+                        <button type="button"
+                                class="rounded-lg border border-[var(--color-primary)] px-4 py-2"
+                                @onclick="OpenAddMultiIconDialog">
+                            <i class="pi pi-images"></i>
+                            Add multi icon
+                        </button>
+
+                        <button type="button"
+                                class="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-white"
+                                @onclick="OpenAddDialog">
+                            <i class="pi pi-plus"></i>
+                            Add icon
+                        </button>
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</div>
+
+@if (showAddDialog)
+{
+    <AddIconComponent OnClose="CloseAddDialog" />
+}
+
+@if (showAddMultiIconsDialog)
+{
+    <AddMultiIconsComponent OnClose="CloseAddMultiIconDialog" />
+}
+
+@if (!connected)
+{
+    <div class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60">
+        <div class="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            <h3 class="text-lg font-semibold text-red-600">Cannot connect</h3>
+            <p class="mt-2 text-gray-700">Mongo Config is not correct</p>
+
+            <button type="button"
+                    class="mt-4 w-full rounded-lg bg-[var(--color-primary)] px-4 py-2 text-white"
+                    @onclick="() => connected = true">
+                OK
+            </button>
+        </div>
+    </div>
+}

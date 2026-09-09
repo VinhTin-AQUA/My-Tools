@@ -1,0 +1,126 @@
+@* AddIconComponent.razor *@
+
+<div class="dialog-backdrop"
+     @onclick="OnClosePopup">
+
+    <div class="add-dialog"
+         @onclick:stopPropagation="true">
+
+        @if (showToast)
+        {
+            <div class="toast-container">
+                <div class="toast @($"toast-{toastSeverity}")">
+                    <div class="toast-icon">
+                        <i class="pi @(toastSeverity == "success"
+                                         ? "pi-check-circle"
+                                         : "pi-exclamation-circle") text-lg"></i>
+                    </div>
+
+                    <div class="toast-content">
+                        <div class="toast-title">@toastTitle</div>
+                        <div class="toast-detail">@toastDetail</div>
+                    </div>
+
+                    <button type="button"
+                            class="toast-close"
+                            @onclick="HideToast">
+                        <i class="pi pi-times"></i>
+                    </button>
+                </div>
+            </div>
+        }
+
+        <div class="dialog-header">
+            <div class="dialog-title">
+                <div class="dialog-icon">
+                    <i class="pi pi-plus"></i>
+                </div>
+
+                <div>
+                    <h2>Add item</h2>
+                    <p>Add a new icon to the library</p>
+                </div>
+            </div>
+
+            <button type="button"
+                    class="dialog-close"
+                    @onclick="OnClosePopup">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+
+        <form class="add-item-form"
+              @onsubmit="Submit"
+              @onsubmit:preventDefault="true">
+
+            <div class="field">
+                <label for="add-name">Name</label>
+
+                <input id="add-name"
+                       type="text"
+                       class="@(nameTouched && !NameValid ? "error" : "")"
+                       placeholder="Enter item name"
+                       value="@name"
+                       @oninput="OnNameInput"
+                       @onblur="() => nameTouched = true" />
+
+                @if (nameTouched && !NameValid)
+                {
+                    <small class="error">Name is required.</small>
+                }
+            </div>
+
+            <div class="field">
+                <label for="add-url">URL</label>
+
+                <input id="add-url"
+                       type="url"
+                       class="@(urlTouched && !UrlValid ? "error" : "")"
+                       placeholder="https://example.com"
+                       value="@url"
+                       @oninput="OnUrlInput"
+                       @onblur="() => urlTouched = true" />
+
+                @if (urlTouched && !UrlValid)
+                {
+                    <small class="error">Please enter a valid URL.</small>
+                }
+            </div>
+
+            <div class="field">
+                <label>Icon type</label>
+
+                <div class="icon-types">
+                    @foreach (var type in iconTypes)
+                    {
+                        <button type="button"
+                                class="icon-type @(iconType == type ? "selected" : "")"
+                                @onclick="() => iconType = type">
+
+                            <i class="pi @(type == IconType.Gift
+                                             ? "pi-gift"
+                                             : "pi-image")"></i>
+
+                            <span>@GetIconTypeLabel(type)</span>
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="button"
+                        class="dialog-button cancel-button"
+                        @onclick="OnClosePopup">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        class="dialog-button add-dialog-button"
+                        disabled="@(!FormValid)">
+                    <i class="pi pi-plus"></i>
+                    <span>Add</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

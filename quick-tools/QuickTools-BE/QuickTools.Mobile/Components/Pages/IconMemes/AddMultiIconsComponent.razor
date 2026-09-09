@@ -1,0 +1,80 @@
+<div class="dialog-backdrop"
+     @onclick="OnClosePopup">
+
+    <div class="add-multi-dialog"
+         @onclick:stopPropagation="true">
+
+        @if (showToast)
+        {
+            <div class="toast-container">
+                <div class="toast @($"toast-{toastSeverity}")">
+                    <div class="toast-icon">
+                        <i class="pi @(toastSeverity == "success"
+                                         ? "pi-check-circle"
+                                         : "pi-exclamation-circle") text-lg"></i>
+                    </div>
+
+                    <div class="toast-content">
+                        <div class="toast-title">@toastTitle</div>
+                        <div class="toast-detail">@toastDetail</div>
+                    </div>
+
+                    <button type="button"
+                            class="toast-close"
+                            @onclick="HideToast">
+                        <i class="pi pi-times"></i>
+                    </button>
+                </div>
+            </div>
+        }
+
+        <div class="dialog-header">
+            <div class="dialog-title">
+                <div class="dialog-icon">
+                    <i class="pi pi-images"></i>
+                </div>
+
+                <div>
+                    <h2>Add multi icons</h2>
+                    <p>Add multiple icons at once</p>
+                </div>
+            </div>
+
+            <button type="button"
+                    class="dialog-close"
+                    @onclick="OnClosePopup">
+                <i class="pi pi-times"></i>
+            </button>
+        </div>
+
+        <div class="dialog-body">
+            <div class="flex flex-col gap-2">
+                <textarea id="links-input"
+                          rows="10"
+                          value="@inputText"
+                          @oninput="OnInput"
+                          placeholder="name1&#10;https://example1.com&#10;name2&#10;https://example2.com"></textarea>
+
+                <div class="help-text">
+                    <i class="pi pi-info-circle"></i>
+                    Enter name and URL pairs, one per line.
+                </div>
+            </div>
+        </div>
+
+        <div class="dialog-footer">
+            <button type="button"
+                    class="dialog-button cancel-button"
+                    @onclick="OnClosePopup">
+                Cancel
+            </button>
+
+            <button type="button"
+                    class="dialog-button submit-button"
+                    @onclick="Submit">
+                <i class="pi pi-check"></i>
+                <span>Submit</span>
+            </button>
+        </div>
+    </div>
+</div>
