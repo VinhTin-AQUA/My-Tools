@@ -38,7 +38,8 @@ namespace QuickTools.Windows.AppSingletons
             try
             {
                 context = new MongoDbContext(connectionString, databaseName);
-                checkConnection = await context.CheckConnectionAsync();
+                (var connected, var message) = await context.CheckConnectionAsync();
+                checkConnection =  connected;
             }
             catch (Exception ex)
             {

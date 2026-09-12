@@ -1,127 +1,147 @@
 @using QuickTools.Core.Enums
-@* AddIconComponent.razor *@
+@if (IsVisible)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="popup-backdrop absolute inset-0"></div>
 
-<div class="dialog-backdrop"
-     @onclick="OnClosePopup">
+        <!-- Modal -->
+        <div class="popup-modal relative w-full max-w-lg rounded-2xl shadow-2xl">
 
-    <div class="add-dialog"
-         @onclick:stopPropagation="true">
-
-        @if (showToast)
-        {
-            <div class="toast-container">
-                <div class="toast @($"toast-{toastSeverity}")">
-                    <div class="toast-icon">
-                        <i class="pi @(toastSeverity == "success"
-                                         ? "pi-check-circle"
-                                         : "pi-exclamation-circle") text-lg"></i>
-                    </div>
-
-                    <div class="toast-content">
-                        <div class="toast-title">@toastTitle</div>
-                        <div class="toast-detail">@toastDetail</div>
-                    </div>
-
-                    <button type="button"
-                            class="toast-close"
-                            @onclick="HideToast">
-                        <i class="pi pi-times"></i>
-                    </button>
-                </div>
-            </div>
-        }
-
-        <div class="dialog-header">
-            <div class="dialog-title">
-                <div class="dialog-icon">
-                    <i class="pi pi-plus"></i>
-                </div>
+            <!-- Header -->
+            <div class="popup-header flex items-start justify-between border-b p-6">
 
                 <div>
-                    <h2>Add item</h2>
-                    <p>Add a new icon to the library</p>
+                    <h2 class="popup-title text-xl font-semibold">
+                        Add Link
+                    </h2>
+
+                    <p class="popup-description mt-1 text-sm">
+                        Enter a name, link and icon type.
+                    </p>
                 </div>
+
+                <button
+                    type="button"
+                    @onclick="Close"
+                    disabled="@isSubmitting"
+                    class="popup-close flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-50">
+
+                    <span class="text-lg leading-none">×</span>
+                </button>
+
             </div>
 
-            <button type="button"
-                    class="dialog-close"
-                    @onclick="OnClosePopup">
-                <i class="pi pi-times"></i>
-            </button>
-        </div>
+            <!-- Body -->
+            <div class="space-y-5 p-6">
 
-        <form class="add-item-form"
-              @onsubmit="Submit"
-              @onsubmit:preventDefault="true">
+                <!-- Name -->
+                <div>
+                    <label
+                        for="name"
+                        class="popup-label mb-2 block text-sm font-medium">
+                        Name
+                    </label>
 
-            <div class="field">
-                <label for="add-name">Name</label>
-
-                <input id="add-name"
-                       type="text"
-                       class="@(nameTouched && !NameValid ? "error" : "")"
-                       placeholder="Enter item name"
-                       value="@name"
-                       @oninput="OnNameInput"
-                       @onblur="() => nameTouched = true" />
-
-                @if (nameTouched && !NameValid)
-                {
-                    <small class="error">Name is required.</small>
-                }
-            </div>
-
-            <div class="field">
-                <label for="add-url">URL</label>
-
-                <input id="add-url"
-                       type="url"
-                       class="@(urlTouched && !UrlValid ? "error" : "")"
-                       placeholder="https://example.com"
-                       value="@url"
-                       @oninput="OnUrlInput"
-                       @onblur="() => urlTouched = true" />
-
-                @if (urlTouched && !UrlValid)
-                {
-                    <small class="error">Please enter a valid URL.</small>
-                }
-            </div>
-
-            <div class="field">
-                <label>Icon type</label>
-
-                <div class="icon-types">
-                    @foreach (var type in iconTypes)
-                    {
-                        <button type="button"
-                                class="icon-type @(iconType == type ? "selected" : "")"
-                                @onclick="() => iconType = type">
-
-                            <i class="pi @(type == EIconType.Gift
-                                             ? "pi-gift"
-                                             : "pi-image")"></i>
-
-                            <span>@GetIconTypeLabel(type)</span>
-                        </button>
-                    }
+                    <input
+                        id="name"
+                        type="text"
+                        @bind="Name"
+                        disabled="@isSubmitting"
+                        placeholder="Enter name"
+                        class="popup-input w-full rounded-xl border px-4 py-3 text-sm outline-none transition disabled:cursor-not-allowed disabled:opacity-60" />
                 </div>
+
+                <!-- Link -->
+                <div>
+                    <label
+                        for="link"
+                        class="popup-label mb-2 block text-sm font-medium">
+                        Link
+                    </label>
+
+                    <input
+                        id="link"
+                        type="url"
+                        @bind="Link"
+                        disabled="@isSubmitting"
+                        placeholder="https://example.com"
+                        class="popup-input w-full rounded-xl border px-4 py-3 text-sm outline-none transition disabled:cursor-not-allowed disabled:opacity-60" />
+                </div>
+
+                <!-- Icon Type -->
+                <div>
+                    <label class="popup-label mb-3 block text-sm font-medium">
+                        Icon Type
+                    </label>
+
+                    <div class="grid grid-cols-2 gap-3">
+
+                        @foreach (var iconType in Enum.GetValues<EIconType>())
+                        {
+                            var isSelected = IconType == iconType;
+
+                            <label
+                                class="icon-option flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition @(isSelected ? "icon-option-selected" : "")">
+
+                                <input
+                                    type="radio"
+                                    name="iconType"
+                                    value="@iconType"
+                                    checked="@isSelected"
+                                    disabled="@isSubmitting"
+                                    @onchange="() => IconType = iconType"
+                                    class="icon-radio h-4 w-4 disabled:cursor-not-allowed" />
+
+                                <div>
+                                    <div class="icon-option-title text-sm font-medium">
+                                        @iconType
+                                    </div>
+
+                                    <div class="icon-option-description text-xs">
+                                        @GetIconDescription(iconType)
+                                    </div>
+                                </div>
+
+                            </label>
+                        }
+
+                    </div>
+                </div>
+
             </div>
 
-            <div class="actions">
-                <button type="button"
-                        class="dialog-button cancel-button"
-                        @onclick="OnClosePopup">
+            <!-- Footer -->
+            <div class="popup-footer flex justify-end gap-3 border-t p-6">
+
+                <button
+                    type="button"
+                    @onclick="Close"
+                    disabled="@isSubmitting"
+                    class="popup-cancel rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50">
                     Cancel
                 </button>
 
-                <button type="submit"
-                        class="dialog-button add-dialog-button"
-                        disabled="@(!FormValid)">
-                    <i class="pi pi-plus"></i>
-                    <span>Add</span>
+                <button
+                    type="button"
+                    @onclick="Submit"
+                    disabled="@isSubmitting"
+                    class="popup-submit flex min-w-[100px] items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60">
+
+                    @if (isSubmitting)
+                    {
+                        <span class="popup-spinner h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+                        <span>Submitting...</span>
+                    }
+                    else
+                    {
+                        <span>Submit</span>
+                    }
+
                 </button>
+
             </div>
-        </form>
+
+        </div>
     </div>
-</div>
+}

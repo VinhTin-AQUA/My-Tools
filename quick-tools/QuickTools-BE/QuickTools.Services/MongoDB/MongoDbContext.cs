@@ -33,9 +33,11 @@ namespace QuickTools.Services.MongoDB
                 // Register mapping chỉ một lần
                 RegisterClassMaps();
 
-                // Nếu connection string sai format,
-                // MongoClient sẽ throw exception ở đây
-                var client = new MongoClient(connectionString);
+                var settings = MongoClientSettings.FromConnectionString(connectionString);
+
+                settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
+                settings.ConnectTimeout = TimeSpan.FromSeconds(5);
+                var client = new MongoClient(settings);
 
                 _database = client.GetDatabase(databaseName);
             }
@@ -82,19 +84,19 @@ namespace QuickTools.Services.MongoDB
         public IMongoCollection<IconModel> Icons =>
             _database.GetCollection<IconModel>("Icons");
 
-        public async Task<bool> CheckConnectionAsync()
+        public async Task<(bool, string)> CheckConnectionAsync()
         {
             try
             {
                 await _database.RunCommandAsync<BsonDocument>(
                     new BsonDocument("ping", 1)
                 );
-                return true;
+                return (true, "Connected");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ MongoDB connection failed: {ex.Message}");
-                return false;
+                return (false, ex.Message);
             }
         }
     }

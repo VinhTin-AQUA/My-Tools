@@ -1,133 +1,109 @@
-using System.Text.Json;
-using Android.Graphics.Drawables;
 using Microsoft.AspNetCore.Components;
 using QuickTools.Core.Enums;
 using QuickTools.Core.Models;
+using QuickTools.Mobile.Constants;
+using QuickTools.Mobile.Services.Implementations;
+using QuickTools.Mobile.Services.Interfaces;
 using QuickTools.Services.Icons;
+using QuickTools.Services.MongoDB;
 
 namespace QuickTools.Mobile.Components.Pages.IconMemes
 {
     public partial class AddIconComponent : ComponentBase
     {
-        [Parameter] public EventCallback OnClose { get; set; }
-
-        protected string name = "";
-        protected string url = "";
-        protected EIconType iconType = EIconType.Gift;
-
-        protected bool nameTouched;
-        protected bool urlTouched;
-
-        protected List<EIconType> iconTypes = new()
-        {
-            EIconType.Gift,
-            EIconType.Image
-        };
-
-        protected bool showToast;
-        protected string toastTitle = "";
-        protected string toastDetail = "";
-        protected string toastSeverity = "";
-
-        protected bool NameValid =>
-            !string.IsNullOrWhiteSpace(name);
+        [Parameter] public bool IsVisible { get; set; }
+        [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+        private string Name { get; set; } = string.Empty;
+        private string Link { get; set; } = string.Empty;
+        private EIconType IconType { get; set; } = EIconType.Gift;
+        private bool isSubmitting;
         
-        [Inject] protected IIconService IconService { get; set; } = default!;
-
-        protected bool UrlValid
+        [Inject] protected NotificationService NotificationService { get; set; } = default!;
+        [Inject] protected IMongoServiceFactory MongoServiceFactory { get; set; } = default!;
+        [Inject] protected ISecureStorageService SecureStorageService { get; set; } = default!;
+        
+        private IIconService _iconService { get; set; } = default!;
+        
+        protected override async Task OnInitializedAsync()
         {
-            get
-            {
-                var value = url.Trim();
+            await CheckConnection();
+        }
 
-                return Uri.TryCreate(
-                           value,
-                           UriKind.Absolute,
-                           out var uri)
-                       && (uri.Scheme == Uri.UriSchemeHttp ||
-                           uri.Scheme == Uri.UriSchemeHttps);
+        protected async Task CheckConnection()
+        {
+            var mongoConfig = await SecureStorageService.LoadAsync<MongoDBSetting>(AppConstants.MongoConfigKey);
+            if (mongoConfig == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var (context, iconService) =
+                    MongoServiceFactory.CreateIconService(mongoConfig.ConnectionString, mongoConfig.DatabaseName);
+                var (_connected, message) = await context.CheckConnectionAsync();
+                
+                _iconService = iconService;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("");
             }
         }
 
-        protected bool FormValid =>
-            NameValid && UrlValid;
-
-        protected void OnNameInput(ChangeEventArgs e)
+        
+        private async Task Close()
         {
-            name = e.Value?.ToString() ?? "";
+            if (isSubmitting) return;
+            Name = "";
+            Link = "";
+            await IsVisibleChanged.InvokeAsync(false);
         }
 
-        protected void OnUrlInput(ChangeEventArgs e)
+        private async Task Submit()
         {
-            url = e.Value?.ToString() ?? "";
-        }
-
-        protected string GetIconTypeLabel(EIconType type)
-        {
-            return type == EIconType.Gift ? "Gift" : "Image";
-        }
-
-        protected async Task OnClosePopup()
-        {
-            await OnClose.InvokeAsync();
-        }
-
-        protected async Task Submit()
-        {
-            nameTouched = true;
-            urlTouched = true;
-
-            if (!FormValid)
-                return;
-
-            var request = new IconModel
+            if (isSubmitting) return; 
+            isSubmitting = true;
+            
+            try
             {
-                Name = name.Trim(),
-                Url = url.Trim(),
-                IconType = iconType
+                var request = new IconModel
+                {
+                    Name = Name,
+                    Url = Link,
+                    IconType = IconType,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                await _iconService.CreateAsync(request);
+                await NotificationService.ShowAsync(
+                    1,
+                    "Add icon successfully",
+                    $"{Name} icon added");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"");
+                await NotificationService.ShowAsync(
+                    1,
+                    "Add icon failed",
+                    $"Submit error: {ex}");
+            }
+            finally
+            {
+                isSubmitting = false;
+            }
+        }
+
+        private static string GetIconDescription(EIconType iconType)
+        {
+            return iconType switch
+            {
+                EIconType.Gift => "Use a gift icon", 
+                EIconType.Image => "Use an image icon", 
+                _ => string.Empty
             };
-
-            await IconService.CreateAsync(request);
-
-            await Task.Delay(500);
-
-            ShowToast(
-                "success",
-                "Add icon successfully",
-                name.Trim());
-
-            await Task.Delay(1000);
-
-            await OnClose.InvokeAsync();
-        }
-
-        protected void ShowToast(
-            string severity,
-            string title,
-            string detail)
-        {
-            toastSeverity = severity;
-            toastTitle = title;
-            toastDetail = detail;
-            showToast = true;
-
-            _ = HideToastAsync();
-        }
-
-        protected async Task HideToastAsync()
-        {
-            await Task.Delay(3000);
-
-            await InvokeAsync(() =>
-            {
-                showToast = false;
-                StateHasChanged();
-            });
-        }
-
-        protected void HideToast()
-        {
-            showToast = false;
         }
     }
 }

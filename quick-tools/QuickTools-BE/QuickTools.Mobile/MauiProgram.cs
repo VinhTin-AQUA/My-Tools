@@ -5,6 +5,7 @@ using QuickTools.Mobile.Services.Interfaces;
 using Plugin.LocalNotification;
 using QuickTools.Services.Icons;
 using QuickTools.Services.LocalStorages;
+using QuickTools.Services.MongoDB;
 
 namespace QuickTools.Mobile;
 
@@ -26,7 +27,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IExternalStoreService, ExternalStoreService>();
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<ISecureStorageService, SecureStorageService>();
-        builder.Services.AddSingleton<IIconService, IconService>();
+        builder.Services.AddSingleton<IMongoServiceFactory, MongoServiceFactory>();
         
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

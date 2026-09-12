@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components;
 using QuickTools.Services.IP;
 using QuickTools.Services.Models.IP;
 
@@ -10,7 +11,11 @@ namespace QuickTools.Mobile.Components.Pages
         private string errorMessage = "";
         
         private IpApiResponse? ipInfo;
-
+        
+        
+        
+        [Inject] protected NavigationManager Navigation { get; set; } = default!;
+        
         protected override async Task OnInitializedAsync()
         {
             try
@@ -34,9 +39,8 @@ namespace QuickTools.Mobile.Components.Pages
             new() { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler" },
             new() { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image" },
 
-        new MenuItem { Name = "Memes", IconClass = "fa-solid fa-icons", Url = "icon-memes"},
-
-
+            new() { Name = "Memes", IconClass = "fa-solid fa-icons", Url = "icon-memes"},
+            
             new() { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings" },
             new() { Name = "Orders", IconClass = "fas fa-shopping-cart", Url = "orders" },
             new() { Name = "Reports", IconClass = "fas fa-file-alt", Url = "reports" },
@@ -51,7 +55,7 @@ namespace QuickTools.Mobile.Components.Pages
         private List<MenuItem> FilteredMenus => string.IsNullOrWhiteSpace(searchTerm)
             ? allMenus
             : allMenus.Where(m => m.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
-
+        
         public class MenuItem
         {
             public string Name { get; set; } = string.Empty;

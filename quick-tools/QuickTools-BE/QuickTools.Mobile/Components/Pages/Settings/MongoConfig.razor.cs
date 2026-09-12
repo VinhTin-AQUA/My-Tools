@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Components;
+using QuickTools.Core.Models;
+using QuickTools.Mobile.Constants;
 using QuickTools.Mobile.Services.Interfaces;
 
 namespace QuickTools.Mobile.Components.Pages.Settings
@@ -6,8 +8,6 @@ namespace QuickTools.Mobile.Components.Pages.Settings
     public partial class MongoConfig : ComponentBase
     {
         [Inject] protected ISecureStorageService SecureStorageService { get; set; } = default!;
-        
-        private readonly string _mongoConfigKey = "MongoConfigKey";
         
         public string MongoConnectionString { get; set; } = string.Empty;
 
@@ -24,20 +24,17 @@ namespace QuickTools.Mobile.Components.Pages.Settings
         {
             try
             {
-                var mongoConfig = await SecureStorageService.LoadAsync<MongoConfig>(_mongoConfigKey);
+                var mongoConfig = await SecureStorageService.LoadAsync<MongoDBSetting>(AppConstants.MongoConfigKey);
 
                 if (mongoConfig != null)
                 {
-                    MongoConnectionString = mongoConfig.MongoConnectionString;
-                    MongoDatabaseName = mongoConfig.MongoDatabaseName;
+                    MongoConnectionString = mongoConfig.ConnectionString;
+                    MongoDatabaseName = mongoConfig.DatabaseName;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-            }
-            finally
-            {
             }
         }
         
@@ -65,10 +62,10 @@ namespace QuickTools.Mobile.Components.Pages.Settings
 
             try
             {
-                var check = await SecureStorageService.SaveAsync<MongoConfigModel>(_mongoConfigKey, new()
+                var check = await SecureStorageService.SaveAsync<MongoDBSetting>(AppConstants.MongoConfigKey, new()
                 {
-                    MongoConnectionString = MongoConnectionString,
-                    MongoDatabaseName = MongoDatabaseName
+                    ConnectionString = MongoConnectionString,
+                    DatabaseName = MongoDatabaseName
                 });
                 
                 MongoSaveSucceeded = check;
@@ -85,10 +82,4 @@ namespace QuickTools.Mobile.Components.Pages.Settings
             }
         }
     }
-
-    public class MongoConfigModel
-    {
-        public string MongoConnectionString { get; set; } = string.Empty;
-        public string MongoDatabaseName { get; set; } = string.Empty;
-    } 
 }

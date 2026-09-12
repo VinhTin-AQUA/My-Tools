@@ -1,123 +1,146 @@
 using Microsoft.AspNetCore.Components;
 using QuickTools.Core.Enums;
 using QuickTools.Core.Models;
+using QuickTools.Mobile.Constants;
+using QuickTools.Mobile.Services.Implementations;
+using QuickTools.Mobile.Services.Interfaces;
 using QuickTools.Services.Icons;
+using QuickTools.Services.MongoDB;
 
 namespace QuickTools.Mobile.Components.Pages.IconMemes
 {
     public partial class AddMultiIconsComponent : ComponentBase
     {
-        [Parameter] public EventCallback OnClose { get; set; }
+        [Parameter]
+        public bool IsVisible { get; set; }
 
-        protected string inputText = "";
-
-        protected bool showToast;
-        protected string toastTitle = "";
-        protected string toastDetail = "";
-        protected string toastSeverity = "";
+        [Parameter]
+        public EventCallback<bool> IsVisibleChanged { get; set; }
         
-        [Inject] protected IIconService IconService { get; set; } = default!;
+        private string Content { get; set; } = string.Empty;
+        private EIconType IconType { get; set; } = EIconType.Gift;
+        private bool isSubmitting;
+        
+        [Inject] protected NotificationService NotificationService { get; set; } = default!;
+        [Inject] protected IMongoServiceFactory MongoServiceFactory { get; set; } = default!;
+        [Inject] protected ISecureStorageService SecureStorageService { get; set; } = default!;
+        
+        private IIconService _iconService { get; set; } = default!;
 
-        protected void OnInput(ChangeEventArgs e)
+        protected override async Task OnInitializedAsync()
         {
-            inputText = e.Value?.ToString() ?? "";
+            await CheckConnection();
         }
 
-        protected async Task Submit()
+        protected async Task CheckConnection()
         {
-            var lines = inputText
-                .Split(new[] { '\r', '\n' },
-                    StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => x.Trim())
-                .Where(x => !string.IsNullOrWhiteSpace(x))
-                .ToList();
-
-            var items = new List<IconModel>();
-
-            for (var i = 0; i + 1 < lines.Count; i += 2)
+            var mongoConfig = await SecureStorageService.LoadAsync<MongoDBSetting>(AppConstants.MongoConfigKey);
+            if (mongoConfig == null)
             {
-                var itemName = lines[i];
-                var itemUrl = lines[i + 1];
-
-                if (string.IsNullOrWhiteSpace(itemName))
-                    continue;
-
-                if (!Uri.TryCreate(
-                        itemUrl,
-                        UriKind.Absolute,
-                        out var uri))
-                    continue;
-
-                if (uri.Scheme != Uri.UriSchemeHttp &&
-                    uri.Scheme != Uri.UriSchemeHttps)
-                    continue;
-
-                items.Add(new()
-                {
-                    Name = itemName,
-                    Url = itemUrl,
-                    IconType = EIconType.Gift,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                });
-            }
-
-            if (items.Count == 0)
-            {
-                ShowToast(
-                    "error",
-                    "No valid items found",
-                    "Please provide name and URL pairs.");
-
                 return;
             }
 
-            await IconService.CreateManyAsync(items);
-
-            ShowToast(
-                "success",
-                "Add icons successfully",
-                $"{items.Count} icons added");
-
-            inputText = "";
-
-            await Task.Delay(1000);
-
-            await OnClose.InvokeAsync();
-        }
-
-        protected async Task OnClosePopup()
-        {
-            await OnClose.InvokeAsync();
-        }
-
-        protected void ShowToast(
-            string severity,
-            string title,
-            string detail)
-        {
-            toastSeverity = severity;
-            toastTitle = title;
-            toastDetail = detail;
-            showToast = true;
-
-            _ = HideToastAsync();
-        }
-
-        protected async Task HideToastAsync()
-        {
-            await Task.Delay(3000);
-
-            await InvokeAsync(() =>
+            try
             {
-                showToast = false;
-                StateHasChanged();
-            });
+                var (context, iconService) =
+                    MongoServiceFactory.CreateIconService(mongoConfig.ConnectionString, mongoConfig.DatabaseName);
+                var (_connected, message) = await context.CheckConnectionAsync();
+                
+                _iconService = iconService;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("");
+            }
+        }
+        
+        private async Task Close()
+        {
+            if (isSubmitting)
+                return;
+            Content = "";
+            await IsVisibleChanged.InvokeAsync(false);
+        }
+        private async Task Submit()
+        {
+            if (isSubmitting)
+                return;
+
+            isSubmitting = true;
+            
+            try
+            {
+                var lines = Content
+                    .Split(new[] { '\r', '\n' },
+                        StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .ToList();
+
+                var items = new List<IconModel>();
+
+                for (var i = 0; i + 1 < lines.Count; i += 2)
+                {
+                    var itemName = lines[i];
+                    var itemUrl = lines[i + 1];
+
+                    if (string.IsNullOrWhiteSpace(itemName))
+                        continue;
+
+                    if (!Uri.TryCreate(
+                            itemUrl,
+                            UriKind.Absolute,
+                            out var uri))
+                        continue;
+
+                    if (uri.Scheme != Uri.UriSchemeHttp &&
+                        uri.Scheme != Uri.UriSchemeHttps)
+                        continue;
+
+                    items.Add(new IconModel
+                    {
+                        Name = itemName,
+                        Url = itemUrl,
+                        IconType = IconType,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    });
+                }
+
+                if (items.Count == 0)
+                {
+                    await NotificationService.ShowAsync(
+                        1,
+                        "No valid items found",
+                        "Please provide name and URL pairs.");
+                    return;
+                }
+
+                await _iconService.CreateManyAsync(items);
+                await NotificationService.ShowAsync(
+                    1,
+                    "Add icons successfully",
+                    $"{items.Count} icons added");
+                Content = "";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Submit error: {ex}");
+            }
+            finally
+            {
+                isSubmitting = false;
+            }
         }
 
-        protected void HideToast()
+        private static string GetIconDescription(EIconType iconType)
         {
-            showToast = false;
+            return iconType switch
+            {
+                EIconType.Gift => "Use a gift icon", 
+                EIconType.Image => "Use an image icon", 
+                _ => string.Empty
+            };
         }
     }
 }

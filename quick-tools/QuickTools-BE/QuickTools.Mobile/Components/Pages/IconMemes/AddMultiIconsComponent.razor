@@ -1,80 +1,131 @@
-<div class="dialog-backdrop"
-     @onclick="OnClosePopup">
+@using QuickTools.Core.Enums
+@if (IsVisible)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="popup-backdrop absolute inset-0"></div>
 
-    <div class="add-multi-dialog"
-         @onclick:stopPropagation="true">
+        <!-- Modal -->
+        <div class="popup-modal relative w-full max-w-lg rounded-2xl shadow-2xl">
 
-        @if (showToast)
-        {
-            <div class="toast-container">
-                <div class="toast @($"toast-{toastSeverity}")">
-                    <div class="toast-icon">
-                        <i class="pi @(toastSeverity == "success"
-                                         ? "pi-check-circle"
-                                         : "pi-exclamation-circle") text-lg"></i>
-                    </div>
-
-                    <div class="toast-content">
-                        <div class="toast-title">@toastTitle</div>
-                        <div class="toast-detail">@toastDetail</div>
-                    </div>
-
-                    <button type="button"
-                            class="toast-close"
-                            @onclick="HideToast">
-                        <i class="pi pi-times"></i>
-                    </button>
-                </div>
-            </div>
-        }
-
-        <div class="dialog-header">
-            <div class="dialog-title">
-                <div class="dialog-icon">
-                    <i class="pi pi-images"></i>
-                </div>
+            <!-- Header -->
+            <div class="popup-header flex items-start justify-between border-b p-6">
 
                 <div>
-                    <h2>Add multi icons</h2>
-                    <p>Add multiple icons at once</p>
+                    <h2 class="popup-title text-xl font-semibold">
+                        Add Content
+                    </h2>
+
+                    <p class="popup-description mt-1 text-sm">
+                        Enter your content and choose an icon type.
+                    </p>
                 </div>
+
+                <button
+                    type="button"
+                    @onclick="Close"
+                    disabled="@isSubmitting"
+                    class="popup-close flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition disabled:cursor-not-allowed disabled:opacity-50">
+
+                    <span class="text-lg leading-none">×</span>
+                </button>
+
             </div>
 
-            <button type="button"
-                    class="dialog-close"
-                    @onclick="OnClosePopup">
-                <i class="pi pi-times"></i>
-            </button>
-        </div>
+            <!-- Body -->
+            <div class="space-y-5 p-6">
 
-        <div class="dialog-body">
-            <div class="flex flex-col gap-2">
-                <textarea id="links-input"
-                          rows="10"
-                          value="@inputText"
-                          @oninput="OnInput"
-                          placeholder="name1&#10;https://example1.com&#10;name2&#10;https://example2.com"></textarea>
+                <!-- Content -->
+                <div>
+                    <label
+                        for="content"
+                        class="popup-label mb-2 block text-sm font-medium">
+                        Content
+                    </label>
 
-                <div class="help-text">
-                    <i class="pi pi-info-circle"></i>
-                    Enter name and URL pairs, one per line.
+                    <textarea
+                        id="content"
+                        @bind="Content"
+                        disabled="@isSubmitting"
+                        rows="6"
+                        placeholder="Enter your content..."
+                        class="popup-input w-full resize-none rounded-xl border px-4 py-3 text-sm outline-none transition disabled:cursor-not-allowed disabled:opacity-60">
+                    </textarea>
                 </div>
+
+                <!-- Icon Type -->
+                <div>
+                    <label class="popup-label mb-3 block text-sm font-medium">
+                        Icon Type
+                    </label>
+
+                    <div class="grid grid-cols-2 gap-3">
+
+                        @foreach (var iconType in Enum.GetValues<EIconType>())
+                        {
+                            var isSelected = IconType == iconType;
+
+                            <label
+                                class="icon-option flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition @(isSelected ? "icon-option-selected" : "")">
+
+                                <input
+                                    type="radio"
+                                    name="textInputIconType"
+                                    value="@iconType"
+                                    checked="@isSelected"
+                                    disabled="@isSubmitting"
+                                    @onchange="() => IconType = iconType"
+                                    class="icon-radio h-4 w-4 disabled:cursor-not-allowed" />
+
+                                <div>
+                                    <div class="icon-option-title text-sm font-medium">
+                                        @iconType
+                                    </div>
+
+                                    <div class="icon-option-description text-xs">
+                                        @GetIconDescription(iconType)
+                                    </div>
+                                </div>
+
+                            </label>
+                        }
+
+                    </div>
+                </div>
+
             </div>
-        </div>
 
-        <div class="dialog-footer">
-            <button type="button"
-                    class="dialog-button cancel-button"
-                    @onclick="OnClosePopup">
-                Cancel
-            </button>
+            <!-- Footer -->
+            <div class="popup-footer flex justify-end gap-3 border-t p-6">
 
-            <button type="button"
-                    class="dialog-button submit-button"
-                    @onclick="Submit">
-                <i class="pi pi-check"></i>
-                <span>Submit</span>
-            </button>
+                <button
+                    type="button"
+                    @onclick="Close"
+                    disabled="@isSubmitting"
+                    class="popup-cancel rounded-xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50">
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    @onclick="Submit"
+                    disabled="@isSubmitting"
+                    class="popup-submit flex min-w-[100px] items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60">
+
+                    @if (isSubmitting)
+                    {
+                        <span class="popup-spinner h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
+                        <span>Submitting...</span>
+                    }
+                    else
+                    {
+                        <span>Submit</span>
+                    }
+
+                </button>
+
+            </div>
+
         </div>
     </div>
-</div>
+}
