@@ -194,3 +194,25 @@ nhưng với màu sắc thì sử dụng các biến css được định nghĩa
 }
 và code style màu phải code trong file css
 ```
+
+- lấy url icon
+
+```txt
+cho danh sách url của giphy sau
+ouput gôm nhiều file có dạng
+
+<name>
+<url>
+
+với url là url có dạng: https://i.giphy.com/NzSUEgbTWB7TW.gif
+
+https://i.giphy.com/NzSUEgbTWB7TW.gif
+
+https://media3.giphy.com/media/NzSUEgbTWB7TW/200.gif
+tương ứng của mõi gif
+```
+
+https://instagram.fsgn2-10.fna.fbcdn.net/v/t51.82787-15/800617234_18103295096012143_7376240867638089016_n.webp?_nc_cat=109&ig_cache_key=Mzk4MTY1Nzk3NDgzNTAwNjUwNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuNzM2LnNkci5yZWd1bGFyX3Bob3RvLkMyIn0%3D&_nc_ohc=-jUXdd7xWtQQ7kNvwEVw-Yf&_nc_oc=AdrB1WUOKzywiyz1NlMYkO3HHcMhpiJfUqcxZCia-NukI-MHYzCb4NUNu6kDUei27wTOzKVvo0HoV9ola-7aCNix&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fsgn2-10.fna&_nc_gid=nbh_GfR8H__xKPu4Q1ynoA&_nc_ss=7a22e&oh=00_AQK20Rz3BRVZ9oxzARG7D5eLkL5DzjTnLhqsC5B-eeCACA&oe=6AAC1163
+
+
+https://instagram.fsgn2-4.fna.fbcdn.net/v/t51.82787-15/799754835_17905229175518079_5363637604291247705_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=Mzk4MTQ0MTY3NzQwNzM4NjI2Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTI5MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=vKy-bZc0eCQQ7kNvwEradT_&_nc_oc=AdoVJki6FnhqqbplMvqSLxk2Zg0VlX5qegEL_x3wp7m1Yo0P6pWkd38aw6xlT1URyfVyeFoegeMOX2oGY4CYw1wg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fsgn2-4.fna&_nc_gid=PIWVpfUDngIKnWp_m4D6zw&_nc_ss=7a22e&oh=00_AQLAKY380jv6taVyYIKLTrHr8oolsEM8uxqy5FGE0yrKPw&oe=6AAC1868
