@@ -5,21 +5,35 @@ import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { WebuiService } from '../../../../services/webui-service';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ToastModule } from '@openng/optimus-ui/toast';
-
-interface LinkItem {
-    name: string;
-    url: string;
-}
+import { AddIconRequest, IconType } from '../../icon.models';
+import { RadioButtonModule } from '@openng/optimus-ui/radiobutton';
 
 @Component({
     selector: 'app-add-multi-icons',
-    imports: [ButtonModule, FormsModule, TextareaModule, ToastModule],
+    imports: [ButtonModule, FormsModule, TextareaModule, ToastModule, RadioButtonModule],
     templateUrl: './add-multi-icons.html',
     styleUrl: './add-multi-icons.css',
     providers: [MessageService],
 })
 export class AddMultiIcons {
     inputText = '';
+    selectedIconType: IconType = IconType.Gift;
+
+    protected readonly IconType = IconType;
+    protected readonly iconTypes = [
+        {
+            value: IconType.Gift,
+            label: 'Gift',
+            description: 'Use a gift icon',
+            icon: 'pi pi-gift',
+        },
+        {
+            value: IconType.Image,
+            label: 'Image',
+            description: 'Use an image icon',
+            icon: 'pi pi-image',
+        },
+    ];
 
     private messageService = inject(MessageService);
 
@@ -31,7 +45,7 @@ export class AddMultiIcons {
             .map((line) => line.trim())
             .filter(Boolean);
 
-        const items: LinkItem[] = [];
+        const items: AddIconRequest[] = [];
 
         for (let i = 0; i < lines.length; i += 2) {
             const name = lines[i];
@@ -44,6 +58,7 @@ export class AddMultiIcons {
             items.push({
                 name,
                 url,
+                iconType: this.selectedIconType,
             });
         }
 

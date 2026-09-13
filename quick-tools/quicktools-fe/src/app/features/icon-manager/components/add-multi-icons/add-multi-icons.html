@@ -1,23 +1,107 @@
 <div class="flex w-full flex-col">
-    <!-- Header -->
+    <!-- Toast -->
     <p-toast />
-    
+
     <!-- Content -->
-    <div class="flex flex-col gap-4 p-4">
-        <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-5 p-4 sm:p-6">
+        <!-- Icon type -->
+        <section class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+                <h2 class="text-base font-semibold sm:text-lg">Icon type</h2>
+
+                <p class="text-sm">Select the icon type to use for all items.</p>
+            </div>
+
+            <div
+                class="grid grid-cols-1 gap-3 sm:grid-cols-2"
+                role="radiogroup"
+                aria-label="Icon type"
+            >
+                @for (type of iconTypes; track type.value) {
+                    <div
+                        class="icon-type-option flex min-w-0 cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors sm:p-4"
+                        [class.icon-type-option-selected]="selectedIconType === type.value"
+                        (click)="selectedIconType = type.value"
+                    >
+                        <p-radiobutton
+                            [inputId]="'icon-type-' + type.value"
+                            name="iconType"
+                            [value]="type.value"
+                            [(ngModel)]="selectedIconType"
+                        />
+
+                        <label
+                            [for]="'icon-type-' + type.value"
+                            class="flex min-w-0 flex-1 cursor-pointer items-center gap-3"
+                        >
+                            <span
+                                class="icon-type-preview flex size-10 shrink-0 items-center justify-center rounded-lg"
+                            >
+                                <i [class]="type.icon" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="flex min-w-0 flex-col gap-0.5">
+                                <span class="truncate text-sm font-medium">
+                                    {{ type.label }}
+                                </span>
+
+                                <span class="text-xs">
+                                    {{ type.description }}
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <!-- Links input -->
+        <section class="flex flex-col gap-2">
+            <div class="flex flex-col gap-1">
+                <label for="links-input" class="text-sm font-medium"> Icons </label>
+
+                <p class="text-xs sm:text-sm">Enter a name and URL on alternating lines.</p>
+            </div>
+
             <textarea
                 pTextarea
                 id="links-input"
                 [(ngModel)]="inputText"
                 rows="10"
-                class="w-full resize-y"
+                class="min-h-48 w-full resize-y sm:min-h-56"
                 placeholder="name1&#10;https://example1.com&#10;name2&#10;https://example2.com"
             ></textarea>
+        </section>
+
+        <!-- Selected type information -->
+        <div class="flex flex-wrap items-center gap-2 rounded-lg border p-3">
+            <span class="text-sm"> Selected type: </span>
+
+            <span
+                class="selected-type-badge inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
+            >
+                @for (type of iconTypes; track type.value) {
+                    @if (selectedIconType === type.value) {
+                        <i [class]="type.icon" aria-hidden="true"></i>
+
+                        <span>{{ type.label }}</span>
+                    }
+                }
+            </span>
         </div>
     </div>
 
     <!-- Footer -->
-    <div class="flex flex-col-reverse gap-2 border-t p-4 sm:flex-row sm:justify-end">
-        <p-button label="Submit" icon="pi pi-check" severity="primary" (onClick)="submit()" />
+    <div
+        class="flex flex-col-reverse gap-2 border-t p-4 sm:flex-row sm:items-center sm:justify-end sm:p-6"
+    >
+        <p-button
+            label="Submit"
+            icon="pi pi-check"
+            severity="primary"
+            [fluid]="true"
+            styleClass="w-full sm:w-auto"
+            (onClick)="submit()"
+        />
     </div>
 </div>

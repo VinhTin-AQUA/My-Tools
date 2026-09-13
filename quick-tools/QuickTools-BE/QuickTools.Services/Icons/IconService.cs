@@ -15,6 +15,7 @@ namespace QuickTools.Services.Icons
         Task<List<IconModel>> SearchAsync(string keyword);
         Task<IconModel> CreateAsync(IconModel icon);
         Task<List<IconModel>> CreateManyAsync(List<IconModel> icons);
+        Task<List<IconModel>> CreateManyIfNotExistsAsync(List<IconModel> icons);
         Task<bool> UpdateAsync(string id, IconModel icon);
         Task<bool> DeleteAsync(string id);
 
@@ -63,6 +64,54 @@ namespace QuickTools.Services.Icons
             await _collection.InsertManyAsync(icons);
         
             return icons;
+        }
+        
+        public async Task<List<IconModel>> CreateManyIfNotExistsAsync(List<IconModel> icons)
+        {
+            if (icons == null || icons.Count == 0)
+                return new List<IconModel>();
+
+            // Lấy danh sách URL từ dữ liệu đầu vào
+            var urls = icons
+                .Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                .Select(x => x.Url)
+                .Distinct()
+                .ToList();
+
+            if (urls.Count == 0)
+                return new List<IconModel>();
+
+            // Tìm các URL đã tồn tại trong database
+            var existingUrls = await _collection
+                .Find(x => urls.Contains(x.Url))
+                .Project(x => x.Url)
+                .ToListAsync();
+
+            var existingUrlSet = existingUrls.ToHashSet();
+
+            // Chỉ giữ lại những icon chưa tồn tại
+            var newIcons = icons
+                .Where(x => !string.IsNullOrWhiteSpace(x.Url))
+                .Where(x => !existingUrlSet.Contains(x.Url))
+                .ToList();
+
+            if (newIcons.Count == 0)
+                return new List<IconModel>();
+
+            // Chuẩn bị dữ liệu
+            var now = DateTime.UtcNow;
+
+            foreach (var icon in newIcons)
+            {
+                icon.Id = string.Empty;
+                icon.CreatedAt = now;
+                icon.UpdatedAt = now;
+            }
+
+            // Insert những item chưa tồn tại
+            await _collection.InsertManyAsync(newIcons);
+
+            return newIcons;
         }
 
         public async Task<IconModel?> GetByIdAsync(string id)

@@ -1,18 +1,25 @@
 @page "/icon-memes"
+@using QuickTools.Mobile.Components.Shared
 
-<div class="icons-page min-h-screen">
+
+<div class="icons-page min-h-screen"
+     @onclick="CloseIconMenu">
+
     <div class="mx-auto w-full p-4 sm:p-6 lg:p-8">
         <header class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div class="min-w-0">
                 <h1 class="truncate text-2xl font-semibold tracking-tight sm:text-3xl icons-text">
                     Icons
                 </h1>
+
                 <p class="icons-text-muted mt-1 text-sm">
                     Manage and browse your icon collection
                 </p>
             </div>
 
-            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto">
+            <div class="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"
+                 @onclick:stopPropagation>
+
                 <button type="button"
                         class="inline-flex items-center justify-center gap-2 rounded-lg border border-[var(--color-primary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] w-full sm:w-auto"
                         @onclick="OpenAddMultiIconDialog">
@@ -29,7 +36,9 @@
             </div>
         </header>
 
-        <section class="icons-surface mb-6 rounded-xl border p-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <section class="icons-surface mb-6 rounded-xl border p-4 flex flex-col gap-3 sm:flex-row sm:items-center"
+                 @onclick:stopPropagation>
+
             <div class="min-w-0 flex-1">
                 <div class="flex items-center rounded-lg border border-[var(--color-border)] bg-white">
                     <span class="flex items-center px-3 text-gray-500">
@@ -60,11 +69,19 @@
                 </button>
             }
         </section>
-
-        <section class="grid grid-cols-[repeat(auto-fill,minmax(140px,150px))] justify-center gap-3 sm:gap-4">
+        
+        @if (isSearching)
+        {
+            <Loader />
+        }
+        
+        <section class="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-5"
+                 @onclick:stopPropagation>
             @foreach (var icon in icons)
             {
-                <article class="icons-card relative flex h-[150px] w-[150px] flex-col overflow-visible rounded-xl border">
+                <article class="icons-card relative flex aspect-square w-full flex-col overflow-visible rounded-xl border"
+                         @onclick:stopPropagation>
+
                     <!-- Image -->
                     <div class="flex min-h-0 flex-1 items-center justify-center p-2">
                         <img src="@icon.Url"
@@ -74,53 +91,63 @@
 
                     <!-- Bottom -->
                     <div class="flex h-9 shrink-0 items-center gap-1 px-2">
+
                         <span class="icons-text min-w-0 flex-1 truncate text-xs">
                             @icon.Name
                         </span>
 
-                        <!-- Menu button -->
-                        <div class="relative">
+                        <!-- Menu -->
+                        <div class="relative"
+                             @onclick:stopPropagation>
+
                             <button type="button"
                                     class="icon-menu-button inline-flex h-7 w-7 items-center justify-center rounded-full transition"
-                                    @onclick="() => OpenIconMenu(icon)">
+                                    @onclick="() => OpenIconMenu(icon)"
+                                    @onclick:stopPropagation>
                                 <i class="fa-solid fa-ellipsis"></i>
                             </button>
 
                             @if (_openedIcon == icon)
                             {
-                                <div class="icon-context-menu absolute bottom-8 right-0 z-50 min-w-[170px] overflow-hidden rounded-xl border p-1 shadow-xl">
+                                <div class="icon-context-menu absolute bottom-8 right-0 z-50 min-w-[170px] overflow-hidden rounded-xl border p-1 shadow-xl"
+                                     @onclick:stopPropagation>
 
-                                    <!-- OpenIconLink  -->
+                                    <!-- Open IconLink -->
                                     <button type="button"
                                             class="context-menu-item flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition"
-                                            @onclick="() => OpenIconLink(icon)">
+                                            @onclick="() => OpenIconLink(icon)"
+                                            @onclick:stopPropagation>
                                         <i class="pi pi-copy w-4 text-center"></i>
                                         <span>Open IconLink</span>
                                     </button>
-                                
+
                                     <!-- Save -->
                                     <button type="button"
                                             class="context-menu-item flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition"
-                                            @onclick="() => SaveImageAsync(icon)">
+                                            @onclick="() => SaveImageAsync(icon)"
+                                            @onclick:stopPropagation>
                                         <i class="pi pi-download w-4 text-center"></i>
                                         <span>Save icon</span>
                                     </button>
-                                    
-                                    <!-- DELETE  -->
+
+                                    <!-- Delete -->
                                     <button type="button"
                                             class="context-menu-item flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition"
-                                            @onclick="() => DeleteIcon(icon)">
-                                        <i class="pi pi-copy w-4 text-center"></i>
+                                            @onclick="() => DeleteIcon(icon)"
+                                            @onclick:stopPropagation>
+                                        <i class="pi pi-trash w-4 text-center"></i>
                                         <span>Delete icon</span>
                                     </button>
 
                                     <!-- Close -->
                                     <button type="button"
                                             class="context-menu-item flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition"
-                                            @onclick="CloseIconMenu">
+                                            @onclick="CloseIconMenu"
+                                            @onclick:stopPropagation>
                                         <i class="pi pi-times w-4 text-center"></i>
                                         <span>Cancel</span>
                                     </button>
+
                                 </div>
                             }
                         </div>
@@ -129,10 +156,15 @@
             }
         </section>
 
-        <section class="icons-surface mt-6 rounded-xl border p-3 flex items-center justify-between">
-            <span class="icons-text-muted text-sm">Page @pageIndex</span>
+        <section class="icons-surface mt-6 rounded-xl border p-3 flex items-center justify-between"
+                 @onclick:stopPropagation>
+
+            <span class="icons-text-muted text-sm">
+                Page @pageIndex
+            </span>
 
             <div class="flex items-center gap-2">
+
                 <button type="button"
                         class="rounded-lg border px-3 py-1 text-sm disabled:opacity-50"
                         disabled="@(pageIndex <= 1)"
@@ -140,17 +172,21 @@
                     Previous
                 </button>
 
-                <span class="text-sm icons-text">@pageIndex</span>
+                <span class="text-sm icons-text">
+                    @pageIndex
+                </span>
 
                 <button type="button"
                         class="rounded-lg border px-3 py-1 text-sm"
                         @onclick="NextPage">
                     Next
                 </button>
+
             </div>
         </section>
     </div>
 </div>
+
 
 <AddIconComponent @bind-IsVisible="showAddDialog" />
 <AddMultiIconsComponent @bind-IsVisible="showAddMultiIconsDialog" />

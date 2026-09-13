@@ -116,7 +116,7 @@ namespace QuickTools.Mobile.Components.Pages.IconMemes
                     return;
                 }
 
-                await _iconService.CreateManyAsync(items);
+                await _iconService.CreateManyIfNotExistsAsync(items);
                 await NotificationService.ShowAsync(
                     1,
                     "Add icons successfully",

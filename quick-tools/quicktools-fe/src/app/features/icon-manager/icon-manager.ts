@@ -18,26 +18,28 @@ import { AddMultiIcons } from './components/add-multi-icons/add-multi-icons';
 import { NavigationComponent } from '../../components/navigation.component/navigation.component';
 import { WebUIResponse } from '../../models/webui.response';
 import { StatusPopup } from '../../components/status-popup/status-popup';
+import { Loader } from '../../components/loader/loader';
 
 @Component({
     selector: 'app-icon-manager',
     imports: [
-        ButtonModule,
-        FormsModule,
-        InputTextModule,
-        AddIcon,
-        DialogModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        TagModule,
-        PaginatorModule,
-        MenuModule,
-        TooltipModule,
-        ToastModule,
-        AddMultiIcons,
-        NavigationComponent,
-        StatusPopup,
-    ],
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    AddIcon,
+    DialogModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TagModule,
+    PaginatorModule,
+    MenuModule,
+    TooltipModule,
+    ToastModule,
+    AddMultiIcons,
+    NavigationComponent,
+    StatusPopup,
+    Loader
+],
     templateUrl: './icon-manager.html',
     styleUrl: './icon-manager.css',
     providers: [MessageService],
@@ -49,6 +51,7 @@ export class IconManager {
     selectedIcon = signal<IconModel | null>(null);
     page = signal<number>(1);
     pageSize = signal<number>(20);
+    isSeaching = signal<boolean>(true);
 
     icons = signal<IconModel[]>([
         // {
@@ -122,6 +125,7 @@ export class IconManager {
             return;
         }
         await this.searchicons();
+        this.isSeaching.set(false);
     }
 
     /* ========================= api actions ========================= */

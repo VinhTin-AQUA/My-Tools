@@ -236,7 +236,7 @@ namespace QuickTools.Windows.Handlers.IconHandlers
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             }).ToList();
-            var icon = await iconService.CreateManyAsync(icons);
+            var icon = await iconService.CreateManyIfNotExistsAsync(icons);
             var json = JsonSerializer.Serialize(icon, options);
             WebUI.InterfaceSetResponse(window, event_number, json);
             return icon;

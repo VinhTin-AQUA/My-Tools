@@ -27,6 +27,7 @@ namespace QuickTools.Mobile.Components.Pages.IconMemes
         protected int pageSize = 20;
         protected List<IconModel> icons = new();
         protected bool connected = true;
+        protected bool isSearching = true;
         
         public List<string> ErrorMessages = [];
 
@@ -41,6 +42,7 @@ namespace QuickTools.Mobile.Components.Pages.IconMemes
             await CheckConnection();
             if (connected)
                 await SearchIcons();
+            isSearching = false;
         }
 
         protected async Task CheckConnection()
