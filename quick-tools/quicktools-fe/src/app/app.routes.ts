@@ -5,6 +5,7 @@ import { CanvasCompressImage } from './features/canvas-compress-image/canvas-com
 import { LibcaesiumCompress } from './features/libcaesium-compress/libcaesium-compress';
 import { IconManager } from './features/icon-manager/icon-manager';
 import { Settings } from './features/settings/settings';
+import { PasswordManager } from './features/password-manager/password-manager';
 
 export const routes: Routes = [
     {
@@ -31,6 +32,11 @@ export const routes: Routes = [
         path: 'icon-manager',
         component: IconManager,
         title: 'Icon Manager',
+    },
+    {
+        path: 'password-manager',
+        component: PasswordManager,
+        title: 'Password Manager',
     },
     {
         path: 'settings',
