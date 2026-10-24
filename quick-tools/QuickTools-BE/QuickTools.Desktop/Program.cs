@@ -1,8 +1,7 @@
 ﻿using QuickTools.Windows.Handlers.FolderHandlers;
-using QuickTools.Windows.Handlers.IconHandlers;
+using QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers;
 using QuickTools.Windows.Handlers.IloveimgHandlers;
 using QuickTools.Windows.Handlers.LibcaesiumHandlers;
-using QuickTools.Windows.Handlers.MongoSettingHandlers;
 using WebUISharp;
 
 namespace QuickTools.Windows
@@ -20,22 +19,24 @@ namespace QuickTools.Windows
             // WebUIBinder.Bind(window, "requestData", ExampleHandlers.RequestDataHandler);
             // WebUIBinder.BindAsyncFunction(window, "asyncFunction", ExampleHandlers.MyAsyncFunction);
             
+            GoogleSheetPasswordManagerHandler.Init();
+            
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "upscaleImage", UpscaleImageHandler.UpscaleImage);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "libcaesiumCompressImage", LibcaesiumHandler.CompressImage);
             
             WebUIBinder.Bind(window, "openFolder", FolderHandler.OpenFolder);
             
-            // icons
-            WebUIBinder.BindAsyncAction(window, "iconHandlerCheckConnection", IconHandler.IconHandlerCheckConnection);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "searchIcons", IconHandler.GetIcons);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "addIcon", IconHandler.AddIcon);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "deleteIcon", IconHandler.DeleteIcon);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "updateIcon", IconHandler.UpdateIcon);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "addMultiIcons", IconHandler.AddMultiIcons);
+            // GoogleSheetPasswordManagerHandler
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_GetAll", GoogleSheetPasswordManagerHandler.GetAll);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Create", GoogleSheetPasswordManagerHandler.Create);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Update", GoogleSheetPasswordManagerHandler.Update);
+
+            // GoogleSheetPasswordManagerConfigHandler
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_SetKey", GoogleSheetPasswordManagerConfigHandler.SetKey);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_VerifyKey", GoogleSheetPasswordManagerConfigHandler.VerifyKey);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_SetUrl", GoogleSheetPasswordManagerConfigHandler.SetUrl);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_GetetUrl", GoogleSheetPasswordManagerConfigHandler.GetUrl);
             
-            // mongoDB setting
-            WebUIBinder.BindAsyncAction(window, "getMongoDBSetting", MongoSettingHandler.GetMongoDBSetting);
-            WebUIBinder.BindAsyncAction(window, "setMongoDBSetting", MongoSettingHandler.SetMongoDBSetting);
             
             // Cấu hình async
             WebUI.SetConfig(WebuiConfig.asynchronous_response, true);

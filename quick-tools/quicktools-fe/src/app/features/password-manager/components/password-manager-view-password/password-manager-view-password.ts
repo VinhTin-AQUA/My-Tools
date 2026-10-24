@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { DialogModule } from '@openng/optimus-ui/dialog';
@@ -23,6 +23,8 @@ export class PasswordManagerViewPassword {
 
     private readonly messageService = inject(MessageService);
 
+    readonly showPassword = signal(false);
+
     readonly fields = computed<ViewPasswordField[]>(() => {
         const password = this.password();
 
@@ -38,6 +40,32 @@ export class PasswordManagerViewPassword {
             { label: 'Note', value: password.note },
         ];
     });
+
+    constructor() {
+        effect(() => {
+            if (!this.visible()) {
+                return;
+            }
+
+            untracked(() => this.showPassword.set(false));
+        });
+    }
+
+    protected displayValue(field: ViewPasswordField): string {
+        if (!field.value) {
+            return '—';
+        }
+
+        if (field.label === 'Password' && !this.showPassword()) {
+            return '••••••••';
+        }
+
+        return field.value;
+    }
+
+    protected togglePasswordVisibility(): void {
+        this.showPassword.update((visible) => !visible);
+    }
 
     protected close(): void {
         this.visibleChange.emit(false);

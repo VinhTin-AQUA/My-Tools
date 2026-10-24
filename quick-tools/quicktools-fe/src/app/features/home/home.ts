@@ -49,7 +49,6 @@ export class Home {
         { icon: '🖼️', name: 'Canvas Compress Image', route: '/canvas-compress-image' },
         { icon: '⬇', name: 'Libcaesium Compress', route: '/libcaesium-compress' },
         { icon: '🔑', name: 'Password Manager', route: '/password-manager' },
-        { icon: '😀', name: 'Icon Manager', route: '/icon-manager' },
         { icon: '⚙️', name: 'Settings', route: '/settings' },
     ];
 

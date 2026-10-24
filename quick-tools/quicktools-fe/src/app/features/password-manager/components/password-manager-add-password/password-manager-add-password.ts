@@ -29,6 +29,9 @@ export class PasswordManagerAddPassword {
 
     private readonly messageService = inject(MessageService);
 
+    readonly showPassword = signal(false);
+    readonly showConfirmPassword = signal(false);
+
     readonly value = signal<AddPasswordFormValue>({
         accountName: '',
         userName: '',
@@ -90,8 +93,18 @@ export class PasswordManagerAddPassword {
                     note: '',
                 });
                 this.addForm().reset();
+                this.showPassword.set(false);
+                this.showConfirmPassword.set(false);
             });
         });
+    }
+
+    protected togglePasswordVisibility(): void {
+        this.showPassword.update((visible) => !visible);
+    }
+
+    protected toggleConfirmPasswordVisibility(): void {
+        this.showConfirmPassword.update((visible) => !visible);
     }
 
     protected close(): void {

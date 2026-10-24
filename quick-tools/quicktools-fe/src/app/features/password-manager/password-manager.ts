@@ -4,7 +4,9 @@ import { ButtonModule } from '@openng/optimus-ui/button';
 import { Menu, MenuModule } from '@openng/optimus-ui/menu';
 import { ToastModule } from '@openng/optimus-ui/toast';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
+import { Loader } from '../../components/loader/loader';
 import { NavigationComponent } from '../../components/navigation.component/navigation.component';
+import { WebuiService } from '../../services/webui-service';
 import { PasswordManagerAddPassword } from './components/password-manager-add-password/password-manager-add-password';
 import { PasswordManagerDeletePassword } from './components/password-manager-delete-password/password-manager-delete-password';
 import { PasswordManagerEditPassword } from './components/password-manager-edit-password/password-manager-edit-password';
@@ -21,6 +23,7 @@ import { AddPasswordManagerModel, PasswordManagerModel } from './models/password
         ToastModule,
         TooltipModule,
         NavigationComponent,
+        Loader,
         PasswordManagerAddPassword,
         PasswordManagerDeletePassword,
         PasswordManagerEditPassword,
@@ -35,6 +38,7 @@ import { AddPasswordManagerModel, PasswordManagerModel } from './models/password
 export class PasswordManager {
     readonly passwords = signal<PasswordManagerModel[]>([]);
     readonly selectedPassword = signal<PasswordManagerModel | null>(null);
+    readonly isLoading = signal(false);
 
     readonly key = signal('');
     readonly url = signal('');
@@ -83,56 +87,38 @@ export class PasswordManager {
     readonly headerMenu = viewChild<Menu>('headerMenu');
     readonly itemMenu = viewChild<Menu>('itemMenu');
 
-    ngOnInit(): void {
-        this.passwords.set([
-            {
-                id: 1,
-                accountName: 'Google',
-                userName: 'user@gmail.com',
-                password: 'Gm@il#2026',
-                note: 'Personal account',
-            },
-            {
-                id: 2,
-                accountName: 'GitHub',
-                userName: 'dev.newtun',
-                password: 'Gh!Secure#42',
-                note: 'Work repositories',
-            },
-            {
-                id: 3,
-                accountName: 'Facebook',
-                userName: 'newtun.nguyen',
-                password: 'Fb$Password1',
-                note: '',
-            },
-            {
-                id: 4,
-                accountName: 'Netflix',
-                userName: 'family@example.com',
-                password: 'Nf!Movie2026',
-                note: 'Family plan',
-            },
-            {
-                id: 5,
-                accountName: 'Microsoft Azure Administration Portal',
-                userName: 'admin@company.com',
-                password: 'Aws#Console!88',
-                note: 'Production access',
-            },
-        ]);
+    constructor(private webuiService: WebuiService) {}
+
+
+
+    async ngOnInit() {
+        await this.getAllPasswords();
+    }
+
+    async getAllPasswords(): Promise<PasswordManagerModel[]> {
+        this.isLoading.set(true);
+
+        try {
+            const passwords = await this.webuiService.callJson<PasswordManagerModel[]>(
+                'GoogleSheetPasswordManagerHandler_GetAll',
+                {},
+            );
+
+            this.passwords.set(passwords);
+
+            return passwords;
+        } finally {
+            this.isLoading.set(false);
+        }
     }
 
     /* ========================= header actions ========================= */
 
-    onReload(): void {
-        console.log('Reload passwords');
+    async onReload() {
+        await this.getAllPasswords();
     }
 
     openHeaderMenu(event: Event): void {
-        // this.itemMenu?.hide();
-        // this.headerMenu.toggle(event);
-
         this.itemMenu()?.hide();
         this.headerMenu()?.toggle(event);
     }

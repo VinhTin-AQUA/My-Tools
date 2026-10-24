@@ -20,10 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Constants\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="NewTun.WebUISharp" Version="1.0.4" />
     </ItemGroup>
     

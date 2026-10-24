@@ -7,8 +7,10 @@ namespace QuickTools.Windows.AppSingletons
         static JsonStorageSingleton()
         {
             Instance = new JsonStorage();
+            GoogleSheetConfigInstance = new JsonStorage("GoogleSheetConfig.json");
         }
 
         public static JsonStorage Instance { get; }
+        public static JsonStorage GoogleSheetConfigInstance { get; }
     }
 }
