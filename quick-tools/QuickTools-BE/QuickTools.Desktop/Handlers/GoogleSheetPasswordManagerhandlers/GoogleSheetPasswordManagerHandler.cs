@@ -21,7 +21,7 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
         {
             // string apiUrl = "";
             apiUrl =
-                "";
+                "https://script.google.com/macros/s/AKfycbx7cEmb0KseReqVFwqYnu-tjMAxy3_A7Wgm_dPZPET2Hvq0Nj-ECgOfSpX4UMMsAhY/exec";
         }
 
         public static async Task<object?> GetAll(UIntPtr window, UIntPtr event_type, IntPtr element,

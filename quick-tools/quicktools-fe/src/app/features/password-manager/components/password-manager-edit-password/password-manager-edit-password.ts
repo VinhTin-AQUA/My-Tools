@@ -1,11 +1,14 @@
-import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
 import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { DialogModule } from '@openng/optimus-ui/dialog';
+import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { PasswordManagerModel } from '../../models/password-manager.model';
+import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
+import { WebuiService } from '../../../../services/webui-service';
+import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 
 interface EditPasswordFormValue {
     accountName: string;
@@ -17,7 +20,7 @@ interface EditPasswordFormValue {
 
 @Component({
     selector: 'app-password-manager-edit-password',
-    imports: [ButtonModule, DialogModule, FormField, InputTextModule, TextareaModule],
+    imports: [ButtonModule, DialogModule, FormField, InputTextModule, TextareaModule, BlockOutsideClose],
     templateUrl: './password-manager-edit-password.html',
     styleUrl: './password-manager-edit-password.css',
 })
@@ -29,9 +32,13 @@ export class PasswordManagerEditPassword {
     readonly passwordUpdated = output<PasswordManagerModel>();
 
     private readonly messageService = inject(MessageService);
+    private readonly webuiService = inject(WebuiService);
 
     readonly showPassword = signal(false);
     readonly showConfirmPassword = signal(false);
+    readonly isSaving = signal(false);
+
+    private readonly dialog = viewChild<Dialog>('dialog');
 
     readonly value = signal<EditPasswordFormValue>({
         accountName: '',
@@ -115,11 +122,28 @@ export class PasswordManagerEditPassword {
     }
 
     protected close(): void {
+        if (this.isSaving()) {
+            return;
+        }
+
         this.visibleChange.emit(false);
+    }
+
+    protected onVisibleChange(visible: boolean): void {
+        if (!visible && this.isSaving()) {
+            this.dialog()!.visible = true;
+            return;
+        }
+
+        this.visibleChange.emit(visible);
     }
 
     protected async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
+
+        if (this.isSaving()) {
+            return;
+        }
 
         await submit(this.editForm, {
             action: async () => {
@@ -130,12 +154,19 @@ export class PasswordManagerEditPassword {
                 }
 
                 const value = this.value();
-                const updatedPassword: PasswordManagerModel = {
+                const request: PasswordManagerModel = {
                     id: password.id,
                     accountName: value.accountName.trim(),
                     userName: value.userName.trim(),
                     password: value.password,
                     note: value.note.trim(),
+                };
+
+                const result = await this.savePassword(request);
+
+                const updatedPassword: PasswordManagerModel = {
+                    ...request,
+                    id: result.id ?? request.id,
                 };
 
                 console.log('Password updated successfully.', {
@@ -155,5 +186,20 @@ export class PasswordManagerEditPassword {
                 return undefined;
             },
         });
+    }
+
+    private async savePassword(
+        request: PasswordManagerModel,
+    ): Promise<GoogleSheetApiResult> {
+        this.isSaving.set(true);
+
+        try {
+            return await this.webuiService.callJson<GoogleSheetApiResult>(
+                'GoogleSheetPasswordManagerHandler_Update',
+                request,
+            );
+        } finally {
+            this.isSaving.set(false);
+        }
     }
 }

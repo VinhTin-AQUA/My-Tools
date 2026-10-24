@@ -1,11 +1,14 @@
-import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
 import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { DialogModule } from '@openng/optimus-ui/dialog';
+import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { TextareaModule } from '@openng/optimus-ui/textarea';
-import { AddPasswordManagerModel } from '../../models/password-manager.model';
+import { PasswordManagerModel } from '../../models/password-manager.model';
+import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
+import { WebuiService } from '../../../../services/webui-service';
+import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 
 interface AddPasswordFormValue {
     accountName: string;
@@ -17,7 +20,7 @@ interface AddPasswordFormValue {
 
 @Component({
     selector: 'app-password-manager-add-password',
-    imports: [ButtonModule, DialogModule, FormField, InputTextModule, TextareaModule],
+    imports: [ButtonModule, DialogModule, FormField, InputTextModule, TextareaModule, BlockOutsideClose],
     templateUrl: './password-manager-add-password.html',
     styleUrl: './password-manager-add-password.css',
 })
@@ -25,12 +28,16 @@ export class PasswordManagerAddPassword {
     readonly visible = input(false);
 
     readonly visibleChange = output<boolean>();
-    readonly passwordAdded = output<AddPasswordManagerModel>();
+    readonly passwordAdded = output<PasswordManagerModel>();
 
     private readonly messageService = inject(MessageService);
+    private readonly webuiService = inject(WebuiService);
 
     readonly showPassword = signal(false);
     readonly showConfirmPassword = signal(false);
+    readonly isSaving = signal(false);
+
+    private readonly dialog = viewChild<Dialog>('dialog');
 
     readonly value = signal<AddPasswordFormValue>({
         accountName: '',
@@ -108,18 +115,46 @@ export class PasswordManagerAddPassword {
     }
 
     protected close(): void {
+        if (this.isSaving()) {
+            return;
+        }
+
         this.visibleChange.emit(false);
+    }
+
+    protected onVisibleChange(visible: boolean): void {
+        if (!visible && this.isSaving()) {
+            this.dialog()!.visible = true;
+            return;
+        }
+
+        this.visibleChange.emit(visible);
     }
 
     protected async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
 
+        if (this.isSaving()) {
+            return;
+        }
+
         const value = this.value();
-        const password: AddPasswordManagerModel = {
+        const request: PasswordManagerModel = {
+            id: 0,
             accountName: value.accountName.trim(),
             userName: value.userName.trim(),
             password: value.password,
             note: value.note.trim(),
+        };
+
+        const result = await this.savePassword(request);
+
+        console.log("result:", result);
+        
+
+        const password: PasswordManagerModel = {
+            ...request,
+            id: result.id ?? request.id,
         };
 
         console.log('Password added successfully.', password);
@@ -132,5 +167,20 @@ export class PasswordManagerAddPassword {
 
         this.passwordAdded.emit(password);
         this.close();
+    }
+
+    private async savePassword(
+        request: PasswordManagerModel,
+    ): Promise<GoogleSheetApiResult> {
+        this.isSaving.set(true);
+
+        try {
+            return await this.webuiService.callJson<GoogleSheetApiResult>(
+                'GoogleSheetPasswordManagerHandler_Create',
+                request,
+            );
+        } finally {
+            this.isSaving.set(false);
+        }
     }
 }

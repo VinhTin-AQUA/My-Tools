@@ -31,9 +31,13 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
             config.Key = request.Key;
 
             var saved = await SaveConfigAsync(config);
-            WriteResponse(window, event_number, saved);
+            SetKeyGoogleSheetPasswordManagerResponse setKeyGoogleSheetPasswordManagerResponse = new()
+            {
+                Key = request.Key,
+            };
+            WriteResponse(window, event_number, setKeyGoogleSheetPasswordManagerResponse);
 
-            return saved;
+            return setKeyGoogleSheetPasswordManagerResponse;
         }
 
         public static async Task<object?> VerifyKey(UIntPtr window, UIntPtr event_type, IntPtr element,
@@ -83,19 +87,13 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
             return saved;
         }
 
-        public static async Task<object?> GetUrl(UIntPtr window, UIntPtr event_type, IntPtr element,
+        public static async Task<object?> GetConfig(UIntPtr window, UIntPtr event_type, IntPtr element,
             UIntPtr event_number, UIntPtr bind_id)
         {
             var config = await GetConfigAsync();
-            var url = config.Url;
 
-            GetUrlGoogleSheetPasswordManagerResponse getUrlGoogleSheetPasswordManagerResponse = new()
-            {
-                Url = url
-            };
-
-            WriteResponse(window, event_number, getUrlGoogleSheetPasswordManagerResponse);
-            return getUrlGoogleSheetPasswordManagerResponse;
+            WriteResponse(window, event_number, config);
+            return config;
         }
 
         private static async Task<GoogleSheetConfig> GetConfigAsync()

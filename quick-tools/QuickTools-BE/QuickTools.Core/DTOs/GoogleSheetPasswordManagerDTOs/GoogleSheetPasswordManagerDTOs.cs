@@ -4,8 +4,15 @@ namespace QuickTools.Core.DTOs.GoogleSheetPasswordManagerDTOs
     {
         public int Id { get; set; }
     }
+    
+    #region key
 
     public class SetKeyGoogleSheetPasswordManagerRequest
+    {
+        public string Key { get; set; } = string.Empty;
+    }
+    
+    public class SetKeyGoogleSheetPasswordManagerResponse
     {
         public string Key { get; set; } = string.Empty;
     }
@@ -14,6 +21,10 @@ namespace QuickTools.Core.DTOs.GoogleSheetPasswordManagerDTOs
     {
         public string Key { get; set; } = string.Empty;
     }
+    
+    #endregion
+    
+    #region url
     
     public class VerifyKeyGoogleSheetPasswordManagerResponse
     {
@@ -30,8 +41,5 @@ namespace QuickTools.Core.DTOs.GoogleSheetPasswordManagerDTOs
         public string Url { get; set; } = string.Empty;
     }
     
-    public class GetUrlGoogleSheetPasswordManagerResponse
-    {
-        public string Url { get; set; } = string.Empty;
-    }
+    #endregion
 }

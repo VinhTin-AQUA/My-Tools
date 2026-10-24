@@ -13,7 +13,7 @@ import { PasswordManagerEditPassword } from './components/password-manager-edit-
 import { PasswordManagerSetKey } from './components/password-manager-set-key/password-manager-set-key';
 import { PasswordManagerSetUrl } from './components/password-manager-set-url/password-manager-set-url';
 import { PasswordManagerViewPassword } from './components/password-manager-view-password/password-manager-view-password';
-import { AddPasswordManagerModel, PasswordManagerModel } from './models/password-manager.model';
+import { PasswordManagerModel } from './models/password-manager.model';
 
 @Component({
     selector: 'app-password-manager',
@@ -188,7 +188,7 @@ export class PasswordManager {
         this.url.set(url);
     }
 
-    onPasswordAdded(password: AddPasswordManagerModel): void {
+    onPasswordAdded(password: PasswordManagerModel): void {
         const nextId =
             this.passwords().reduce((highestId, item) => Math.max(highestId, item.id), 0) + 1;
 

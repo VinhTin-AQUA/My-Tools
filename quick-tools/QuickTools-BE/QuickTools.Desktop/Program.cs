@@ -30,12 +30,13 @@ namespace QuickTools.Windows
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_GetAll", GoogleSheetPasswordManagerHandler.GetAll);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Create", GoogleSheetPasswordManagerHandler.Create);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Update", GoogleSheetPasswordManagerHandler.Update);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Delete", GoogleSheetPasswordManagerHandler.Delete);
 
             // GoogleSheetPasswordManagerConfigHandler
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_SetKey", GoogleSheetPasswordManagerConfigHandler.SetKey);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_VerifyKey", GoogleSheetPasswordManagerConfigHandler.VerifyKey);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_SetUrl", GoogleSheetPasswordManagerConfigHandler.SetUrl);
-            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_GetetUrl", GoogleSheetPasswordManagerConfigHandler.GetUrl);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_GetConfig", GoogleSheetPasswordManagerConfigHandler.GetConfig);
             
             
             // Cấu hình async

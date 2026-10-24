@@ -1,11 +1,15 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, signal, viewChild } from '@angular/core';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { DialogModule } from '@openng/optimus-ui/dialog';
+import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
+import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
+import { WebuiService } from '../../../../services/webui-service';
+import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
+import { DeleteGoogleSheetPasswordManagerRequest } from './models/delete-googlesheet-password-manager.model';
 
 @Component({
     selector: 'app-password-manager-delete-password',
-    imports: [ButtonModule, DialogModule],
+    imports: [ButtonModule, DialogModule, BlockOutsideClose],
     templateUrl: './password-manager-delete-password.html',
     styleUrl: './password-manager-delete-password.css',
 })
@@ -17,15 +21,58 @@ export class PasswordManagerDeletePassword {
     readonly passwordDeleted = output<number>();
 
     private readonly messageService = inject(MessageService);
+    private readonly webuiService = inject(WebuiService);
+
+    readonly isDeleting = signal(false);
+
+    private readonly dialog = viewChild<Dialog>('dialog');
 
     protected close(): void {
+        if (this.isDeleting()) {
+            return;
+        }
+
         this.visibleChange.emit(false);
     }
 
-    protected confirmDelete(): void {
+    protected onVisibleChange(visible: boolean): void {
+        if (!visible && this.isDeleting()) {
+            this.dialog()!.visible = true;
+            return;
+        }
+
+        this.visibleChange.emit(visible);
+    }
+
+    protected async confirmDelete(): Promise<void> {
         const id = this.passwordId();
 
-        if (id === null) {
+        if (id === null || this.isDeleting()) {
+            return;
+        }
+
+        const request: DeleteGoogleSheetPasswordManagerRequest = { id };
+
+        this.isDeleting.set(true);
+
+        let result: GoogleSheetApiResult;
+
+        try {
+            result = await this.webuiService.callJson<GoogleSheetApiResult>(
+                'GoogleSheetPasswordManagerHandler_Delete',
+                request,
+            );
+        } finally {
+            this.isDeleting.set(false);
+        }
+
+        if (!result.success) {
+            this.messageService.add({
+                severity: 'error',
+                summary: 'Delete failed',
+                detail: result.message ?? 'The saved password could not be removed.',
+            });
+
             return;
         }
 

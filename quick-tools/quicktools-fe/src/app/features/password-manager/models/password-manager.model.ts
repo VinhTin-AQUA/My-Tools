@@ -6,10 +6,7 @@ export interface PasswordManagerModel {
     note: string,
 }
 
-export interface AddPasswordManagerModel {
-    accountName: string,
-    userName: string,
-    password: string,
-    note: string,
+export interface GoogleSheetConfig {
+  key: string;
+  url: string;
 }
-
