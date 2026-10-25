@@ -115,7 +115,12 @@ export class PasswordManagerSetKey {
 
     protected onVisibleChange(visible: boolean): void {
         if (!visible && this.isSaving()) {
-            this.dialog()!.visible = true;
+            const dialog = this.dialog();
+
+            if (dialog) {
+                dialog.visible = true;
+            }
+
             return;
         }
 

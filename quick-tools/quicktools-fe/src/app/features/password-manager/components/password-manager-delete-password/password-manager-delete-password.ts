@@ -37,7 +37,12 @@ export class PasswordManagerDeletePassword {
 
     protected onVisibleChange(visible: boolean): void {
         if (!visible && this.isDeleting()) {
-            this.dialog()!.visible = true;
+            const dialog = this.dialog();
+
+            if (dialog) {
+                dialog.visible = true;
+            }
+
             return;
         }
 

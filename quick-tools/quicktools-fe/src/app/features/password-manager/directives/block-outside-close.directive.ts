@@ -1,24 +1,35 @@
-import { Directive, DOCUMENT, inject, input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, DOCUMENT, inject, input, OnDestroy, OnInit, output } from '@angular/core';
 
 @Directive({
     selector: '[appBlockOutsideClose]',
 })
 export class BlockOutsideClose implements OnInit, OnDestroy {
     readonly appBlockOutsideClose = input(false);
+    readonly appBlockOutsideCloseVisible = input(false);
+    readonly appBlockOutsideCloseDismiss = output<void>();
 
     private readonly document = inject(DOCUMENT);
 
+    // PrimeNG binds its mask listener when the dialog opens, so the outside click
+    // is handled here instead of relying on dismissableMask toggling.
     private readonly onMouseDown = (event: MouseEvent): void => {
-        if (!this.appBlockOutsideClose()) {
+        const target = event.target as HTMLElement | null;
+
+        if (
+            !target?.classList.contains('p-dialog-mask') ||
+            !this.appBlockOutsideCloseVisible()
+        ) {
             return;
         }
 
-        const target = event.target as HTMLElement | null;
+        event.stopPropagation();
+        event.preventDefault();
 
-        if (target?.classList.contains('p-dialog-mask')) {
-            event.stopPropagation();
-            event.preventDefault();
+        if (this.appBlockOutsideClose()) {
+            return;
         }
+
+        this.appBlockOutsideCloseDismiss.emit();
     };
 
     ngOnInit(): void {
