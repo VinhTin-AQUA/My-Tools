@@ -4,7 +4,7 @@ import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
-import { GoogleSheetConfig } from '../../models/password-manager.model';
+import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
 import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import {
@@ -34,12 +34,11 @@ export class PasswordManagerSetKey {
     private readonly messageService = inject(MessageService);
     private readonly webuiService = inject(WebuiService);
 
-    readonly config = signal<GoogleSheetConfig | null>(null);
-
     readonly showOldKey = signal(false);
     readonly showNewKey = signal(false);
     readonly showConfirmNewKey = signal(false);
     readonly isSaving = signal(false);
+    readonly dialogMotionOptions = { enter: false, leave: false };
 
     private readonly dialog = viewChild<Dialog>('dialog');
 
@@ -88,20 +87,24 @@ export class PasswordManagerSetKey {
         });
     });
 
+    private wasVisible = false;
+
     constructor() {
         effect(() => {
-            if (!this.visible()) {
-                return;
+            const visible = this.visible();
+
+            if (visible && !this.wasVisible) {
+                untracked(() => {
+                    this.value.set({
+                        oldKey: '',
+                        newKey: '',
+                        confirmNewKey: '',
+                    });
+                    this.setKeyForm().reset();
+                });
             }
 
-            untracked(() => {
-                this.value.set({
-                    oldKey: '',
-                    newKey: '',
-                    confirmNewKey: '',
-                });
-                this.setKeyForm().reset();
-            });
+            this.wasVisible = visible;
         });
     }
 
@@ -139,21 +142,6 @@ export class PasswordManagerSetKey {
         this.showConfirmNewKey.update((visible) => !visible);
     }
 
-    async ngOnInit(): Promise<void> {
-        await this.loadConfig();
-    }
-
-    async loadConfig(): Promise<GoogleSheetConfig> {
-        const config = await this.webuiService.callJson<GoogleSheetConfig>(
-            'GoogleSheetPasswordManagerConfigHandler_GetConfig',
-            {},
-        );
-
-        this.config.set(config);
-
-        return config;
-    }
-
     protected async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
 
@@ -169,13 +157,26 @@ export class PasswordManagerSetKey {
 
                 this.isSaving.set(true);
 
+                let response: WebUIResponse<SetKeyGoogleSheetPasswordManagerResponse>;
+
                 try {
-                    await this.webuiService.callJson<SetKeyGoogleSheetPasswordManagerResponse>(
-                        'GoogleSheetPasswordManagerConfigHandler_SetKey',
-                        request,
-                    );
+                    response = await this.webuiService.callJson<
+                        WebUIResponse<SetKeyGoogleSheetPasswordManagerResponse>
+                    >('GoogleSheetPasswordManagerConfigHandler_SetKey', request);
                 } finally {
                     this.isSaving.set(false);
+                }
+
+                if (!response.success) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: response.title || 'Key could not be saved',
+                        detail:
+                            response.description ||
+                            'The password manager key could not be saved.',
+                    });
+
+                    return undefined;
                 }
 
                 console.log('Password manager key updated successfully.');
@@ -186,7 +187,7 @@ export class PasswordManagerSetKey {
                     detail: 'The password manager key was updated.',
                 });
 
-                this.keySaved.emit(request.key);
+                this.keySaved.emit(response.data?.key ?? request.key);
                 this.close();
 
                 return undefined;

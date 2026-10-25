@@ -3,6 +3,7 @@ import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
+import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
 import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import { DeleteGoogleSheetPasswordManagerRequest } from './models/delete-googlesheet-password-manager.model';
@@ -60,10 +61,10 @@ export class PasswordManagerDeletePassword {
 
         this.isDeleting.set(true);
 
-        let result: GoogleSheetApiResult;
+        let result: WebUIResponse<GoogleSheetApiResult>;
 
         try {
-            result = await this.webuiService.callJson<GoogleSheetApiResult>(
+            result = await this.webuiService.callJson<WebUIResponse<GoogleSheetApiResult>>(
                 'GoogleSheetPasswordManagerHandler_Delete',
                 request,
             );
@@ -71,11 +72,13 @@ export class PasswordManagerDeletePassword {
             this.isDeleting.set(false);
         }
 
-        if (!result.success) {
+        if (!result.success || !result.data) {
             this.messageService.add({
                 severity: 'error',
-                summary: 'Delete failed',
-                detail: result.message ?? 'The saved password could not be removed.',
+                summary: result.title || 'Delete failed',
+                detail:
+                    result.description ||
+                    'The saved password could not be removed.',
             });
 
             return;

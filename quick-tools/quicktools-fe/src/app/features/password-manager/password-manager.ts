@@ -6,6 +6,7 @@ import { ToastModule } from '@openng/optimus-ui/toast';
 import { TooltipModule } from '@openng/optimus-ui/tooltip';
 import { Loader } from '../../components/loader/loader';
 import { NavigationComponent } from '../../components/navigation.component/navigation.component';
+import { WebUIResponse } from '../../models/webui.response';
 import { WebuiService } from '../../services/webui-service';
 import { PasswordManagerAddPassword } from './components/password-manager-add-password/password-manager-add-password';
 import { PasswordManagerDeletePassword } from './components/password-manager-delete-password/password-manager-delete-password';
@@ -87,9 +88,10 @@ export class PasswordManager {
     readonly headerMenu = viewChild<Menu>('headerMenu');
     readonly itemMenu = viewChild<Menu>('itemMenu');
 
-    constructor(private webuiService: WebuiService) {}
-
-
+    constructor(
+        private webuiService: WebuiService,
+        private messageService: MessageService,
+    ) {}
 
     async ngOnInit() {
         await this.getAllPasswords();
@@ -99,10 +101,21 @@ export class PasswordManager {
         this.isLoading.set(true);
 
         try {
-            const passwords = await this.webuiService.callJson<PasswordManagerModel[]>(
-                'GoogleSheetPasswordManagerHandler_GetAll',
-                {},
-            );
+            const response = await this.webuiService.callJson<
+                WebUIResponse<PasswordManagerModel[]>
+            >('GoogleSheetPasswordManagerHandler_GetAll', {});
+
+            if (!response.success) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: response.title || 'Passwords could not be loaded',
+                    detail: response.description || 'Unable to load saved passwords.',
+                });
+
+                return this.passwords();
+            }
+
+            const passwords = response.data ?? [];
 
             this.passwords.set(passwords);
 
@@ -136,10 +149,6 @@ export class PasswordManager {
     /* ========================= item actions ========================= */
 
     openItemMenu(event: Event, password: PasswordManagerModel): void {
-        // this.selectedPassword.set(password);
-        // this.headerMenu?.hide();
-        // this.itemMenu.toggle(event);
-
         this.selectedPassword.set(password);
         this.headerMenu()?.hide();
         this.itemMenu()?.toggle(event);

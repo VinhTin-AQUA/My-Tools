@@ -4,7 +4,7 @@ import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
-import { GoogleSheetConfig } from '../../models/password-manager.model';
+import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
 import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import {
@@ -32,8 +32,8 @@ export class PasswordManagerSetUrl {
     private readonly messageService = inject(MessageService);
     private readonly webuiService = inject(WebuiService);
 
-    readonly config = signal<GoogleSheetConfig | null>(null);
     readonly isSaving = signal(false);
+    readonly dialogMotionOptions = { enter: false, leave: false };
 
     private readonly dialog = viewChild<Dialog>('dialog');
 
@@ -49,18 +49,22 @@ export class PasswordManagerSetUrl {
         );
     });
 
+    private wasVisible = false;
+
     constructor() {
         effect(() => {
-            if (!this.visible()) {
-                return;
+            const visible = this.visible();
+
+            if (visible && !this.wasVisible) {
+                untracked(() => {
+                    const url = this.currentUrl() ?? '';
+
+                    this.value.set({ url });
+                    this.urlForm().reset();
+                });
             }
 
-            const url = this.currentUrl() ?? '';
-
-            untracked(() => {
-                this.value.set({ url });
-                this.urlForm().reset();
-            });
+            this.wasVisible = visible;
         });
     }
 
@@ -86,21 +90,6 @@ export class PasswordManagerSetUrl {
         this.visibleChange.emit(visible);
     }
 
-    async ngOnInit(): Promise<void> {
-        await this.loadConfig();
-    }
-
-    async loadConfig(): Promise<GoogleSheetConfig> {
-        const config = await this.webuiService.callJson<GoogleSheetConfig>(
-            'GoogleSheetPasswordManagerConfigHandler_GetConfig',
-            {},
-        );
-
-        this.config.set(config);
-
-        return config;
-    }
-
     protected async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
 
@@ -116,13 +105,26 @@ export class PasswordManagerSetUrl {
 
                 this.isSaving.set(true);
 
+                let response: WebUIResponse<SetUrlGoogleSheetPasswordManagerResponse>;
+
                 try {
-                    await this.webuiService.callJson<SetUrlGoogleSheetPasswordManagerResponse>(
-                        'GoogleSheetPasswordManagerConfigHandler_SetUrl',
-                        request,
-                    );
+                    response = await this.webuiService.callJson<
+                        WebUIResponse<SetUrlGoogleSheetPasswordManagerResponse>
+                    >('GoogleSheetPasswordManagerConfigHandler_SetUrl', request);
                 } finally {
                     this.isSaving.set(false);
+                }
+
+                if (!response.success) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: response.title || 'URL could not be saved',
+                        detail:
+                            response.description ||
+                            'The password manager URL could not be saved.',
+                    });
+
+                    return undefined;
                 }
 
                 console.log('Password manager URL updated successfully.');
@@ -133,7 +135,7 @@ export class PasswordManagerSetUrl {
                     detail: 'The password manager URL was updated.',
                 });
 
-                this.urlSaved.emit(request.url);
+                this.urlSaved.emit(response.data?.url ?? request.url);
                 this.close();
 
                 return undefined;

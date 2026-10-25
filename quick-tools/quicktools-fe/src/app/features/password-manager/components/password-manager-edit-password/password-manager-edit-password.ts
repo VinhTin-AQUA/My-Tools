@@ -7,6 +7,7 @@ import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { PasswordManagerModel } from '../../models/password-manager.model';
 import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
+import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
 import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 
@@ -169,9 +170,21 @@ export class PasswordManagerEditPassword {
 
                 const result = await this.savePassword(request);
 
+                if (!result.success || !result.data) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: result.title || 'Password could not be updated',
+                        detail:
+                            result.description ||
+                            'The saved password could not be updated.',
+                    });
+
+                    return undefined;
+                }
+
                 const updatedPassword: PasswordManagerModel = {
                     ...request,
-                    id: result.id ?? request.id,
+                    id: result.data.id ?? request.id,
                 };
 
                 console.log('Password updated successfully.', {
@@ -195,11 +208,11 @@ export class PasswordManagerEditPassword {
 
     private async savePassword(
         request: PasswordManagerModel,
-    ): Promise<GoogleSheetApiResult> {
+    ): Promise<WebUIResponse<GoogleSheetApiResult>> {
         this.isSaving.set(true);
 
         try {
-            return await this.webuiService.callJson<GoogleSheetApiResult>(
+            return await this.webuiService.callJson<WebUIResponse<GoogleSheetApiResult>>(
                 'GoogleSheetPasswordManagerHandler_Update',
                 request,
             );

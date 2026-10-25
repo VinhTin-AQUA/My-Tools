@@ -1,6 +1,7 @@
 using System.Text.Json;
 using QuickTools.Core.DTOs.GoogleSheetPasswordManagerDTOs;
 using QuickTools.Core.Models;
+using QuickTools.Core.Responses;
 using QuickTools.Windows.AppSingletons;
 using WebUISharp;
 
@@ -24,20 +25,21 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
 
             if (request == null)
             {
-                return false;
+                return SendResponse(window, event_number,
+                    CreateErrorResponse<SetKeyGoogleSheetPasswordManagerResponse>("SetKey", "Invalid request."));
             }
 
             var config = await GetConfigAsync();
             config.Key = request.Key;
 
             var saved = await SaveConfigAsync(config);
-            SetKeyGoogleSheetPasswordManagerResponse setKeyGoogleSheetPasswordManagerResponse = new()
+            var response = new SetKeyGoogleSheetPasswordManagerResponse
             {
                 Key = request.Key,
             };
-            WriteResponse(window, event_number, setKeyGoogleSheetPasswordManagerResponse);
 
-            return setKeyGoogleSheetPasswordManagerResponse;
+            return SendResponse(window, event_number,
+                CreateResponse("SetKey", response, saved, saved ? string.Empty : "Cannot save key."));
         }
 
         public static async Task<object?> VerifyKey(UIntPtr window, UIntPtr event_type, IntPtr element,
@@ -47,20 +49,19 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
 
             if (request == null)
             {
-                WriteResponse(window, event_number, false);
-                return false;
+                return SendResponse(window, event_number,
+                    CreateErrorResponse<VerifyKeyGoogleSheetPasswordManagerResponse>("VerifyKey", "Invalid request."));
             }
 
             var config = await GetConfigAsync();
             var isValid = !string.IsNullOrEmpty(config.Key) && config.Key == request.Key;
 
-            VerifyKeyGoogleSheetPasswordManagerResponse verifyKeyGoogleSheetPasswordManagerResponse = new()
+            var response = new VerifyKeyGoogleSheetPasswordManagerResponse
             {
                 IsValid = isValid
             };
 
-            WriteResponse(window, event_number, verifyKeyGoogleSheetPasswordManagerResponse);
-            return verifyKeyGoogleSheetPasswordManagerResponse;
+            return SendResponse(window, event_number, CreateResponse("VerifyKey", response));
         }
 
         public static async Task<object?> SetUrl(UIntPtr window, UIntPtr event_type, IntPtr element,
@@ -70,30 +71,30 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
 
             if (request == null)
             {
-                return false;
+                return SendResponse(window, event_number,
+                    CreateErrorResponse<SetUrlGoogleSheetPasswordManagerResponse>("SetUrl", "Invalid request."));
             }
 
             var config = await GetConfigAsync();
             config.Url = request.Url;
 
             var saved = await SaveConfigAsync(config);
-
-            SetUrlGoogleSheetPasswordManagerResponse setUrlGoogleSheetPasswordManagerResponse = new()
+            var response = new SetUrlGoogleSheetPasswordManagerResponse
             {
                 Url = request.Url,
             };
-            WriteResponse(window, event_number, saved);
 
-            return saved;
+            return SendResponse(window, event_number,
+                CreateResponse("SetUrl", response, saved, saved ? string.Empty : "Cannot save URL."));
         }
 
+        
         public static async Task<object?> GetConfig(UIntPtr window, UIntPtr event_type, IntPtr element,
             UIntPtr event_number, UIntPtr bind_id)
         {
             var config = await GetConfigAsync();
 
-            WriteResponse(window, event_number, config);
-            return config;
+            return SendResponse(window, event_number, CreateResponse("GetConfig", config));
         }
 
         private static async Task<GoogleSheetConfig> GetConfigAsync()
@@ -118,9 +119,29 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
                 : JsonSerializer.Deserialize<T>(jsonData, JsonOptions);
         }
 
-        private static void WriteResponse<T>(UIntPtr window, UIntPtr eventNumber, T data)
+        private static WebUIResponse<T> CreateResponse<T>(string action, T? data, bool success = true,
+            string description = "")
         {
-            WebUI.InterfaceSetResponse(window, eventNumber, JsonSerializer.Serialize(data, JsonOptions));
+            return new WebUIResponse<T>
+            {
+                Action = action,
+                Title = action,
+                Description = description,
+                Success = success,
+                Data = data
+            };
+        }
+
+        private static WebUIResponse<T> CreateErrorResponse<T>(string action, string description)
+        {
+            return CreateResponse<T>(action, default, false, description);
+        }
+
+        private static WebUIResponse<T> SendResponse<T>(UIntPtr window, UIntPtr eventNumber,
+            WebUIResponse<T> response)
+        {
+            WebUI.InterfaceSetResponse(window, eventNumber, JsonSerializer.Serialize(response, JsonOptions));
+            return response;
         }
     }
 }
