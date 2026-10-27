@@ -1,21 +1,18 @@
-import { Component, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
 import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
-import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import { DeleteGoogleSheetPasswordManagerRequest } from './models/delete-googlesheet-password-manager.model';
 
 @Component({
     selector: 'app-password-manager-delete-password',
-    imports: [ButtonModule, DialogModule, BlockOutsideClose],
+    imports: [ButtonModule],
     templateUrl: './password-manager-delete-password.html',
     styleUrl: './password-manager-delete-password.css',
 })
 export class PasswordManagerDeletePassword {
-    readonly visible = input(false);
     readonly passwordId = input<number | null>(null);
 
     readonly visibleChange = output<boolean>();
@@ -26,28 +23,12 @@ export class PasswordManagerDeletePassword {
 
     readonly isDeleting = signal(false);
 
-    private readonly dialog = viewChild<Dialog>('dialog');
-
     protected close(): void {
         if (this.isDeleting()) {
             return;
         }
 
         this.visibleChange.emit(false);
-    }
-
-    protected onVisibleChange(visible: boolean): void {
-        if (!visible && this.isDeleting()) {
-            const dialog = this.dialog();
-
-            if (dialog) {
-                dialog.visible = true;
-            }
-
-            return;
-        }
-
-        this.visibleChange.emit(visible);
     }
 
     protected async confirmDelete(): Promise<void> {

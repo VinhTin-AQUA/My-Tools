@@ -1,12 +1,10 @@
-import { Component, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
-import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import {
     SetKeyGoogleSheetPasswordManagerRequest,
     SetKeyGoogleSheetPasswordManagerResponse,
@@ -20,12 +18,11 @@ interface SetKeyFormValue {
 
 @Component({
     selector: 'app-password-manager-set-key',
-    imports: [ButtonModule, DialogModule, FormField, InputTextModule, BlockOutsideClose],
+    imports: [ButtonModule, FormField, InputTextModule],
     templateUrl: './password-manager-set-key.html',
     styleUrl: './password-manager-set-key.css',
 })
 export class PasswordManagerSetKey {
-    readonly visible = input(false);
     readonly existingKey = input<string | null>(null);
 
     readonly visibleChange = output<boolean>();
@@ -38,9 +35,6 @@ export class PasswordManagerSetKey {
     readonly showNewKey = signal(false);
     readonly showConfirmNewKey = signal(false);
     readonly isSaving = signal(false);
-    readonly dialogMotionOptions = { enter: false, leave: false };
-
-    private readonly dialog = viewChild<Dialog>('dialog');
 
     readonly value = signal<SetKeyFormValue>({
         oldKey: '',
@@ -87,47 +81,12 @@ export class PasswordManagerSetKey {
         });
     });
 
-    private wasVisible = false;
-
-    constructor() {
-        effect(() => {
-            const visible = this.visible();
-
-            if (visible && !this.wasVisible) {
-                untracked(() => {
-                    this.value.set({
-                        oldKey: '',
-                        newKey: '',
-                        confirmNewKey: '',
-                    });
-                    this.setKeyForm().reset();
-                });
-            }
-
-            this.wasVisible = visible;
-        });
-    }
-
     protected close(): void {
         if (this.isSaving()) {
             return;
         }
 
         this.visibleChange.emit(false);
-    }
-
-    protected onVisibleChange(visible: boolean): void {
-        if (!visible && this.isSaving()) {
-            const dialog = this.dialog();
-
-            if (dialog) {
-                dialog.visible = true;
-            }
-
-            return;
-        }
-
-        this.visibleChange.emit(visible);
     }
 
     protected toggleOldKeyVisibility(): void {

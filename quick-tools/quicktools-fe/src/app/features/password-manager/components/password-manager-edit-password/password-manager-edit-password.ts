@@ -1,15 +1,12 @@
-import { Component, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
+import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
-import { TextareaModule } from '@openng/optimus-ui/textarea';
 import { PasswordManagerModel } from '../../models/password-manager.model';
 import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
 import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
-import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 
 interface EditPasswordFormValue {
     accountName: string;
@@ -21,12 +18,11 @@ interface EditPasswordFormValue {
 
 @Component({
     selector: 'app-password-manager-edit-password',
-    imports: [ButtonModule, DialogModule, FormField, InputTextModule, TextareaModule, BlockOutsideClose],
+    imports: [ButtonModule, FormField, InputTextModule],
     templateUrl: './password-manager-edit-password.html',
     styleUrl: './password-manager-edit-password.css',
 })
 export class PasswordManagerEditPassword {
-    readonly visible = input(false);
     readonly password = input<PasswordManagerModel | null>(null);
 
     readonly visibleChange = output<boolean>();
@@ -38,8 +34,6 @@ export class PasswordManagerEditPassword {
     readonly showPassword = signal(false);
     readonly showConfirmPassword = signal(false);
     readonly isSaving = signal(false);
-
-    private readonly dialog = viewChild<Dialog>('dialog');
 
     readonly value = signal<EditPasswordFormValue>({
         accountName: '',
@@ -89,10 +83,6 @@ export class PasswordManagerEditPassword {
 
     constructor() {
         effect(() => {
-            if (!this.visible()) {
-                return;
-            }
-
             const password = this.password();
 
             if (!password) {
@@ -128,20 +118,6 @@ export class PasswordManagerEditPassword {
         }
 
         this.visibleChange.emit(false);
-    }
-
-    protected onVisibleChange(visible: boolean): void {
-        if (!visible && this.isSaving()) {
-            const dialog = this.dialog();
-
-            if (dialog) {
-                dialog.visible = true;
-            }
-
-            return;
-        }
-
-        this.visibleChange.emit(visible);
     }
 
     protected async onSubmit(event: Event): Promise<void> {

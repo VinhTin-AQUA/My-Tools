@@ -1,7 +1,6 @@
-import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { DialogModule } from '@openng/optimus-ui/dialog';
 import { PasswordManagerModel } from '../../models/password-manager.model';
 
 interface ViewPasswordField {
@@ -11,12 +10,11 @@ interface ViewPasswordField {
 
 @Component({
     selector: 'app-password-manager-view-password',
-    imports: [ButtonModule, DialogModule],
+    imports: [ButtonModule],
     templateUrl: './password-manager-view-password.html',
     styleUrl: './password-manager-view-password.css',
 })
 export class PasswordManagerViewPassword {
-    readonly visible = input(false);
     readonly password = input<PasswordManagerModel | null>(null);
 
     readonly visibleChange = output<boolean>();
@@ -40,16 +38,6 @@ export class PasswordManagerViewPassword {
             { label: 'Note', value: password.note },
         ];
     });
-
-    constructor() {
-        effect(() => {
-            if (!this.visible()) {
-                return;
-            }
-
-            untracked(() => this.showPassword.set(false));
-        });
-    }
 
     protected displayValue(field: ViewPasswordField): string {
         if (!field.value) {

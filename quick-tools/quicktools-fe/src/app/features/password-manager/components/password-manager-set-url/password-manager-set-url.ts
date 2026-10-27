@@ -1,12 +1,10 @@
-import { Component, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
+import { Component, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { FormField, form, required, submit, validate } from '@angular/forms/signals';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
-import { Dialog, DialogModule } from '@openng/optimus-ui/dialog';
 import { InputTextModule } from '@openng/optimus-ui/inputtext';
 import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
-import { BlockOutsideClose } from '../../directives/block-outside-close.directive';
 import {
     SetUrlGoogleSheetPasswordManagerRequest,
     SetUrlGoogleSheetPasswordManagerResponse,
@@ -18,12 +16,11 @@ interface SetUrlFormValue {
 
 @Component({
     selector: 'app-password-manager-set-url',
-    imports: [ButtonModule, DialogModule, FormField, InputTextModule, BlockOutsideClose],
+    imports: [ButtonModule, FormField, InputTextModule],
     templateUrl: './password-manager-set-url.html',
     styleUrl: './password-manager-set-url.css',
 })
 export class PasswordManagerSetUrl {
-    readonly visible = input(false);
     readonly currentUrl = input<string | null>(null);
 
     readonly visibleChange = output<boolean>();
@@ -33,9 +30,6 @@ export class PasswordManagerSetUrl {
     private readonly webuiService = inject(WebuiService);
 
     readonly isSaving = signal(false);
-    readonly dialogMotionOptions = { enter: false, leave: false };
-
-    private readonly dialog = viewChild<Dialog>('dialog');
 
     readonly value = signal<SetUrlFormValue>({
         url: '',
@@ -49,22 +43,14 @@ export class PasswordManagerSetUrl {
         );
     });
 
-    private wasVisible = false;
-
     constructor() {
         effect(() => {
-            const visible = this.visible();
+            const url = this.currentUrl() ?? '';
 
-            if (visible && !this.wasVisible) {
-                untracked(() => {
-                    const url = this.currentUrl() ?? '';
-
-                    this.value.set({ url });
-                    this.urlForm().reset();
-                });
-            }
-
-            this.wasVisible = visible;
+            untracked(() => {
+                this.value.set({ url });
+                this.urlForm().reset();
+            });
         });
     }
 
@@ -74,20 +60,6 @@ export class PasswordManagerSetUrl {
         }
 
         this.visibleChange.emit(false);
-    }
-
-    protected onVisibleChange(visible: boolean): void {
-        if (!visible && this.isSaving()) {
-            const dialog = this.dialog();
-
-            if (dialog) {
-                dialog.visible = true;
-            }
-
-            return;
-        }
-
-        this.visibleChange.emit(visible);
     }
 
     protected async onSubmit(event: Event): Promise<void> {
