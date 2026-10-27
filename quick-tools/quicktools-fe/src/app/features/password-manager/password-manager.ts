@@ -41,6 +41,7 @@ export class PasswordManager {
     readonly passwords = signal<PasswordManagerModel[]>([]);
     readonly selectedPassword = signal<PasswordManagerModel | null>(null);
     readonly isLoading = signal(false);
+    readonly isBackingUp = signal(false);
 
     readonly key = signal('');
     readonly url = signal('');
@@ -153,26 +154,37 @@ export class PasswordManager {
     }
 
     async duplicateFirstSheet() {
-        var result = await this.webuiService.callJson<WebUIResponse<GoogleSheetApiResult>>(
-            'GoogleSheetPasswordManagerHandler_DuplicateFirstSheet',
-            {},
-        );
-
-        if (!result.success || !result.data) {
-            this.messageService.add({
-                severity: 'error',
-                summary: result.title,
-                detail: result.description,
-            });
-
+        if (this.isBackingUp()) {
             return;
         }
 
-        this.messageService.add({
-            severity: 'success',
-            summary: result.title,
-            detail: result.description,
-        });
+        this.headerMenu()?.hide();
+        this.isBackingUp.set(true);
+
+        try {
+            const result = await this.webuiService.callJson<WebUIResponse<GoogleSheetApiResult>>(
+                'GoogleSheetPasswordManagerHandler_DuplicateFirstSheet',
+                {},
+            );
+
+            if (!result.success || !result.data) {
+                this.messageService.add({
+                    severity: 'error',
+                    summary: result.title,
+                    detail: result.description,
+                });
+
+                return;
+            }
+
+            this.messageService.add({
+                severity: 'success',
+                summary: result.title,
+                detail: result.description,
+            });
+        } finally {
+            this.isBackingUp.set(false);
+        }
     }
 
     /* ========================= item actions ========================= */
