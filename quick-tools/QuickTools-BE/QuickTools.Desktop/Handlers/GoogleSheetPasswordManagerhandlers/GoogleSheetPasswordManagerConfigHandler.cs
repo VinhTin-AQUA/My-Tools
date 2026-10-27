@@ -9,7 +9,7 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
 {
     public static class GoogleSheetPasswordManagerConfigHandler
     {
-        private const string ConfigKey = "GoogleSheetConfig";
+        public const string ConfigKey = "GoogleSheetConfig";
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {

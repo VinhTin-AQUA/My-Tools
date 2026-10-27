@@ -15,6 +15,7 @@ import { PasswordManagerSetKey } from './components/password-manager-set-key/pas
 import { PasswordManagerSetUrl } from './components/password-manager-set-url/password-manager-set-url';
 import { PasswordManagerViewPassword } from './components/password-manager-view-password/password-manager-view-password';
 import { PasswordManagerModel } from './models/password-manager.model';
+import { GoogleSheetApiResult } from '../../models/google-sheet-api.model';
 
 @Component({
     selector: 'app-password-manager',
@@ -61,6 +62,11 @@ export class PasswordManager {
             label: 'Set URL',
             icon: 'pi pi-link',
             command: () => this.onSetUrl(),
+        },
+        {
+            label: 'Backup',
+            icon: 'pi pi-file-export',
+            command: () => this.duplicateFirstSheet(),
         },
     ];
 
@@ -144,6 +150,29 @@ export class PasswordManager {
     onSetUrl(): void {
         this.headerMenu()?.hide();
         this.showSetUrl.set(true);
+    }
+
+    async duplicateFirstSheet() {
+        var result = await this.webuiService.callJson<WebUIResponse<GoogleSheetApiResult>>(
+            'GoogleSheetPasswordManagerHandler_DuplicateFirstSheet',
+            {},
+        );
+
+        if (!result.success || !result.data) {
+            this.messageService.add({
+                severity: 'error',
+                summary: result.title,
+                detail: result.description,
+            });
+
+            return;
+        }
+
+        this.messageService.add({
+            severity: 'success',
+            summary: result.title,
+            detail: result.description,
+        });
     }
 
     /* ========================= item actions ========================= */

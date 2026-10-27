@@ -19,7 +19,6 @@ namespace QuickTools.Windows
             // WebUIBinder.Bind(window, "requestData", ExampleHandlers.RequestDataHandler);
             // WebUIBinder.BindAsyncFunction(window, "asyncFunction", ExampleHandlers.MyAsyncFunction);
             
-            GoogleSheetPasswordManagerHandler.Init();
             
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "upscaleImage", UpscaleImageHandler.UpscaleImage);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "libcaesiumCompressImage", LibcaesiumHandler.CompressImage);
@@ -31,6 +30,7 @@ namespace QuickTools.Windows
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Create", GoogleSheetPasswordManagerHandler.Create);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Update", GoogleSheetPasswordManagerHandler.Update);
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_Delete", GoogleSheetPasswordManagerHandler.Delete);
+            WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerHandler_DuplicateFirstSheet", GoogleSheetPasswordManagerHandler.DuplicateFirstSheet);
 
             // GoogleSheetPasswordManagerConfigHandler
             WebUIBinder.BindAsyncFunctionWithNullValue(window, "GoogleSheetPasswordManagerConfigHandler_SetKey", GoogleSheetPasswordManagerConfigHandler.SetKey);

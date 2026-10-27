@@ -66,6 +66,17 @@ namespace QuickTools.Services.PasswordManager
 
             return await PostAsync(apiUrl, request);
         }
+        
+        // DUPLICATE first Sheet
+        public async Task<GoogleSheetApiResult> DuplicateFirstSheet(string apiUrl)
+        {
+            var request = new GoogleSheetApiRequest<GoogleSheetPassword>
+            {
+                Action = "duplicateFirstSheet",
+            };
+
+            return await PostAsync(apiUrl, request);
+        }
 
         private async Task<GoogleSheetApiResult> PostAsync<T>(string apiUrl, GoogleSheetApiRequest<T> request)
         {
