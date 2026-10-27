@@ -102,46 +102,52 @@ export class PasswordManagerAddPassword {
             return;
         }
 
-        const value = this.value();
-        const request: PasswordManagerModel = {
-            id: 0,
-            accountName: value.accountName.trim(),
-            userName: value.userName.trim(),
-            password: value.password,
-            note: value.note.trim(),
-        };
+        await submit(this.addForm, {
+            action: async () => {
+                const value = this.value();
+                const request: PasswordManagerModel = {
+                    id: 0,
+                    accountName: value.accountName.trim(),
+                    userName: value.userName.trim(),
+                    password: value.password,
+                    note: value.note.trim(),
+                };
 
-        const result = await this.savePassword(request);
+                const result = await this.savePassword(request);
 
-        console.log("result:", result);
+                console.log("result:", result);
 
-        if (!result.success || !result.data) {
-            this.messageService.add({
-                severity: 'error',
-                summary: result.title || 'Password could not be added',
-                detail:
-                    result.description ||
-                    'The saved password could not be added.',
-            });
+                if (!result.success || !result.data) {
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: result.title || 'Password could not be added',
+                        detail:
+                            result.description ||
+                            'The saved password could not be added.',
+                    });
 
-            return;
-        }
+                    return undefined;
+                }
 
-        const password: PasswordManagerModel = {
-            ...request,
-            id: result.data.id ?? request.id,
-        };
+                const password: PasswordManagerModel = {
+                    ...request,
+                    id: result.data.id ?? request.id,
+                };
 
-        console.log('Password added successfully.', password);
+                console.log('Password added successfully.', password);
 
-        this.messageService.add({
-            severity: 'success',
-            summary: 'Password added',
-            detail: password.accountName,
+                this.messageService.add({
+                    severity: 'success',
+                    summary: 'Password added',
+                    detail: password.accountName,
+                });
+
+                this.passwordAdded.emit(password);
+                this.close();
+
+                return undefined;
+            },
         });
-
-        this.passwordAdded.emit(password);
-        this.close();
     }
 
     private async savePassword(
