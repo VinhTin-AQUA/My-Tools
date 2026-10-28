@@ -37,7 +37,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         {
             get
             {
-                if (string.IsNullOrEmpty(ExistingKey) || !_oldKeyTouched)
+                if (string.IsNullOrWhiteSpace(ExistingKey) || !_oldKeyTouched)
                 {
                     return null;
                 }

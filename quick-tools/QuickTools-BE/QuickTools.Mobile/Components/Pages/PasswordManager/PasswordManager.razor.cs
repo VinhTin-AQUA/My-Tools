@@ -25,7 +25,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         private bool _isLoading;
         private bool _isBackingUp;
 
-        private string _key = string.Empty;
+        private string? _key;
         private string _url = string.Empty;
 
         private bool _showSetKey;
@@ -53,11 +53,11 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             var googleSheetConfig =
                 await SecureStorageService.LoadOrDefaultAsync<GoogleSheetConfig>(AppConstants.GoogleSheetConfigKey);
             
-            _key =  googleSheetConfig.Key ?? "";
+            _key = string.IsNullOrWhiteSpace(googleSheetConfig.Key) ? null : googleSheetConfig.Key;
             
             if (string.IsNullOrEmpty(googleSheetConfig.Key) || string.IsNullOrEmpty(googleSheetConfig.Url))
             {
-                await NotificationService.ShowAsync(1, "Google Sheet Config is empty.", "Please set key and url.");
+                await NotificationService.ShowAsync(1, "Google Sheet Config is empty.", $"Please set key and url ({googleSheetConfig.Key})");
                 return;
             }
             
