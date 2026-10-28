@@ -2,6 +2,7 @@ using System.Text.Json;
 using QuickTools.Core.DTOs.GoogleSheetPasswordManagerDTOs;
 using QuickTools.Core.Models;
 using QuickTools.Core.Responses;
+using QuickTools.Services.PasswordManager;
 using QuickTools.Shared.Helpers;
 using QuickTools.Windows.AppSingletons;
 using WebUISharp;
@@ -24,10 +25,10 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
             if (string.IsNullOrWhiteSpace(config.Url) || string.IsNullOrWhiteSpace(config.Key))
             {
                 return SendResponse(window, event_number,
-                    CreateErrorResponse<List<GoogleSheetPassword>>("GetAll", "API URL or Key is not configured."));
+                    CreateErrorResponse<List<GoogleSheetPasswordModel>>("GetAll", "API URL or Key is not configured."));
             }
             
-            var passwords = await GoogleSheetPasswordManagerSingleton.Instance.GetAllAsync(config.Url);
+            var passwords = await GoogleSheetPasswordManagerService.GetAllAsync(config.Url);
             try
             {
                 passwords.ForEach(x =>
@@ -53,10 +54,10 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
             if (string.IsNullOrWhiteSpace(config.Url) || string.IsNullOrWhiteSpace(config.Key))
             {
                 return SendResponse(window, event_number,
-                    CreateErrorResponse<List<GoogleSheetPassword>>("GetAll", "API URL or Key is not configured."));
+                    CreateErrorResponse<List<GoogleSheetPasswordModel>>("GetAll", "API URL or Key is not configured."));
             }
 
-            var request = ReadRequest<GoogleSheetPassword>(window, event_number);
+            var request = ReadRequest<GoogleSheetPasswordModel>(window, event_number);
             if (request == null)
             {
                 return SendResponse(window, event_number,
@@ -64,9 +65,9 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
                         "Invalid request or API URL is not configured."));
             }
 
-            var result = await GoogleSheetPasswordManagerSingleton.Instance.CreateAsync(
+            var result = await GoogleSheetPasswordManagerService.CreateAsync(
                 config.Url,
-                new GoogleSheetPassword
+                new GoogleSheetPasswordModel
                 {
                     AccountName = AES256Helper.Encrypt(config.Key, request.AccountName),
                     UserName = AES256Helper.Encrypt(config.Key, request.UserName),
@@ -81,7 +82,7 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
             UIntPtr event_number, UIntPtr bind_id)
         {
             var config = await JsonStorageSingleton.GoogleSheetConfigInstance.GetItemAsync<GoogleSheetConfig>(GoogleSheetPasswordManagerConfigHandler.ConfigKey);
-            var request = ReadRequest<GoogleSheetPassword>(window, event_number);
+            var request = ReadRequest<GoogleSheetPasswordModel>(window, event_number);
 
             if (request == null || string.IsNullOrWhiteSpace(config.Url) || string.IsNullOrWhiteSpace(config.Key))
             {
@@ -90,10 +91,10 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
                         "Invalid request or API URL is not configured."));
             }
 
-            var result = await GoogleSheetPasswordManagerSingleton.Instance.UpdateAsync(
+            var result = await GoogleSheetPasswordManagerService.UpdateAsync(
                 config.Url,
                 request.Id,
-                new GoogleSheetPassword
+                new GoogleSheetPasswordModel
                 {
                     Id = request.Id,
                     AccountName = AES256Helper.Encrypt(config.Key, request.AccountName),
@@ -118,7 +119,7 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
                         "Invalid request or API URL is not configured."));
             }
 
-            var result = await GoogleSheetPasswordManagerSingleton.Instance.RemoveAsync(config.Url, request.Id);
+            var result = await GoogleSheetPasswordManagerService.RemoveAsync(config.Url, request.Id);
 
             return SendResponse(window, event_number, CreateResponse("Delete", result));
         }
@@ -138,7 +139,7 @@ namespace QuickTools.Windows.Handlers.GoogleSheetPasswordManagerhandlers
 
             try
             {
-                var result = await GoogleSheetPasswordManagerSingleton.Instance.DuplicateFirstSheet(config.Url);
+                var result = await GoogleSheetPasswordManagerService.DuplicateFirstSheet(config.Url);
                 return SendResponse(window, event_number, CreateResponse("DuplicateFirstSheet", result));
             }
             catch (Exception e)

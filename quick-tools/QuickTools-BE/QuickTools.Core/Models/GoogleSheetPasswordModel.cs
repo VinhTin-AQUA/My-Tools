@@ -2,12 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace QuickTools.Core.Models
 {
-    public class PasswordManager
-    {
-        
-    }
-    
-    public class GoogleSheetPassword
+    public class GoogleSheetPasswordModel
     {
         [JsonPropertyName("id")] public int Id { get; set; }
 

@@ -6,34 +6,34 @@ namespace QuickTools.Services.PasswordManager
 {
     public class GoogleSheetPasswordManagerService
     {
-        private readonly HttpClient _httpClient;
+        private static readonly HttpClient _httpClient;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true
         };
 
-        public GoogleSheetPasswordManagerService(HttpClient? httpClient = null)
+        static GoogleSheetPasswordManagerService()
         {
             // _apiUrl = apiUrl.TrimEnd('/');
-            _httpClient = httpClient ?? new HttpClient();
+            _httpClient = new HttpClient();
         }
 
         // Get all
-        public async Task<List<GoogleSheetPassword>> GetAllAsync(string apiUrl)
+        public static async Task<List<GoogleSheetPasswordModel>> GetAllAsync(string apiUrl)
         {
             var url = $"{apiUrl}?action=getAll";
             
-            var response = await _httpClient.GetFromJsonAsync<List<GoogleSheetPassword>>(
+            var response = await _httpClient.GetFromJsonAsync<List<GoogleSheetPasswordModel>>(
                 url, JsonOptions);
             
-            return response ?? new List<GoogleSheetPassword>();
+            return response ?? new List<GoogleSheetPasswordModel>();
         }
 
         // CREATE: Thêm tài khoản
-        public async Task<GoogleSheetApiResult> CreateAsync(string apiUrl, GoogleSheetPassword account)
+        public static async Task<GoogleSheetApiResult> CreateAsync(string apiUrl, GoogleSheetPasswordModel account)
         {
-            var request = new GoogleSheetApiRequest<GoogleSheetPassword>
+            var request = new GoogleSheetApiRequest<GoogleSheetPasswordModel>
             {
                 Action = "create",
                 Data = account
@@ -43,9 +43,9 @@ namespace QuickTools.Services.PasswordManager
         }
 
         // UPDATE: Cập nhật tài khoản
-        public async Task<GoogleSheetApiResult> UpdateAsync(string apiUrl, int id, GoogleSheetPassword account)
+        public static async Task<GoogleSheetApiResult> UpdateAsync(string apiUrl, int id, GoogleSheetPasswordModel account)
         {
-            var request = new GoogleSheetApiRequest<GoogleSheetPassword>
+            var request = new GoogleSheetApiRequest<GoogleSheetPasswordModel>
             {
                 Action = "update",
                 Id = id,
@@ -56,9 +56,9 @@ namespace QuickTools.Services.PasswordManager
         }
 
         // DELETE: Xóa tài khoản
-        public async Task<GoogleSheetApiResult> RemoveAsync(string apiUrl, int id)
+        public static async Task<GoogleSheetApiResult> RemoveAsync(string apiUrl, int id)
         {
-            var request = new GoogleSheetApiRequest<GoogleSheetPassword>
+            var request = new GoogleSheetApiRequest<GoogleSheetPasswordModel>
             {
                 Action = "remove",
                 Id = id
@@ -68,9 +68,9 @@ namespace QuickTools.Services.PasswordManager
         }
         
         // DUPLICATE first Sheet
-        public async Task<GoogleSheetApiResult> DuplicateFirstSheet(string apiUrl)
+        public static async Task<GoogleSheetApiResult> DuplicateFirstSheet(string apiUrl)
         {
-            var request = new GoogleSheetApiRequest<GoogleSheetPassword>
+            var request = new GoogleSheetApiRequest<GoogleSheetPasswordModel>
             {
                 Action = "duplicateFirstSheet",
             };
@@ -78,7 +78,7 @@ namespace QuickTools.Services.PasswordManager
             return await PostAsync(apiUrl, request);
         }
 
-        private async Task<GoogleSheetApiResult> PostAsync<T>(string apiUrl, GoogleSheetApiRequest<T> request)
+        private static async Task<GoogleSheetApiResult> PostAsync<T>(string apiUrl, GoogleSheetApiRequest<T> request)
         {
             var response = await _httpClient.PostAsJsonAsync(
                 apiUrl, request, JsonOptions);
