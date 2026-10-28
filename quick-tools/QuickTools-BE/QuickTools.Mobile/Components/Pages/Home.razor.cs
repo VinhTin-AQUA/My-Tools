@@ -38,8 +38,7 @@ namespace QuickTools.Mobile.Components.Pages
         {
             new() { Name = "Upscale Image", IconClass = "fa-regular fa-circle-up", Url = "image-upscaler" },
             new() { Name = "Compress Image", IconClass = "fa-solid fa-compress", Url = "compress-image" },
-
-            new() { Name = "Memes", IconClass = "fa-solid fa-icons", Url = "icon-memes"},
+            new() { Name = "Password Manager", IconClass = "fa-solid fa-key", Url = "password-manager"},
             
             new() { Name = "Settings", IconClass = "fa-solid fa-gear", Url = "settings" },
             new() { Name = "Orders", IconClass = "fas fa-shopping-cart", Url = "orders" },
