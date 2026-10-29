@@ -71,6 +71,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                     p.Password = AES256Helper.Decrypt(googleSheetConfig.Key, p.Password);
                     p.Note = AES256Helper.Decrypt(googleSheetConfig.Key, p.Note);
                 });
+                _passwords = passwords;
             }
             catch
             {
