@@ -45,7 +45,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         
         protected override async Task OnInitializedAsync()
         {
-            await LoadPasswords();
+            await OnReload();
         }
 
         private async Task LoadPasswords()

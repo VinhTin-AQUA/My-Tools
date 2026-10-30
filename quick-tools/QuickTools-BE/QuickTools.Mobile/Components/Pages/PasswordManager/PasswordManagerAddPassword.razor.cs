@@ -108,58 +108,71 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         private async Task OnSubmit()
         {
             if (_isSaving)
-            {
                 return;
-            }
 
             MarkAllTouched();
 
             if (HasErrors)
-            {
                 return;
-            }
 
             _isSaving = true;
 
             try
             {
                 var googleSheetConfig =
-                    await SecureStorageService.LoadOrDefaultAsync<GoogleSheetConfig>(AppConstants.GoogleSheetConfigKey);
+                    await SecureStorageService.LoadOrDefaultAsync<GoogleSheetConfig>(
+                        AppConstants.GoogleSheetConfigKey);
 
-                if (string.IsNullOrEmpty(googleSheetConfig.Key) || string.IsNullOrEmpty(googleSheetConfig.Url))
+                if (string.IsNullOrEmpty(googleSheetConfig.Key) ||
+                    string.IsNullOrEmpty(googleSheetConfig.Url))
                 {
                     throw new Exception("Google Sheet Config is empty.");
                 }
-                
+
                 var password = new GoogleSheetPasswordModel
                 {
-                    AccountName = AES256Helper.Encrypt(googleSheetConfig.Key, _accountName.Trim()),
-                    UserName = AES256Helper.Encrypt(googleSheetConfig.Key, _userName.Trim()),
-                    Password = AES256Helper.Encrypt(googleSheetConfig.Key, _password),
-                    Note = AES256Helper.Encrypt(googleSheetConfig.Key, _note.Trim()),
+                    AccountName = AES256Helper.Encrypt(
+                        googleSheetConfig.Key, _accountName.Trim()),
+
+                    UserName = AES256Helper.Encrypt(
+                        googleSheetConfig.Key, _userName.Trim()),
+
+                    Password = AES256Helper.Encrypt(
+                        googleSheetConfig.Key, _password),
+
+                    Note = AES256Helper.Encrypt(
+                        googleSheetConfig.Key, _note.Trim()),
                 };
 
-                var r = await GoogleSheetPasswordManagerService.CreateAsync(googleSheetConfig.Url, password);
-                if (r.Success)
+                var r = await GoogleSheetPasswordManagerService.CreateAsync(
+                    googleSheetConfig.Url, password);
+
+                if (!r.Success)
                 {
-                    await NotificationService.ShowAsync(1, "Add password successfully", password.AccountName);
-                    await PasswordAdded.InvokeAsync(password);
+                    await NotificationService.ShowAsync(
+                        1, "Add password failed", password.AccountName);
+
+                    return;
                 }
-                else
-                {
-                    await NotificationService.ShowAsync(1, "Add password failed", password.AccountName);
-                }
+
+                // Đóng popup ngay khi lưu thành công
+                await VisibleChange.InvokeAsync(false);
+
+                // Cập nhật danh sách ở component cha
+                await PasswordAdded.InvokeAsync(password);
+
+                await NotificationService.ShowAsync(
+                    1, "Add password successfully", password.AccountName);
             }
             catch (Exception ex)
             {
-                await NotificationService.ShowAsync(1, "Add password failed", ex.Message);
+                await NotificationService.ShowAsync(
+                    1, "Add password failed", ex.Message);
             }
             finally
             {
                 _isSaving = false;
             }
-
-            await VisibleChange.InvokeAsync(false);
         }
 
         private void MarkAllTouched()
