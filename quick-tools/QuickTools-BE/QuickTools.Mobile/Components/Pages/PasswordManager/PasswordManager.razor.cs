@@ -249,7 +249,11 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private void OnDeletePasswordVisibleChange(bool visible) => _showDeletePassword = visible;
 
-        private void OnAddPasswordVisibleChange(bool visible) => _showAddPassword = visible;
+        private async Task OnAddPasswordVisibleChange(bool visible)
+        {
+            _showAddPassword = visible;
+            await InvokeAsync(StateHasChanged);
+        }
 
         /* ========================= popup results ========================= */
 
