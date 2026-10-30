@@ -68,13 +68,17 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 googleSheetConfig.Url = url;
                 await SecureStorageService.SaveAsync(AppConstants.GoogleSheetConfigKey, googleSheetConfig);
                 await UrlSaved.InvokeAsync(url);
+
+                // Dừng loading
+                _isSaving = false;
+
+                // Đóng popup ngay khi lưu thành công
+                await VisibleChange.InvokeAsync(false);
             }
             finally
             {
                 _isSaving = false;
             }
-
-            await VisibleChange.InvokeAsync(false);
         }
     }
 }

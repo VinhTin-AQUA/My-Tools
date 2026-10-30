@@ -149,11 +149,16 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
                 if (!r.Success)
                 {
-                    await NotificationService.ShowAsync(
-                        1, "Add password failed", password.AccountName);
+                    _isSaving = false;
+
+                    _ = ShowNotificationAsync(
+                        "Add password failed", password.AccountName);
 
                     return;
                 }
+
+                // Dừng loading
+                _isSaving = false;
 
                 // Đóng popup ngay khi lưu thành công
                 await VisibleChange.InvokeAsync(false);
@@ -161,17 +166,14 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 // Cập nhật danh sách ở component cha
                 await PasswordAdded.InvokeAsync(password);
 
-                await NotificationService.ShowAsync(
-                    1, "Add password successfully", password.AccountName);
+                _ = ShowNotificationAsync(
+                    "Add password successfully", password.AccountName);
             }
             catch (Exception ex)
             {
-                await NotificationService.ShowAsync(
-                    1, "Add password failed", ex.Message);
-            }
-            finally
-            {
                 _isSaving = false;
+
+                _ = ShowNotificationAsync("Add password failed", ex.Message);
             }
         }
 
@@ -181,6 +183,22 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             _userNameTouched = true;
             _passwordTouched = true;
             _confirmPasswordTouched = true;
+        }
+
+        /// <summary>
+        /// Gửi thông báo hệ thống mà không chặn luồng xử lý UI,
+        /// tránh trường hợp popup/loading bị treo khi thông báo không hoàn tất.
+        /// </summary>
+        private async Task ShowNotificationAsync(string title, string message)
+        {
+            try
+            {
+                await NotificationService.ShowAsync(1, title, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PasswordManager] Notification failed: {ex.Message}");
+            }
         }
     }
 }

@@ -135,13 +135,17 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 googleSheetConfig.Key = _newKey;
                 await SecureStorageService.SaveAsync(AppConstants.GoogleSheetConfigKey, googleSheetConfig);
                 await KeySaved.InvokeAsync(_newKey);
+
+                // Dừng loading
+                _isSaving = false;
+
+                // Đóng popup ngay khi lưu thành công
+                await VisibleChange.InvokeAsync(false);
             }
             finally
             {
                 _isSaving = false;
             }
-
-            await VisibleChange.InvokeAsync(false);
         }
 
         private void MarkAllTouched()

@@ -160,24 +160,29 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 var r = await GoogleSheetPasswordManagerService.UpdateAsync(googleSheetConfig.Url, Password.Id, password);
                 if (r.Success)
                 {
-                    await NotificationService.ShowAsync(1, "Update password successfully", password.AccountName);
+                    // Dừng loading
+                    _isSaving = false;
+
+                    // Đóng popup ngay khi cập nhật thành công
+                    await VisibleChange.InvokeAsync(false);
+
                     await PasswordUpdated.InvokeAsync(password);
+
+                    _ = ShowNotificationAsync("Update password successfully", password.AccountName);
                 }
                 else
                 {
-                    await NotificationService.ShowAsync(1, "Update password failed", password.AccountName);
+                    _isSaving = false;
+
+                    _ = ShowNotificationAsync("Update password failed", password.AccountName);
                 }
             }
             catch (Exception ex)
             {
-                await NotificationService.ShowAsync(1, "Update password failed", ex.Message);
-            }
-            finally
-            {
                 _isSaving = false;
-            }
 
-            await VisibleChange.InvokeAsync(false);
+                _ = ShowNotificationAsync("Update password failed", ex.Message);
+            }
         }
 
         private void MarkAllTouched()
@@ -186,6 +191,22 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             _userNameTouched = true;
             _passwordTouched = true;
             _confirmPasswordTouched = true;
+        }
+
+        /// <summary>
+        /// Gửi thông báo hệ thống mà không chặn luồng xử lý UI,
+        /// tránh trường hợp popup/loading bị treo khi thông báo không hoàn tất.
+        /// </summary>
+        private async Task ShowNotificationAsync(string title, string message)
+        {
+            try
+            {
+                await NotificationService.ShowAsync(1, title, message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PasswordManager] Notification failed: {ex.Message}");
+            }
         }
     }
 }
