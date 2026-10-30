@@ -25,23 +25,24 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private async Task Close()
         {
-            if (_isDeleting)
-            {
-                return;
-            }
+            // if (_isDeleting)
+            // {
+            //     return;
+            // }
 
             await VisibleChange.InvokeAsync(false);
         }
 
         private async Task ConfirmDelete()
         {
-            if (PasswordId is null || _isDeleting)
+            // if (PasswordId is null || _isDeleting)
+            if (PasswordId is null)
             {
                 return;
             }
 
             var id = PasswordId.Value;
-            _isDeleting = true;
+            // _isDeleting = true;
             try
             {
                 var googleSheetConfig =
@@ -56,15 +57,13 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
                 if (!r.Success)
                 {
-                    _isDeleting = false;
-
+                    // _isDeleting = false;
                     _ = ShowNotificationAsync("Remove password failed. Try again", $"Id = {id}");
-
                     return;
                 }
 
                 // Dừng loading
-                _isDeleting = false;
+                // _isDeleting = false;
 
                 // Đóng popup ngay khi xoá thành công
                 await VisibleChange.InvokeAsync(false);
@@ -75,8 +74,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             }
             catch (Exception ex)
             {
-                _isDeleting = false;
-
+                // _isDeleting = false;
                 _ = ShowNotificationAsync("Remove password failed", ex.Message);
             }
         }

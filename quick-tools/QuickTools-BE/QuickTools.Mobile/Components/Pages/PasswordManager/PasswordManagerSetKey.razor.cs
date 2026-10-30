@@ -104,20 +104,20 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private async Task Close()
         {
-            if (_isSaving)
-            {
-                return;
-            }
+            // if (_isSaving)
+            // {
+            //     return;
+            // }
 
             await VisibleChange.InvokeAsync(false);
         }
 
         private async Task OnSubmit()
         {
-            if (_isSaving)
-            {
-                return;
-            }
+            // if (_isSaving)
+            // {
+            //     return;
+            // }
 
             MarkAllTouched();
 
@@ -126,7 +126,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 return;
             }
 
-            _isSaving = true;
+            // _isSaving = true;
 
             try
             {
@@ -137,14 +137,14 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 await KeySaved.InvokeAsync(_newKey);
 
                 // Dừng loading
-                _isSaving = false;
+                // _isSaving = false;
 
                 // Đóng popup ngay khi lưu thành công
                 await VisibleChange.InvokeAsync(false);
             }
             finally
             {
-                _isSaving = false;
+                // _isSaving = false;
             }
         }
 

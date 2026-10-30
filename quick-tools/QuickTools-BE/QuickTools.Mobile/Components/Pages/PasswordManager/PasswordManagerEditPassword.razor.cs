@@ -114,17 +114,18 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private async Task Close()
         {
-            if (_isSaving)
-            {
-                return;
-            }
+            // if (_isSaving)
+            // {
+            //     return;
+            // }
 
             await VisibleChange.InvokeAsync(false);
         }
 
         private async Task OnSubmit()
         {
-            if (_isSaving || Password is null)
+            // if (_isSaving || Password is null)
+            if (Password is null)
             {
                 return;
             }
@@ -136,7 +137,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 return;
             }
 
-            _isSaving = true;
+            // _isSaving = true;
 
             try
             {
@@ -161,7 +162,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 if (r.Success)
                 {
                     // Dừng loading
-                    _isSaving = false;
+                    // _isSaving = false;
 
                     // Đóng popup ngay khi cập nhật thành công
                     await VisibleChange.InvokeAsync(false);
@@ -172,15 +173,13 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 }
                 else
                 {
-                    _isSaving = false;
-
+                    // _isSaving = false;
                     _ = ShowNotificationAsync("Update password failed", password.AccountName);
                 }
             }
             catch (Exception ex)
             {
-                _isSaving = false;
-
+                // _isSaving = false;
                 _ = ShowNotificationAsync("Update password failed", ex.Message);
             }
         }

@@ -97,25 +97,25 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private async Task Close()
         {
-            if (_isSaving)
-            {
-                return;
-            }
+            // if (_isSaving)
+            // {
+            //     return;
+            // }
 
             await VisibleChange.InvokeAsync(false);
         }
 
         private async Task OnSubmit()
         {
-            if (_isSaving)
-                return;
+            // if (_isSaving)
+            //     return;
 
             MarkAllTouched();
 
             if (HasErrors)
                 return;
 
-            _isSaving = true;
+            // _isSaving = true;
 
             try
             {
@@ -149,7 +149,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
                 if (!r.Success)
                 {
-                    _isSaving = false;
+                    // _isSaving = false;
 
                     _ = ShowNotificationAsync(
                         "Add password failed", password.AccountName);
@@ -158,7 +158,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 }
 
                 // Dừng loading
-                _isSaving = false;
+                // _isSaving = false;
 
                 // Đóng popup ngay khi lưu thành công
                 await VisibleChange.InvokeAsync(false);
@@ -171,7 +171,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             }
             catch (Exception ex)
             {
-                _isSaving = false;
+                // _isSaving = false;
 
                 _ = ShowNotificationAsync("Add password failed", ex.Message);
             }
