@@ -158,6 +158,16 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                     Note = AES256Helper.Encrypt(googleSheetConfig.Key, _note.Trim()),
                 };
 
+                var passwordNotEnc = new GoogleSheetPasswordModel
+                {
+                    Id = Password.Id,
+                    AccountName = _accountName.Trim(),
+                    UserName = _userName.Trim(),
+                    Password = _password,
+                    Note = _note.Trim(),
+                };
+
+
                 var r = await GoogleSheetPasswordManagerService.UpdateAsync(googleSheetConfig.Url, Password.Id, password);
                 if (r.Success)
                 {
@@ -166,15 +176,13 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
                     // Đóng popup ngay khi cập nhật thành công
                     await VisibleChange.InvokeAsync(false);
-
-                    await PasswordUpdated.InvokeAsync(password);
-
-                    _ = ShowNotificationAsync("Update password successfully", password.AccountName);
+                    await PasswordUpdated.InvokeAsync(passwordNotEnc);
+                    _ = ShowNotificationAsync("Update password successfully", passwordNotEnc.AccountName);
                 }
                 else
                 {
                     // _isSaving = false;
-                    _ = ShowNotificationAsync("Update password failed", password.AccountName);
+                    _ = ShowNotificationAsync("Update password failed", passwordNotEnc.AccountName);
                 }
             }
             catch (Exception ex)

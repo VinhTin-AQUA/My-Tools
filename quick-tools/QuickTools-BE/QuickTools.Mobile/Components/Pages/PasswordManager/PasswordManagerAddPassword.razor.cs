@@ -131,17 +131,18 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
                 var password = new GoogleSheetPasswordModel
                 {
-                    AccountName = AES256Helper.Encrypt(
-                        googleSheetConfig.Key, _accountName.Trim()),
+                    AccountName = AES256Helper.Encrypt(googleSheetConfig.Key, _accountName.Trim()),
+                    UserName = AES256Helper.Encrypt(googleSheetConfig.Key, _userName.Trim()),
+                    Password = AES256Helper.Encrypt(googleSheetConfig.Key, _password),
+                    Note = AES256Helper.Encrypt(googleSheetConfig.Key, _note.Trim()),
+                };
 
-                    UserName = AES256Helper.Encrypt(
-                        googleSheetConfig.Key, _userName.Trim()),
-
-                    Password = AES256Helper.Encrypt(
-                        googleSheetConfig.Key, _password),
-
-                    Note = AES256Helper.Encrypt(
-                        googleSheetConfig.Key, _note.Trim()),
+                var passwordNotEnc = new GoogleSheetPasswordModel
+                {
+                    AccountName = _accountName.Trim(),
+                    UserName = _userName.Trim(),
+                    Password = _password,
+                    Note = _note.Trim(),
                 };
 
                 var r = await GoogleSheetPasswordManagerService.CreateAsync(
@@ -150,9 +151,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 if (!r.Success)
                 {
                     // _isSaving = false;
-
-                    _ = ShowNotificationAsync(
-                        "Add password failed", password.AccountName);
+                    _ = ShowNotificationAsync("Add password failed", passwordNotEnc.AccountName);
 
                     return;
                 }
@@ -164,15 +163,14 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 await VisibleChange.InvokeAsync(false);
 
                 // Cập nhật danh sách ở component cha
-                await PasswordAdded.InvokeAsync(password);
+                await PasswordAdded.InvokeAsync(passwordNotEnc);
 
                 _ = ShowNotificationAsync(
-                    "Add password successfully", password.AccountName);
+                    "Add password successfully", passwordNotEnc.AccountName);
             }
             catch (Exception ex)
             {
                 // _isSaving = false;
-
                 _ = ShowNotificationAsync("Add password failed", ex.Message);
             }
         }
