@@ -1,7 +1,14 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { MessageService } from '@openng/optimus-ui/api';
 import { ButtonModule } from '@openng/optimus-ui/button';
+import { InputTextModule } from '@openng/optimus-ui/inputtext';
+import { WebUIResponse } from '../../../../models/webui.response';
+import { WebuiService } from '../../../../services/webui-service';
 import { PasswordManagerModel } from '../../models/password-manager.model';
+import {
+    VerifyKeyGoogleSheetPasswordManagerRequest,
+    VerifyKeyGoogleSheetPasswordManagerResponse,
+} from '../password-manager-set-key/models/passwor-manager-set-key.model';
 
 interface ViewPasswordField {
     label: string;
@@ -10,7 +17,7 @@ interface ViewPasswordField {
 
 @Component({
     selector: 'app-password-manager-view-password',
-    imports: [ButtonModule],
+    imports: [ButtonModule, InputTextModule],
     templateUrl: './password-manager-view-password.html',
     styleUrl: './password-manager-view-password.css',
 })
@@ -20,8 +27,14 @@ export class PasswordManagerViewPassword {
     readonly visibleChange = output<boolean>();
 
     private readonly messageService = inject(MessageService);
+    private readonly webuiService = inject(WebuiService);
 
+    readonly isVerified = signal(false);
     readonly showPassword = signal(false);
+    readonly showVerifyKeyText = signal(false);
+    readonly verifyKey = signal('');
+    readonly isVerifying = signal(false);
+    readonly verifyError = signal('');
 
     readonly fields = computed<ViewPasswordField[]>(() => {
         const password = this.password();
@@ -51,8 +64,57 @@ export class PasswordManagerViewPassword {
         return field.value;
     }
 
-    protected togglePasswordVisibility(): void {
+    protected requestPasswordAccess(): void {
+        if (!this.isVerified()) {
+            return;
+        }
+
         this.showPassword.update((visible) => !visible);
+    }
+
+    protected updateVerifyKey(event: Event): void {
+        this.verifyKey.set((event.target as HTMLInputElement).value);
+    }
+
+    protected toggleVerifyKeyVisibility(): void {
+        this.showVerifyKeyText.update((visible) => !visible);
+    }
+
+    protected async confirmVerifyKey(): Promise<void> {
+        if (this.isVerifying()) {
+            return;
+        }
+
+        const key = this.verifyKey().trim();
+
+        if (!key) {
+            this.verifyError.set('Please enter the key.');
+            return;
+        }
+
+        this.isVerifying.set(true);
+
+        try {
+            const request: VerifyKeyGoogleSheetPasswordManagerRequest = { key };
+
+            const response = await this.webuiService.callJson<
+                WebUIResponse<VerifyKeyGoogleSheetPasswordManagerResponse>
+            >('GoogleSheetPasswordManagerConfigHandler_VerifyKey', request);
+
+            if (!response.success || !response.data?.isValid) {
+                this.verifyError.set(response.description || 'The key is not valid.');
+                return;
+            }
+
+            this.showVerifyKeyText.set(false);
+            this.verifyKey.set('');
+            this.verifyError.set('');
+            this.isVerified.set(true);
+        } catch {
+            this.verifyError.set('Unable to verify the key.');
+        } finally {
+            this.isVerifying.set(false);
+        }
     }
 
     protected close(): void {

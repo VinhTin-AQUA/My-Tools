@@ -7,6 +7,7 @@ import { PasswordManagerModel } from '../../models/password-manager.model';
 import { GoogleSheetApiResult } from '../../../../models/google-sheet-api.model';
 import { WebUIResponse } from '../../../../models/webui.response';
 import { WebuiService } from '../../../../services/webui-service';
+import { maskString } from '../../../../helpers/common.helper';
 
 interface EditPasswordFormValue {
     accountName: string;
@@ -92,9 +93,9 @@ export class PasswordManagerEditPassword {
             untracked(() => {
                 this.value.set({
                     accountName: password.accountName,
-                    userName: password.userName,
-                    password: password.password,
-                    confirmPassword: password.password,
+                    userName: maskString(password.userName),
+                    password: '',
+                    confirmPassword: '',
                     note: password.note,
                 });
                 this.editForm().reset();
