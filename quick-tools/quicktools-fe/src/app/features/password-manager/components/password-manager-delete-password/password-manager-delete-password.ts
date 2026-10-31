@@ -57,9 +57,7 @@ export class PasswordManagerDeletePassword {
             this.messageService.add({
                 severity: 'error',
                 summary: result.title || 'Delete failed',
-                detail:
-                    result.description ||
-                    'The saved password could not be removed.',
+                detail: result.description || 'The saved password could not be removed.',
             });
 
             return;

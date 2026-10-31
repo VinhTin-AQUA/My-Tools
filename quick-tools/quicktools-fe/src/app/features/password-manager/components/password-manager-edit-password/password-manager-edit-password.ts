@@ -150,9 +150,7 @@ export class PasswordManagerEditPassword {
                     this.messageService.add({
                         severity: 'error',
                         summary: result.title || 'Password could not be updated',
-                        detail:
-                            result.description ||
-                            'The saved password could not be updated.',
+                        detail: result.description || 'The saved password could not be updated.',
                     });
 
                     return undefined;

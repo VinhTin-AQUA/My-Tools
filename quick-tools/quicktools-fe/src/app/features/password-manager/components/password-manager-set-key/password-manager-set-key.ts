@@ -131,8 +131,7 @@ export class PasswordManagerSetKey {
                         severity: 'error',
                         summary: response.title || 'Key could not be saved',
                         detail:
-                            response.description ||
-                            'The password manager key could not be saved.',
+                            response.description || 'The password manager key could not be saved.',
                     });
 
                     return undefined;

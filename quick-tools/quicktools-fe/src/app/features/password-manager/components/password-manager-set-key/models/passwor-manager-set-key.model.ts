@@ -13,4 +13,3 @@ export interface VerifyKeyGoogleSheetPasswordManagerRequest {
 export interface VerifyKeyGoogleSheetPasswordManagerResponse {
     isValid: boolean;
 }
-

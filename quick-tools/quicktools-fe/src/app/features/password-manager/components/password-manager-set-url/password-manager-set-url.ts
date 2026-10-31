@@ -92,8 +92,7 @@ export class PasswordManagerSetUrl {
                         severity: 'error',
                         summary: response.title || 'URL could not be saved',
                         detail:
-                            response.description ||
-                            'The password manager URL could not be saved.',
+                            response.description || 'The password manager URL could not be saved.',
                     });
 
                     return undefined;

@@ -1,3 +1,3 @@
 export interface DeleteGoogleSheetPasswordManagerRequest {
-  id: number;
+    id: number;
 }

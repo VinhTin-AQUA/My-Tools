@@ -115,15 +115,13 @@ export class PasswordManagerAddPassword {
 
                 const result = await this.savePassword(request);
 
-                console.log("result:", result);
+                console.log('result:', result);
 
                 if (!result.success || !result.data) {
                     this.messageService.add({
                         severity: 'error',
                         summary: result.title || 'Password could not be added',
-                        detail:
-                            result.description ||
-                            'The saved password could not be added.',
+                        detail: result.description || 'The saved password could not be added.',
                     });
 
                     return undefined;
