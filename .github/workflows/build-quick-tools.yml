@@ -53,7 +53,7 @@ jobs:
             - name: Setup .NET
               uses: actions/setup-dotnet@v4
               with:
-                  dotnet-version: 8.0.x
+                  dotnet-version: 10.0.x
 
             - name: Build
               run: |
@@ -72,20 +72,20 @@ jobs:
             # ANDROID
             # =========================
 
-            - name: Install MAUI Android workload for .NET 8
+            - name: Install MAUI Android workload for .NET 10
               run: |
                   # Hiển thị phiên bản hiện tại
                   echo "Current SDK before cleanup: $(dotnet --version)"
 
                   # Xóa tất cả SDK khác ngoài .NET 8
-                  sudo rm -rf /usr/share/dotnet/sdk/9.*
-                  sudo rm -rf /usr/share/dotnet/sdk/10.*
+                  # sudo rm -rf /usr/share/dotnet/sdk/9.*
+                  # sudo rm -rf /usr/share/dotnet/sdk/10.*
 
                   # Xóa runtime của các phiên bản khác
-                  sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/9.*
-                  sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/10.*
-                  sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/9.*
-                  sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/10.*
+                  # sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/9.*
+                  # sudo rm -rf /usr/share/dotnet/shared/Microsoft.AspNetCore.App/10.*
+                  # sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/9.*
+                  # sudo rm -rf /usr/share/dotnet/shared/Microsoft.NETCore.App/10.*
 
                   # Kiểm tra lại
                   echo "After cleanup:"

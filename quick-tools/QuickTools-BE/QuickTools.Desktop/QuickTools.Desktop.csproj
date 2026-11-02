@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>QuickTools.Windows</RootNamespace>
@@ -16,12 +16,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QuickTools.Services\QuickTools.Services.csproj" />
-      <ProjectReference Include="..\QuickTools.Shared\QuickTools.Shared.csproj" />
+        <ProjectReference Include="..\QuickTools.Services\QuickTools.Services.csproj" />
+        <ProjectReference Include="..\QuickTools.Shared\QuickTools.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NewTun.WebUISharp" Version="1.0.4" />
+        <PackageReference Include="NewTun.WebUISharp" Version="1.0.4" />
     </ItemGroup>
-    
+
 </Project>

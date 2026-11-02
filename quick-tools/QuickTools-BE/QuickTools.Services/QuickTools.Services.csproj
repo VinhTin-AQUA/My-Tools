@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QuickTools.Core\QuickTools.Core.csproj" />
+        <ProjectReference Include="..\QuickTools.Core\QuickTools.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="JsonFlatFileDataStore" Version="2.4.3" />
-      <PackageReference Include="MongoDB.Driver" Version="3.11.1" />
-      <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
+        <PackageReference Include="JsonFlatFileDataStore" Version="2.4.3" />
+        <PackageReference Include="MongoDB.Driver" Version="3.11.1" />
+        <PackageReference Include="NewTun.CaesiumSharp" Version="1.0.0" />
     </ItemGroup>
 
 </Project>
