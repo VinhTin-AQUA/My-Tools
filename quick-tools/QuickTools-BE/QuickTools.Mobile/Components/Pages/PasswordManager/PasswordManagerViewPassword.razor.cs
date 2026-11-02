@@ -23,7 +23,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private bool _isKeyMode;
         private bool _showKeyInput;
-        private bool _isVerifying;
+        private bool _isVerifying = false;
         private string _keyInput = string.Empty;
         private string? _keyError;
 
@@ -89,10 +89,10 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private void BackToOptions()
         {
-            if (_isVerifying)
-            {
-                return;
-            }
+            // if (_isVerifying)
+            // {
+            //     return;
+            // }
 
             _isKeyMode = false;
             _keyInput = string.Empty;
@@ -102,12 +102,12 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private async Task VerifyWithBiometric()
         {
-            if (_isVerifying)
-            {
-                return;
-            }
-
-            _isVerifying = true;
+            // if (_isVerifying)
+            // {
+            //     return;
+            // }
+            //
+            // _isVerifying = true;
             try
             {
                 if (!await BiometricService.IsAvailableAsync())
@@ -136,16 +136,16 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             }
             finally
             {
-                _isVerifying = false;
+                // _isVerifying = false;
             }
         }
 
         private async Task VerifyWithKey()
         {
-            if (_isVerifying)
-            {
-                return;
-            }
+            // if (_isVerifying)
+            // {
+            //     return;
+            // }
 
             if (string.IsNullOrWhiteSpace(_keyInput))
             {
@@ -153,7 +153,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 return;
             }
 
-            _isVerifying = true;
+            // _isVerifying = true;
             try
             {
                 var googleSheetConfig =
@@ -169,7 +169,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             }
             finally
             {
-                _isVerifying = false;
+                // _isVerifying = false;
             }
         }
 

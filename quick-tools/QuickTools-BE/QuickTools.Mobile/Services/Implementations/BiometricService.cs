@@ -68,7 +68,7 @@ namespace QuickTools.Mobile.Services.Implementations
                     Description = description,
 
                     // Nội dung nút hủy xác thực
-                    NegativeText = "Cancle",
+                    NegativeText = "Cancel",
 
                     AllowPasswordAuth = false,
                     AuthStrength = AuthenticatorStrength.Strong
