@@ -21,7 +21,6 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         private bool _showPassword;
         private bool _isVerified;
 
-        private bool _isVerifyDialogOpen;
         private bool _isKeyMode;
         private bool _showKeyInput;
         private bool _isVerifying;
@@ -69,41 +68,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
 
         private void TogglePasswordVisibility()
         {
-            if (_showPassword)
-            {
-                _showPassword = false;
-                return;
-            }
-
-            if (_isVerified)
-            {
-                _showPassword = true;
-                return;
-            }
-
-            OpenVerifyDialog();
-        }
-
-        private void OpenVerifyDialog()
-        {
-            _isKeyMode = false;
-            _showKeyInput = false;
-            _keyInput = string.Empty;
-            _keyError = null;
-            _isVerifyDialogOpen = true;
-        }
-
-        private void CloseVerifyDialog()
-        {
-            if (_isVerifying)
-            {
-                return;
-            }
-
-            _isVerifyDialogOpen = false;
-            _isKeyMode = false;
-            _keyInput = string.Empty;
-            _keyError = null;
+            _showPassword = !_showPassword;
         }
 
         private void ChooseKeyMode()
@@ -155,8 +120,8 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
                 }
 
                 var result = await BiometricService.AuthenticateAsync(
-                    "Show password",
-                    "Verify your identity to show the password");
+                    "View password",
+                    "Verify your identity to view the password");
 
                 if (!result.Success)
                 {
@@ -212,7 +177,6 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         {
             _isVerified = true;
             _showPassword = true;
-            _isVerifyDialogOpen = false;
             _isKeyMode = false;
             _showKeyInput = false;
             _keyInput = string.Empty;
