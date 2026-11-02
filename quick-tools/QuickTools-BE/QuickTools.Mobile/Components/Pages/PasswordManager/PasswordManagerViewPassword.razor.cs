@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using QuickTools.Core.Models;
+using QuickTools.Mobile.Constants;
 using QuickTools.Mobile.Services.Implementations;
 using QuickTools.Mobile.Services.Interfaces;
 
@@ -18,6 +19,14 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         public EventCallback<bool> VisibleChange { get; set; }
 
         private bool _showPassword;
+        private bool _isVerified;
+
+        private bool _isVerifyDialogOpen;
+        private bool _isKeyMode;
+        private bool _showKeyInput;
+        private bool _isVerifying;
+        private string _keyInput = string.Empty;
+        private string? _keyError;
 
         private sealed record ViewPasswordField(string Label, string Value);
 
@@ -56,9 +65,158 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             return field.Value;
         }
 
+        /* ========================= verification ========================= */
+
         private void TogglePasswordVisibility()
         {
-            _showPassword = !_showPassword;
+            if (_showPassword)
+            {
+                _showPassword = false;
+                return;
+            }
+
+            if (_isVerified)
+            {
+                _showPassword = true;
+                return;
+            }
+
+            OpenVerifyDialog();
+        }
+
+        private void OpenVerifyDialog()
+        {
+            _isKeyMode = false;
+            _showKeyInput = false;
+            _keyInput = string.Empty;
+            _keyError = null;
+            _isVerifyDialogOpen = true;
+        }
+
+        private void CloseVerifyDialog()
+        {
+            if (_isVerifying)
+            {
+                return;
+            }
+
+            _isVerifyDialogOpen = false;
+            _isKeyMode = false;
+            _keyInput = string.Empty;
+            _keyError = null;
+        }
+
+        private void ChooseKeyMode()
+        {
+            _isKeyMode = true;
+            _keyError = null;
+        }
+
+        private void ToggleKeyInputVisibility()
+        {
+            _showKeyInput = !_showKeyInput;
+        }
+
+        private void ClearKeyError()
+        {
+            _keyError = null;
+        }
+
+        private void BackToOptions()
+        {
+            if (_isVerifying)
+            {
+                return;
+            }
+
+            _isKeyMode = false;
+            _keyInput = string.Empty;
+            _showKeyInput = false;
+            _keyError = null;
+        }
+
+        private async Task VerifyWithBiometric()
+        {
+            if (_isVerifying)
+            {
+                return;
+            }
+
+            _isVerifying = true;
+            try
+            {
+                if (!await BiometricService.IsAvailableAsync())
+                {
+                    await NotificationService.ShowAsync(
+                        1,
+                        "Biometric not supported",
+                        "This device does not support biometric authentication or it has not been set up.");
+                    return;
+                }
+
+                var result = await BiometricService.AuthenticateAsync(
+                    "Show password",
+                    "Verify your identity to show the password");
+
+                if (!result.Success)
+                {
+                    await NotificationService.ShowAsync(
+                        1,
+                        "Biometric verification failed",
+                        result.Message);
+                    return;
+                }
+
+                OnVerified();
+            }
+            finally
+            {
+                _isVerifying = false;
+            }
+        }
+
+        private async Task VerifyWithKey()
+        {
+            if (_isVerifying)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(_keyInput))
+            {
+                _keyError = "Key is required.";
+                return;
+            }
+
+            _isVerifying = true;
+            try
+            {
+                var googleSheetConfig =
+                    await SecureStorageService.LoadOrDefaultAsync<GoogleSheetConfig>(AppConstants.GoogleSheetConfigKey);
+
+                if (string.IsNullOrEmpty(googleSheetConfig.Key) || googleSheetConfig.Key != _keyInput)
+                {
+                    _keyError = "Key is not correct.";
+                    return;
+                }
+
+                OnVerified();
+            }
+            finally
+            {
+                _isVerifying = false;
+            }
+        }
+
+        private void OnVerified()
+        {
+            _isVerified = true;
+            _showPassword = true;
+            _isVerifyDialogOpen = false;
+            _isKeyMode = false;
+            _showKeyInput = false;
+            _keyInput = string.Empty;
+            _keyError = null;
         }
 
         private async Task Close()
