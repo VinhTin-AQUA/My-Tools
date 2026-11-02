@@ -28,6 +28,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<ISecureStorageService, SecureStorageService>();
         builder.Services.AddSingleton<IMongoServiceFactory, MongoServiceFactory>();
+        builder.Services.AddSingleton<IBiometricService, BiometricService>();
         
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

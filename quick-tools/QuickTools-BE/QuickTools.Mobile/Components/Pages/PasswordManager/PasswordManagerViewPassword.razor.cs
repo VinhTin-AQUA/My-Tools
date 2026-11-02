@@ -1,10 +1,16 @@
 using Microsoft.AspNetCore.Components;
 using QuickTools.Core.Models;
+using QuickTools.Mobile.Services.Implementations;
+using QuickTools.Mobile.Services.Interfaces;
 
 namespace QuickTools.Mobile.Components.Pages.PasswordManager
 {
     public partial class PasswordManagerViewPassword : ComponentBase
     {
+        [Inject] protected IBiometricService BiometricService { get; set; } = default!;
+        [Inject] protected ISecureStorageService SecureStorageService { get; set; } = default!;
+        [Inject] protected NotificationService NotificationService { get; set; } = default!;
+        
         [Parameter]
         public GoogleSheetPasswordModel? Password { get; set; }
 

@@ -69,6 +69,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.110"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1"/>
         <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
+        <PackageReference Include="Plugin.Maui.Biometric" Version="0.1.2" />
     </ItemGroup>
 
     <ItemGroup>

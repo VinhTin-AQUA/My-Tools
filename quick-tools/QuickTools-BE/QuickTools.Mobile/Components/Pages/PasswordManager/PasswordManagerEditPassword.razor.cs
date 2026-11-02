@@ -4,6 +4,7 @@ using QuickTools.Mobile.Constants;
 using QuickTools.Mobile.Services.Implementations;
 using QuickTools.Mobile.Services.Interfaces;
 using QuickTools.Services.PasswordManager;
+using QuickTools.Shared.Extensions;
 using QuickTools.Shared.Helpers;
 
 namespace QuickTools.Mobile.Components.Pages.PasswordManager
@@ -45,9 +46,9 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
             }
 
             _accountName = Password.AccountName;
-            _userName = Password.UserName;
-            _password = Password.Password;
-            _confirmPassword = Password.Password;
+            _userName = Password.UserName.MaskString();
+            _password = "";
+            _confirmPassword = "";
             _note = Password.Note;
         }
 
