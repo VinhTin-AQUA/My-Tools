@@ -176,7 +176,7 @@ namespace QuickTools.Mobile.Components.Pages.PasswordManager
         private void OnVerified()
         {
             _isVerified = true;
-            _showPassword = true;
+            _showPassword = false;
             _isKeyMode = false;
             _showKeyInput = false;
             _keyInput = string.Empty;
